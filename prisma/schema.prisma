@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  passwordHash    String?
+  username        String?
+  avatarUrl       String?
+  role            UserRole       @default(USER)
+  balanceCredits  Int            @default(3)
+  freeDebatesLeft Int            @default(3)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  refreshTokens   RefreshToken[]
+  debates         Debate[]
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  tokenHash String
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Debate {
+  id              String         @id @default(uuid())
+  userId          String
+  title           String?
+  slug            String         @unique
+  originalThesis  String
+  currentThesis   String
+  mode            DebateMode
+  status          DebateStatus   @default(PENDING)
+  visibility      Visibility     @default(PUBLIC)
+  tier            DebateTier     @default(SURFACE)
+  models          DebateAiModel[] @default([])
+  roundCount      Int            @default(0)
+  maxRounds       Int            @default(6)
+  quietMode       Boolean        @default(false)
+
+  layer1Summary   String?
+  layer2Summary   String?
+  finalSummary    String?
+  finalThesis     String?
+
+  completedAt     DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user            User           @relation(fields: [userId], references: [id])
+  rounds          DebateRound[]
+  events          DebateEvent[]
+
+  @@index([userId])
+  @@index([visibility])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model DebateRound {
+  id          String         @id @default(uuid())
+  debateId    String
+  roundNumber Int
+  model       DebateAiModel
+  content     String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  debate      Debate         @relation(fields: [debateId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([debateId, roundNumber])
+}
+
+model DebateEvent {
+  id        String   @id @default(uuid())
+  debateId  String
+  type      String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  debate    Debate   @relation(fields: [debateId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([debateId, createdAt])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  EXPERT
+}
+
+enum DebateMode {
+  CONVERGENT
+  DIVERGENT
+  GEOPOLITICAL
+}
+
+enum DebateStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum DebateTier {
+  SURFACE
+  VERIFIED
+  DEEP
+}
+
+enum DebateAiModel {
+  GPT
+  CLAUDE
+  GEMINI
+  GROK
+}
