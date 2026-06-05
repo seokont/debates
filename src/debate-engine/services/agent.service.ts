@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   AiProvider as UserAiProvider,
@@ -41,6 +41,8 @@ type GeminiResponseBody = {
 
 @Injectable()
 export class AgentService {
+  private readonly logger = new Logger(AgentService.name);
+
   constructor(
     private readonly config: ConfigService,
     private readonly settingsService: SettingsService,
@@ -98,7 +100,7 @@ export class AgentService {
       this.config.get<string>('DEBATE_AGENT_FALLBACK_ON_ERROR') !== 'false';
 
     try {
-      const content = await this.runProvider(provider, prompt, userId);
+      const content = await this.runProviderWithRetry(provider, prompt, userId);
 
       return {
         provider,
@@ -165,6 +167,35 @@ export class AgentService {
       case 'xai':
         return this.runXAi(prompt, userId);
     }
+  }
+
+  private async runProviderWithRetry(
+    provider: AiProvider,
+    prompt: string,
+    userId?: string,
+  ): Promise<string> {
+    const maxAttempts = this.getRetryAttempts();
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        return await this.runProvider(provider, prompt, userId);
+      } catch (error) {
+        lastError = error;
+
+        if (attempt >= maxAttempts || !this.isRetryableProviderError(error)) {
+          throw error;
+        }
+
+        const delayMs = this.getRetryDelayMs(attempt);
+        this.logger.warn(
+          `${provider} request failed temporarily; retrying in ${delayMs}ms (${attempt}/${maxAttempts})`,
+        );
+        await this.sleep(delayMs);
+      }
+    }
+
+    throw lastError;
   }
 
   private async runOpenAi(prompt: string, userId?: string): Promise<string> {
@@ -397,6 +428,36 @@ export class AgentService {
     );
 
     return Number.isFinite(value) && value > 0 ? value : 450;
+  }
+
+  private getRetryAttempts(): number {
+    const value = Number(
+      this.config.get<string>('DEBATE_AGENT_RETRY_ATTEMPTS') ?? 3,
+    );
+
+    return Number.isFinite(value) && value > 0 ? Math.floor(value) : 3;
+  }
+
+  private getRetryDelayMs(attempt: number): number {
+    const baseDelay = Number(
+      this.config.get<string>('DEBATE_AGENT_RETRY_DELAY_MS') ?? 1000,
+    );
+    const safeBaseDelay =
+      Number.isFinite(baseDelay) && baseDelay >= 0 ? baseDelay : 1000;
+
+    return safeBaseDelay * 2 ** Math.max(0, attempt - 1);
+  }
+
+  private isRetryableProviderError(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+      return false;
+    }
+
+    return /\b(429|500|502|503|504)\b/.test(error.message);
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   private async readError(response: Response): Promise<string> {

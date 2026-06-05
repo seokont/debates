@@ -416,6 +416,8 @@ XAI_API_KEY=""
 XAI_MODEL="grok-4.3"
 
 DEBATE_AGENT_MAX_OUTPUT_TOKENS=450
+DEBATE_AGENT_RETRY_ATTEMPTS=3
+DEBATE_AGENT_RETRY_DELAY_MS=1000
 DEBATE_AGENT_FALLBACK_ON_ERROR=false
 ```
 
@@ -454,6 +456,7 @@ Implemented AI work:
 - xAI Responses API integration.
 - Provider-specific response parsing.
 - Shared max output token config.
+- Retry handling for temporary provider errors such as 429, 500, 502, 503, and 504.
 - Local fallback attack generation when fallback mode is enabled.
 
 ## Current Limitations
@@ -471,7 +474,7 @@ Implemented AI work:
 1. Make `ThesisImproverService` AI-based so it rewrites the thesis using the attacks.
 2. Make `VerificationService` AI-based or hybrid, with structured JSON output.
 3. Add unit tests for provider response extractors and fallback behavior.
-4. Add retry/timeout handling around provider calls.
+4. Add timeout handling around provider calls.
 5. Store provider latency and `usedFallback` in debate events if needed for observability.
 6. Consider separate per-provider max tokens and model config.
 7. Add integration tests for the full debate queue flow.
