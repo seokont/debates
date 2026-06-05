@@ -2,42 +2,59 @@ import { InjectQueue } from '@nestjs/bullmq';
 import {
   ConflictException,
   ForbiddenException,
-  HttpException,
-  HttpStatus,
   Injectable,
   MessageEvent,
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import {
+  AiAgentName,
   Debate,
+  DebateEventType,
   DebateMode,
   DebateStatus,
+  HumanInjection,
+  InjectionStatus,
   Prisma,
   UserRole,
   Visibility,
 } from '@prisma/client';
 import { Queue } from 'bullmq';
 import { randomUUID } from 'crypto';
-import { from, interval, Observable } from 'rxjs';
-import { map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import { concat, defer, from, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { AuthenticatedUser } from '../auth/types/authenticated-user.type';
+import { BillingService } from '../billing/billing.service';
+import { DebateLiveEventsService } from '../debate-events/debate-live-events.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { DEBATES_QUEUE, RUN_DEBATE_JOB } from './debates.constants';
+import { TelegramService } from '../telegram/telegram.service';
+import { DEBATE_QUEUE, RUN_DEBATE_JOB } from './debates.constants';
 import { CreateDebateDto } from './dto/create-debate.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateInjectionDto } from './dto/create-injection.dto';
 import { DebateJobData } from './types/debate-job-data.type';
 
 @Injectable()
 export class DebatesService {
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(DEBATES_QUEUE)
-    private readonly debatesQueue: Queue<DebateJobData>,
+    private readonly billingService: BillingService,
+    private readonly liveEvents: DebateLiveEventsService,
+    private readonly telegramService: TelegramService,
+    @InjectQueue(DEBATE_QUEUE)
+    private readonly debateQueue: Queue<DebateJobData>,
   ) {}
 
   async create(user: AuthenticatedUser, dto: CreateDebateDto) {
+    const visibility = dto.visibility ?? Visibility.PUBLIC;
+    const creditCost = this.getDebateCreditCost(visibility);
     const debate = await this.prisma.$transaction(async (tx) => {
-      await this.chargeCredit(tx, user.id);
+      await this.billingService.debit(
+        tx,
+        user.id,
+        creditCost,
+        visibility === Visibility.PRIVATE ? 'PRIVATE_DEBATE' : 'DEBATE',
+      );
 
       const created = await tx.debate.create({
         data: {
@@ -47,7 +64,7 @@ export class DebatesService {
           originalThesis: dto.thesis,
           currentThesis: dto.thesis,
           mode: dto.mode ?? DebateMode.CONVERGENT,
-          visibility: dto.visibility ?? Visibility.PUBLIC,
+          visibility,
           models: dto.models,
           maxRounds: dto.maxRounds ?? 6,
           quietMode: dto.quietMode ?? false,
@@ -57,8 +74,10 @@ export class DebatesService {
       await tx.debateEvent.create({
         data: {
           debateId: created.id,
-          type: 'CREATED',
-          payload: {
+          type: DebateEventType.HUMAN,
+          content: dto.thesis,
+          metadata: {
+            action: 'CREATED',
             models: dto.models,
             maxRounds: dto.maxRounds ?? 6,
             quietMode: dto.quietMode ?? false,
@@ -72,7 +91,7 @@ export class DebatesService {
     try {
       await this.enqueueDebate(debate, user.id, false);
     } catch (error) {
-      await this.failDebateAndRefund(debate.id, user.id, error);
+      await this.failDebateAndRefund(debate.id, user.id, creditCost, error);
     }
 
     return { debateId: debate.id };
@@ -113,7 +132,7 @@ export class DebatesService {
       },
       include: {
         rounds: {
-          orderBy: [{ roundNumber: 'asc' }, { createdAt: 'asc' }],
+          orderBy: [{ roundNumber: 'asc' }, { startedAt: 'asc' }],
         },
         events: {
           orderBy: { createdAt: 'asc' },
@@ -167,8 +186,16 @@ export class DebatesService {
       throw new ConflictException('Debate is already active');
     }
 
+    const creditCost = this.getDebateCreditCost(debate.visibility);
     const restarted = await this.prisma.$transaction(async (tx) => {
-      await this.chargeCredit(tx, user.id);
+      await this.billingService.debit(
+        tx,
+        user.id,
+        creditCost,
+        debate.visibility === Visibility.PRIVATE
+          ? 'PRIVATE_DEBATE_RESTART'
+          : 'DEBATE_RESTART',
+      );
       await tx.debateRound.deleteMany({ where: { debateId: id } });
       await tx.debateEvent.deleteMany({ where: { debateId: id } });
 
@@ -189,8 +216,12 @@ export class DebatesService {
       await tx.debateEvent.create({
         data: {
           debateId: id,
-          type: 'RESTARTED',
-          payload: { previousStatus: debate.status },
+          type: DebateEventType.HUMAN,
+          content: 'Debate restarted',
+          metadata: {
+            action: 'RESTARTED',
+            previousStatus: debate.status,
+          },
         },
       });
 
@@ -200,30 +231,250 @@ export class DebatesService {
     try {
       await this.enqueueDebate(restarted, user.id, true);
     } catch (error) {
-      await this.failDebateAndRefund(restarted.id, user.id, error);
+      await this.failDebateAndRefund(
+        restarted.id,
+        user.id,
+        creditCost,
+        error,
+      );
     }
 
     return { debateId: restarted.id };
   }
 
-  stream(id: string, user?: AuthenticatedUser): Observable<MessageEvent> {
-    let lastSeenAt: Date | null = null;
+  async createInjection(
+    debateId: string,
+    user: AuthenticatedUser,
+    dto: CreateInjectionDto,
+  ) {
+    const debate = await this.getReadableDebateWithOwner(debateId, user);
+    const autoAccepted = debate.userId === user.id;
+    const acceptedAt = autoAccepted ? new Date() : null;
+    const content = dto.content.trim();
 
-    return interval(1000).pipe(
-      startWith(0),
-      switchMap(() => from(this.getEventBatch(id, user, lastSeenAt))),
-      mergeMap((events) => {
-        if (events.length > 0) {
-          lastSeenAt = events[events.length - 1].createdAt;
-        }
+    const result = await this.prisma.$transaction(async (tx) => {
+      if (autoAccepted) {
+        await this.billingService.debit(
+          tx,
+          user.id,
+          1,
+          'INSTANT_INJECTION',
+        );
+      }
 
-        return from(events);
-      }),
-      map((event) => ({
-        type: event.type,
-        data: event,
-      })),
+      const injection = await tx.humanInjection.create({
+        data: {
+          debateId,
+          userId: user.id,
+          type: dto.type,
+          content,
+          status: autoAccepted
+            ? InjectionStatus.ACCEPTED
+            : InjectionStatus.PENDING,
+          acceptedAt,
+        },
+      });
+
+      const event = autoAccepted
+        ? await this.createAcceptedInjectionEvent(tx, injection)
+        : null;
+
+      return { injection, event };
+    });
+
+    if (result.event) {
+      this.liveEvents.emit(result.event);
+      await this.telegramService.notifyHumanInjectionAccepted(
+        result.injection.id,
+      );
+    }
+
+    return result.injection;
+  }
+
+  async listInjections(debateId: string, user?: AuthenticatedUser) {
+    await this.assertReadable(debateId, user);
+
+    return this.prisma.humanInjection.findMany({
+      where: { debateId },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+            role: true,
+          },
+        },
+      },
+    });
+  }
+
+  async likeInjection(id: string, user: AuthenticatedUser) {
+    const injection = await this.prisma.humanInjection.findUnique({
+      where: { id },
+      select: { id: true, debateId: true },
+    });
+
+    if (!injection) {
+      throw new NotFoundException('Injection not found');
+    }
+
+    await this.assertReadable(injection.debateId, user);
+
+    return this.prisma.humanInjection.update({
+      where: { id },
+      data: {
+        likesCount: { increment: 1 },
+      },
+    });
+  }
+
+  async acceptInjection(id: string) {
+    const existing = await this.prisma.humanInjection.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Injection not found');
+    }
+
+    if (
+      existing.status === InjectionStatus.ACCEPTED ||
+      existing.status === InjectionStatus.USED_IN_ROUND
+    ) {
+      return existing;
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const injection = await tx.humanInjection.update({
+        where: { id },
+        data: {
+          status: InjectionStatus.ACCEPTED,
+          acceptedAt: new Date(),
+        },
+      });
+      const event = await this.createAcceptedInjectionEvent(tx, injection);
+
+      return { injection, event };
+    });
+
+    this.liveEvents.emit(result.event);
+    await this.telegramService.notifyHumanInjectionAccepted(
+      result.injection.id,
     );
+
+    return result.injection;
+  }
+
+  async createComment(
+    debateId: string,
+    user: AuthenticatedUser,
+    dto: CreateCommentDto,
+  ) {
+    await this.assertReadable(debateId, user);
+
+    if (dto.parentId) {
+      await this.assertParentCommentBelongsToDebate(dto.parentId, debateId);
+    }
+
+    return this.prisma.comment.create({
+      data: {
+        debateId,
+        userId: user.id,
+        parentId: dto.parentId,
+        content: dto.content.trim(),
+      },
+      include: this.commentInclude(),
+    });
+  }
+
+  async listComments(debateId: string, user?: AuthenticatedUser) {
+    await this.assertReadable(debateId, user);
+
+    return this.prisma.comment.findMany({
+      where: { debateId },
+      orderBy: { createdAt: 'asc' },
+      include: this.commentInclude(),
+    });
+  }
+
+  async likeComment(id: string, user: AuthenticatedUser) {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id },
+      select: { id: true, debateId: true },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    await this.assertReadable(comment.debateId, user);
+
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        await tx.commentLike.create({
+          data: {
+            commentId: id,
+            userId: user.id,
+          },
+        });
+
+        return tx.comment.update({
+          where: { id },
+          data: {
+            likesCount: { increment: 1 },
+          },
+          include: this.commentInclude(),
+        });
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        return this.prisma.comment.findUnique({
+          where: { id },
+          include: this.commentInclude(),
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  async deleteComment(id: string, user: AuthenticatedUser) {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id },
+      select: { id: true, userId: true },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    if (user.role !== UserRole.ADMIN && comment.userId !== user.id) {
+      throw new ForbiddenException('You cannot delete this comment');
+    }
+
+    await this.prisma.comment.delete({ where: { id } });
+
+    return { deleted: true };
+  }
+
+  stream(id: string, user?: AuthenticatedUser): Observable<MessageEvent> {
+    const history$ = defer(() => from(this.getEventBatch(id, user))).pipe(
+      mergeMap((events) =>
+        from(
+          events
+            .map((event) => this.liveEvents.toMessage(event))
+            .filter((event): event is MessageEvent => Boolean(event)),
+        ),
+      ),
+    );
+
+    return concat(history$, this.liveEvents.stream(id));
   }
 
   private async enqueueDebate(
@@ -231,7 +482,7 @@ export class DebatesService {
     userId: string,
     restart: boolean,
   ) {
-    const job = await this.debatesQueue.add(
+    const job = await this.debateQueue.add(
       RUN_DEBATE_JOB,
       {
         debateId: debate.id,
@@ -253,8 +504,34 @@ export class DebatesService {
     await this.prisma.debateEvent.create({
       data: {
         debateId: debate.id,
-        type: 'QUEUED',
-        payload: { jobId: job.id, restart },
+        type: DebateEventType.SYSTEM,
+        agent: AiAgentName.SYSTEM,
+        content: 'Debate queued',
+        metadata: {
+          action: 'QUEUED',
+          jobId: job.id,
+          restart,
+        },
+      },
+    });
+  }
+
+  private createAcceptedInjectionEvent(
+    tx: Prisma.TransactionClient,
+    injection: HumanInjection,
+  ) {
+    return tx.debateEvent.create({
+      data: {
+        debateId: injection.debateId,
+        type: DebateEventType.HUMAN,
+        content: injection.content,
+        metadata: {
+          action: 'HUMAN_INJECTION_ACCEPTED',
+          injectionId: injection.id,
+          injectionType: injection.type,
+          status: injection.status,
+          userId: injection.userId,
+        },
       },
     });
   }
@@ -274,6 +551,42 @@ export class DebatesService {
       orderBy: { createdAt: 'asc' },
       take: 100,
     });
+  }
+
+  private async getReadableDebateWithOwner(
+    debateId: string,
+    user?: AuthenticatedUser,
+  ) {
+    const debate = await this.prisma.debate.findFirst({
+      where: {
+        id: debateId,
+        ...this.readableWhere(user),
+      },
+      select: { id: true, userId: true },
+    });
+
+    if (!debate) {
+      throw new NotFoundException('Debate not found');
+    }
+
+    return debate;
+  }
+
+  private async assertParentCommentBelongsToDebate(
+    parentId: string,
+    debateId: string,
+  ) {
+    const parent = await this.prisma.comment.findFirst({
+      where: {
+        id: parentId,
+        debateId,
+      },
+      select: { id: true },
+    });
+
+    if (!parent) {
+      throw new NotFoundException('Parent comment not found');
+    }
   }
 
   private async assertReadable(debateId: string, user?: AuthenticatedUser) {
@@ -312,47 +625,61 @@ export class DebatesService {
     throw new ForbiddenException('You cannot manage this debate');
   }
 
-  private async chargeCredit(tx: Prisma.TransactionClient, userId: string) {
-    const charged = await tx.user.updateMany({
-      where: {
-        id: userId,
-        balanceCredits: { gte: 1 },
+  private commentInclude() {
+    return {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+          role: true,
+        },
       },
-      data: {
-        balanceCredits: { decrement: 1 },
-      },
-    });
+    } satisfies Prisma.CommentInclude;
+  }
 
-    if (charged.count !== 1) {
-      throw new HttpException('Not enough credits', HttpStatus.PAYMENT_REQUIRED);
-    }
+  private getDebateCreditCost(visibility: Visibility): number {
+    return visibility === Visibility.PRIVATE ? 5 : 1;
   }
 
   private async failDebateAndRefund(
     debateId: string,
     userId: string,
+    refundAmount: number,
     error: unknown,
   ): Promise<never> {
     const reason =
       error instanceof Error ? error.message : 'Unknown queue error';
 
-    await this.prisma.$transaction([
-      this.prisma.user.update({
-        where: { id: userId },
-        data: { balanceCredits: { increment: 1 } },
-      }),
-      this.prisma.debate.update({
+    const event = await this.prisma.$transaction(async (tx) => {
+      await this.billingService.credit(
+        tx,
+        userId,
+        refundAmount,
+        'QUEUE_UNAVAILABLE_REFUND',
+      );
+      await tx.debate.update({
         where: { id: debateId },
         data: { status: DebateStatus.FAILED },
-      }),
-      this.prisma.debateEvent.create({
+      });
+
+      return tx.debateEvent.create({
         data: {
           debateId,
-          type: 'FAILED',
-          payload: { reason: 'QUEUE_UNAVAILABLE', detail: reason },
+          type: DebateEventType.SYSTEM,
+          agent: AiAgentName.SYSTEM,
+          content: 'QUEUE_UNAVAILABLE',
+          metadata: {
+            action: 'FAILED',
+            reason: 'QUEUE_UNAVAILABLE',
+            detail: reason,
+          },
         },
-      }),
-    ]);
+      });
+    });
+
+    this.liveEvents.emit(event);
+    await this.telegramService.notifyDebateFailed(debateId, reason);
 
     throw new ServiceUnavailableException('Debate queue is unavailable');
   }

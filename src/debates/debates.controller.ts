@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -17,10 +18,15 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { AuthenticatedUser } from '../auth/types/authenticated-user.type';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateInjectionDto } from './dto/create-injection.dto';
 import { CreateDebateDto } from './dto/create-debate.dto';
 import { DebatesService } from './debates.service';
 
@@ -77,6 +83,60 @@ export class DebatesController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Add a human injection to a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiCreatedResponse({ description: 'Human injection created' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/injections')
+  createInjection(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateInjectionDto,
+  ) {
+    return this.debatesService.createInjection(id, user, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List human injections for a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiOkResponse({ description: 'Human injections' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id/injections')
+  listInjections(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.debatesService.listInjections(id, user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Add a comment to a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiCreatedResponse({ description: 'Comment created' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/comments')
+  createComment(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateCommentDto,
+  ) {
+    return this.debatesService.createComment(id, user, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'List comments for a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiOkResponse({ description: 'Comment list' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id/comments')
+  listComments(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.debatesService.listComments(id, user);
+  }
+
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get debate by id' })
   @ApiParam({ name: 'id', description: 'Debate UUID' })
   @ApiOkResponse({ description: 'Debate with rounds and events' })
@@ -101,5 +161,67 @@ export class DebatesController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.debatesService.restart(id, user);
+  }
+}
+
+@ApiTags('Injections')
+@Controller('injections')
+export class InjectionsController {
+  constructor(private readonly debatesService: DebatesService) {}
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Like a human injection' })
+  @ApiParam({ name: 'id', description: 'Injection UUID' })
+  @ApiOkResponse({ description: 'Injection liked' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/like')
+  like(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.debatesService.likeInjection(id, user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Accept a human injection as admin' })
+  @ApiParam({ name: 'id', description: 'Injection UUID' })
+  @ApiOkResponse({ description: 'Injection accepted' })
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post(':id/accept')
+  accept(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.debatesService.acceptInjection(id);
+  }
+}
+
+@ApiTags('Comments')
+@Controller('comments')
+export class CommentsController {
+  constructor(private readonly debatesService: DebatesService) {}
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Like a comment' })
+  @ApiParam({ name: 'id', description: 'Comment UUID' })
+  @ApiOkResponse({ description: 'Comment liked' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/like')
+  like(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.debatesService.likeComment(id, user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete own comment or delete as admin' })
+  @ApiParam({ name: 'id', description: 'Comment UUID' })
+  @ApiOkResponse({ description: 'Comment deleted' })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.debatesService.deleteComment(id, user);
   }
 }

@@ -20,6 +20,12 @@ model User {
   updatedAt       DateTime       @updatedAt
   refreshTokens   RefreshToken[]
   debates         Debate[]
+  injections      HumanInjection[]
+  comments        Comment[]
+  commentLikes    CommentLike[]
+  apiKeys         UserApiKey[]
+  creditTransactions CreditTransaction[]
+  notificationChannels NotificationChannel[]
 }
 
 model RefreshToken {
@@ -63,6 +69,8 @@ model Debate {
   user            User           @relation(fields: [userId], references: [id])
   rounds          DebateRound[]
   events          DebateEvent[]
+  injections      HumanInjection[]
+  comments        Comment[]
 
   @@index([userId])
   @@index([visibility])
@@ -71,31 +79,150 @@ model Debate {
 }
 
 model DebateRound {
-  id          String         @id @default(uuid())
-  debateId    String
-  roundNumber Int
-  model       DebateAiModel
-  content     String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id               String      @id @default(uuid())
+  debateId         String
+  roundNumber      Int
+  status           RoundStatus @default(RUNNING)
 
-  debate      Debate         @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  inputThesis      String
+  outputThesis     String?
+
+  closedAttacks    Json?
+  openWeaknesses   Json?
+  improvementScore Float?
+
+  startedAt        DateTime    @default(now())
+  completedAt      DateTime?
+
+  debate           Debate      @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  events           DebateEvent[]
 
   @@index([debateId])
   @@index([debateId, roundNumber])
+  @@index([status])
 }
 
 model DebateEvent {
-  id        String   @id @default(uuid())
+  id        String          @id @default(uuid())
   debateId  String
-  type      String
-  payload   Json?
-  createdAt DateTime @default(now())
+  roundId   String?
+  type      DebateEventType
+  agent     AiAgentName?
+  role      AiAgentRole?
+  content   String
+  metadata  Json?
+  createdAt DateTime        @default(now())
 
-  debate    Debate   @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  debate    Debate          @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  round     DebateRound? @relation(fields: [roundId], references: [id], onDelete: SetNull)
 
   @@index([debateId])
+  @@index([roundId])
+  @@index([type])
+  @@index([agent])
+  @@index([debateId, roundId])
   @@index([debateId, createdAt])
+}
+
+model HumanInjection {
+  id         String          @id @default(uuid())
+  debateId   String
+  userId     String
+  type       InjectionType
+  content    String
+  status     InjectionStatus @default(PENDING)
+  likesCount Int             @default(0)
+  paidAmount Int             @default(0)
+  acceptedAt DateTime?
+  createdAt  DateTime        @default(now())
+
+  debate     Debate          @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Comment {
+  id         String        @id @default(uuid())
+  debateId   String
+  userId     String
+  parentId   String?
+  content    String
+  likesCount Int           @default(0)
+  createdAt  DateTime      @default(now())
+
+  debate     Debate        @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes      CommentLike[]
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([parentId])
+  @@index([createdAt])
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([userId])
+}
+
+model UserApiKey {
+  id           String     @id @default(uuid())
+  userId       String
+  provider     AiProvider
+  encryptedKey String
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([provider])
+  @@index([isActive])
+}
+
+model CreditTransaction {
+  id              String                @id @default(uuid())
+  userId          String
+  type            CreditTransactionType
+  amount          Int
+  reason          String
+  stripePaymentId String?
+  createdAt       DateTime              @default(now())
+
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@index([stripePaymentId])
+}
+
+model NotificationChannel {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  value     String
+  isActive  Boolean          @default(true)
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+  @@index([isActive])
+  @@index([userId, type, isActive])
 }
 
 enum UserRole {
@@ -116,6 +243,71 @@ enum DebateStatus {
   COMPLETED
   FAILED
   CANCELLED
+}
+
+enum RoundStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum DebateEventType {
+  ATTACK
+  IMPROVEMENT
+  VERIFICATION
+  RESEARCH_GAP
+  HUMAN
+  SYSTEM
+  FINAL
+}
+
+enum AiAgentName {
+  GPT
+  CLAUDE
+  GEMINI
+  GROK
+  SYSTEM
+}
+
+enum AiAgentRole {
+  SKEPTIC
+  SYSTEMS_THINKER
+  PRACTICIAN
+  OPPONENT
+  IMPROVER
+  VERIFIER
+}
+
+enum AiProvider {
+  OPENAI
+  ANTHROPIC
+  GOOGLE
+  XAI
+}
+
+enum CreditTransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum NotificationType {
+  TELEGRAM
+  EMAIL
+  WHATSAPP
+}
+
+enum InjectionType {
+  ATTACK
+  CLARIFY
+  ALTERNATIVE
+  EXAMPLE
+}
+
+enum InjectionStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  USED_IN_ROUND
 }
 
 enum Visibility {
