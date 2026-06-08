@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiAgentName, DebateEventType, DebateStatus } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelegramService } from '../telegram/telegram.service';
 import { DebateFinalizationService } from './services/debate-finalization.service';
 import { DebateMemoryService } from './services/debate-memory.service';
@@ -15,6 +16,7 @@ export class DebateEngineService {
     private readonly roundRunner: RoundRunnerService,
     private readonly telegramService: TelegramService,
     private readonly finalization: DebateFinalizationService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async startDebate(debateId: string): Promise<void> {
@@ -100,6 +102,7 @@ export class DebateEngineService {
       finalization,
     );
     await this.telegramService.notifyDebateCompleted(debateId);
+    this.eventEmitter.emit('debate.completed', { debateId, userId: debate.userId });
   }
 
   async failDebate(debateId: string, error: Error): Promise<void> {

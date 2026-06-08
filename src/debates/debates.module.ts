@@ -19,6 +19,7 @@ import {
 import { DebatesProcessor } from './debates.processor';
 import { DebatesService } from './debates.service';
 import { NotificationsProcessor } from './notifications.processor';
+import { ModeDetectionService } from './services/mode-detection.service';
 import { UrlParserService } from './services/url-parser.service';
 
 @Module({
@@ -41,7 +42,8 @@ import { UrlParserService } from './services/url-parser.service';
     NotificationsProcessor,
     BillingProcessor,
     UrlParserService,
+    ModeDetectionService,
   ],
-  exports: [DebatesService],
+  exports: [DebatesService, ModeDetectionService],
 })
 export class DebatesModule {}

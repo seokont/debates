@@ -31,36 +31,19 @@ export class BuildRoomProcessor extends WorkerHost {
       await this.buildRoomService.addEvent(projectId, {
         type: 'SYSTEM',
         agent: 'SYSTEM',
-        content: 'Build started — cascade pipeline: DeepSeek → Kimi → Claude',
+        content: 'Build started — 8-agent cascade: Product → Tech → Design → Growth → Marketing → Economics → Psychology → Legal',
       });
 
       const result = await this.cascadeAgent.buildMvp(thesis, project.title);
 
-      await this.buildRoomService.addEvent(projectId, {
-        type: 'ARCHITECTURE',
-        agent: 'GPT',
-        content: result.architecture,
-        metadata: { stack: result.stack },
-      });
-
-      await this.buildRoomService.addEvent(projectId, {
-        type: 'CODE',
-        agent: 'DEEPSEEK',
-        content: result.code,
-      });
-
-      await this.buildRoomService.addEvent(projectId, {
-        type: 'REVIEW',
-        agent: 'KIMI',
-        content: result.review,
-      });
-
-      await this.buildRoomService.addEvent(projectId, {
-        type: result.passed ? 'AUDIT_PASSED' : 'SYSTEM',
-        agent: 'CLAUDE',
-        content: result.audit,
-        metadata: { passed: result.passed },
-      });
+      for (const step of result.steps) {
+        await this.buildRoomService.addEvent(projectId, {
+          type: step.type,
+          agent: step.agent,
+          content: step.content,
+          metadata: step.metadata as any,
+        });
+      }
 
       await this.buildRoomService.updateStatus(
         projectId,

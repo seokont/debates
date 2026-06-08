@@ -35,6 +35,7 @@ import { CreateDebateFromUrlDto } from './dto/create-debate-from-url.dto';
 import { CreateBranchDto } from './dto/create-branch.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreateInjectionDto } from './dto/create-injection.dto';
+import { ModeDetectionService } from './services/mode-detection.service';
 import { UrlParserService } from './services/url-parser.service';
 import { DebateJobData } from './types/debate-job-data.type';
 
@@ -46,6 +47,7 @@ export class DebatesService {
     private readonly liveEvents: DebateLiveEventsService,
     private readonly telegramService: TelegramService,
     private readonly urlParser: UrlParserService,
+    private readonly modeDetection: ModeDetectionService,
     @InjectQueue(DEBATE_QUEUE)
     private readonly debateQueue: Queue<DebateJobData>,
   ) {}
@@ -101,6 +103,10 @@ export class DebatesService {
     }
 
     return { debateId: debate.id };
+  }
+
+  detectMode(thesis: string) {
+    return this.modeDetection.detect(thesis);
   }
 
   async createFromUrl(user: AuthenticatedUser, dto: CreateDebateFromUrlDto) {
@@ -269,6 +275,14 @@ export class DebatesService {
     }
 
     return debate;
+  }
+
+  async getInsights(debateId: string, user?: AuthenticatedUser) {
+    await this.assertReadable(debateId, user);
+    return this.prisma.exploreInsight.findMany({
+      where: { debateId },
+      orderBy: { createdAt: 'asc' },
+    });
   }
 
   async restart(id: string, user: AuthenticatedUser) {

@@ -6,6 +6,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
   Sse,
   UseGuards,
 } from '@nestjs/common';
@@ -50,6 +51,13 @@ export class DebatesController {
     return this.debatesService.create(user, dto);
   }
 
+  @ApiOperation({ summary: 'Auto-detect whether a thesis is VERIFY, EXPLORE, or QUANTUM' })
+  @ApiOkResponse({ description: 'Mode detection result with confidence' })
+  @Get('detect-mode')
+  detectMode(@Query('thesis') thesis: string) {
+    return this.debatesService.detectMode(thesis ?? '');
+  }
+
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List public debates and own private debates when authorized' })
   @ApiOkResponse({ description: 'Debate list' })
@@ -70,6 +78,19 @@ export class DebatesController {
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     return this.debatesService.findFinal(id, user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get cross-domain insights and profit patterns for a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiOkResponse({ description: 'Cross-domain insights' })
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id/insights')
+  getInsights(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.debatesService.getInsights(id, user);
   }
 
   @ApiBearerAuth()

@@ -31,6 +31,8 @@ model User {
   expertVerifications ExpertVerification[]
   buildProjects       BuildProject[]
   taskClaims          TaskClaim[]
+  exploreSessions     ExploreSession[]
+  investorMatches     InvestorMatch[]
 }
 
 model RefreshToken {
@@ -400,6 +402,7 @@ model BuildProject {
   user        User               @relation(fields: [userId], references: [id])
   events      BuildProjectEvent[]
   tasks       ExchangeTask[]
+  investorMatches InvestorMatch[]
 
   @@index([debateId])
   @@index([userId])
@@ -510,4 +513,158 @@ enum ClaimStatus {
   ACTIVE
   COMPLETED
   ABANDONED
+}
+
+model ExploreSession {
+  id               String        @id @default(uuid())
+  userId           String
+  question         String
+  exploreType      ExploreType
+  mode             SessionMode
+  status           SessionStatus @default(PENDING)
+  generationsCount Int           @default(0)
+  totalPaths       Int           @default(0)
+  prunedPaths      Int           @default(0)
+  budgetLimit      Float         @default(10.0)
+  budgetUsed       Float         @default(0.0)
+  completedAt      DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paths    ExplorePath[]
+  insights ExploreInsight[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([mode])
+}
+
+model ExplorePath {
+  id            String     @id @default(uuid())
+  sessionId     String
+  generation    Int
+  hypothesis    String
+  category      String?
+  score         Float?
+  scoreDetails  Json?
+  status        PathStatus @default(ACTIVE)
+  roundsAlive   Int        @default(0)
+  parentPathId  String?
+  generatedBy   String
+  evaluations   Json?
+  openQuestions String[]   @default([])
+  createdAt     DateTime   @default(now())
+
+  session  ExploreSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  parent   ExplorePath?   @relation("PathTree", fields: [parentPathId], references: [id])
+  children ExplorePath[]  @relation("PathTree")
+
+  @@index([sessionId])
+  @@index([sessionId, generation])
+  @@index([status])
+  @@index([score])
+}
+
+model ExploreInsight {
+  id        String   @id @default(uuid())
+  sessionId String?
+  debateId  String?
+  type      String
+  content   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  session ExploreSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([debateId])
+  @@index([type])
+}
+
+model InvestorProfile {
+  id            String   @id @default(uuid())
+  name          String
+  email         String?
+  linkedinUrl   String?
+  crunchbaseUrl String?
+  domains       String[] @default([])
+  description   String?
+  source        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  matches InvestorMatch[]
+
+  @@index([source])
+}
+
+model InvestorMatch {
+  id             String         @id @default(uuid())
+  projectId      String
+  investorId     String
+  userId         String
+  matchScore     Float
+  matchReason    String
+  outreachStatus OutreachStatus @default(PENDING)
+  emailSentAt    DateTime?
+  emailBody      String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  project  BuildProject    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  investor InvestorProfile @relation(fields: [investorId], references: [id])
+  user     User            @relation(fields: [userId], references: [id])
+
+  @@index([projectId])
+  @@index([investorId])
+  @@index([outreachStatus])
+}
+
+model PromptPattern {
+  id            String   @id @default(uuid())
+  role          String
+  pattern       String
+  frequency     Int      @default(1)
+  effectiveness Float?
+  weekTag       String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([role])
+  @@index([weekTag])
+}
+
+enum ExploreType {
+  STARTUPS
+  SCIENCE
+  SOLUTIONS
+  ANOMALY
+}
+
+enum SessionMode {
+  EXPLORE
+  QUANTUM
+}
+
+enum SessionStatus {
+  PENDING
+  RUNNING
+  PAUSED
+  COMPLETED
+  FAILED
+}
+
+enum PathStatus {
+  ACTIVE
+  PRUNED
+  WINNER
+  DEEPENED
+}
+
+enum OutreachStatus {
+  PENDING
+  SENT
+  REPLIED
+  CONVERTED
 }
