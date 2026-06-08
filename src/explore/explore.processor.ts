@@ -2,6 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { SessionStatus } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../prisma/prisma.service';
 import { ExploreEventsService } from './explore-events.service';
 import { EXPLORE_QUEUE, ExploreService, RUN_EXPLORE_JOB } from './explore.service';
@@ -16,6 +17,7 @@ export class ExploreProcessor extends WorkerHost {
     private readonly exploreService: ExploreService,
     private readonly prisma: PrismaService,
     private readonly events: ExploreEventsService,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     super();
   }
@@ -135,6 +137,7 @@ export class ExploreProcessor extends WorkerHost {
       });
 
       this.events.emit({ type: 'SESSION_COMPLETED', sessionId, data: { generation } });
+      this.eventEmitter.emit('explore.completed', { sessionId });
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'unknown';
       this.logger.error(`Explore session ${sessionId} failed: ${msg}`);

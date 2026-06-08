@@ -33,6 +33,9 @@ model User {
   taskClaims          TaskClaim[]
   exploreSessions     ExploreSession[]
   investorMatches     InvestorMatch[]
+  corporateKeys       CorporateApiKey[]
+  branchFunds         BranchFund[]
+  royaltyShares       RoyaltyShare[]
 }
 
 model RefreshToken {
@@ -90,6 +93,9 @@ model Debate {
   comments        Comment[]
   researchRequests ResearchRequest[]
   buildProjects   BuildProject[]
+  patentAlerts    PatentAlert[]
+  opportunityReport OpportunityReport?
+  branchFunds     BranchFund[]
 
   @@index([userId])
   @@index([visibility])
@@ -403,6 +409,7 @@ model BuildProject {
   events      BuildProjectEvent[]
   tasks       ExchangeTask[]
   investorMatches InvestorMatch[]
+  equityShares    RoyaltyShare[]
 
   @@index([debateId])
   @@index([userId])
@@ -667,4 +674,137 @@ enum OutreachStatus {
   SENT
   REPLIED
   CONVERTED
+}
+
+model PatentAlert {
+  id           String      @id @default(uuid())
+  debateId     String
+  userId       String
+  type         PatentType
+  title        String
+  description  String
+  priorArtRisk Float
+  noveltyScore Float
+  status       AlertStatus @default(NEW)
+  reviewedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  debate Debate @relation(fields: [debateId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([status])
+}
+
+model OpportunityReport {
+  id          String   @id @default(uuid())
+  debateId    String   @unique
+  title       String
+  executive   String
+  methodology String
+  findings    Json
+  insights    Json
+  gaps        String[]
+  score       Int
+  generatedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  debate Debate @relation(fields: [debateId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+}
+
+model CorporateApiKey {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String
+  keyHash     String   @unique
+  keyPrefix   String
+  tier        CorpTier @default(STARTER)
+  rateLimit   Int      @default(100)
+  callsToday  Int      @default(0)
+  callsTotal  Int      @default(0)
+  lastResetAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([keyHash])
+  @@index([isActive])
+}
+
+model BranchFund {
+  id             String     @id @default(uuid())
+  debateId       String
+  userId         String
+  amountCredits  Int
+  royaltyPercent Float
+  status         FundStatus @default(ACTIVE)
+  returnedAt     DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  debate Debate @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([status])
+}
+
+model RoyaltyShare {
+  id          String    @id @default(uuid())
+  projectId   String
+  userId      String
+  role        ShareRole
+  percent     Float
+  vestingDays Int       @default(0)
+  isLocked    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project BuildProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+enum PatentType {
+  PROCESS
+  COMPOSITION
+  MACHINE
+  DESIGN
+  PLANT
+}
+
+enum AlertStatus {
+  NEW
+  REVIEWED
+  FILED
+  DISMISSED
+}
+
+enum CorpTier {
+  STARTER
+  GROWTH
+  ENTERPRISE
+}
+
+enum FundStatus {
+  ACTIVE
+  COMPLETED
+  RETURNED
+}
+
+enum ShareRole {
+  AUTHOR
+  EXPERT
+  BUILDER
+  PLATFORM
+  RESERVE
 }

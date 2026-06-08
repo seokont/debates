@@ -4,9 +4,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { AvoPipelineModule } from './avo-pipeline/avo-pipeline.module';
 import { BillingModule } from './billing/billing.module';
 import { BuildRoomModule } from './build-room/build-room.module';
+import { CorporateApiModule } from './corporate-api/corporate-api.module';
 import { CrossDomainModule } from './cross-domain/cross-domain.module';
+import { CrowdfundingModule } from './crowdfunding/crowdfunding.module';
 import { DebatesModule } from './debates/debates.module';
 import { ExchangeModule } from './exchange/exchange.module';
 import { ExpertModule } from './expert/expert.module';
@@ -14,6 +17,8 @@ import { ExploreModule } from './explore/explore.module';
 import { InvestorEngineModule } from './investor-engine/investor-engine.module';
 import { LearningLoopModule } from './learning-loop/learning-loop.module';
 import { NewsMonitorModule } from './news-monitor/news-monitor.module';
+import { OpportunityReportModule } from './opportunity-report/opportunity-report.module';
+import { PatentDetectorModule } from './patent-detector/patent-detector.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ResearchModule } from './research/research.module';
 import { SearchModule } from './search/search.module';
@@ -53,6 +58,11 @@ import { WhatsAppModule } from './whatsapp/whatsapp.module';
     CrossDomainModule,
     InvestorEngineModule,
     LearningLoopModule,
+    OpportunityReportModule,
+    PatentDetectorModule,
+    CorporateApiModule,
+    CrowdfundingModule,
+    AvoPipelineModule,
   ],
 })
 export class AppModule {}

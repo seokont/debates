@@ -2,6 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { BuildStatus } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CascadeAgentService } from './services/cascade-agent.service';
 import { BUILD_QUEUE, BuildRoomService, RUN_BUILD_JOB } from './build-room.service';
 
@@ -14,6 +15,7 @@ export class BuildRoomProcessor extends WorkerHost {
   constructor(
     private readonly buildRoomService: BuildRoomService,
     private readonly cascadeAgent: CascadeAgentService,
+    private readonly eventEmitter: EventEmitter2,
   ) {
     super();
   }
@@ -49,6 +51,12 @@ export class BuildRoomProcessor extends WorkerHost {
         projectId,
         result.passed ? BuildStatus.REVIEW : BuildStatus.FAILED,
       );
+
+      this.eventEmitter.emit('build.completed', {
+        projectId,
+        userId: job.data.userId,
+        passed: result.passed,
+      });
 
       this.logger.log(`Build complete for project ${projectId}: passed=${result.passed}`);
     } catch (error) {

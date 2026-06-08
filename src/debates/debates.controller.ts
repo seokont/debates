@@ -211,6 +211,14 @@ export class DebatesController {
   ) {
     return this.debatesService.createBranch(id, user, dto);
   }
+
+  @ApiOperation({ summary: 'Get patent opportunity alerts for a debate' })
+  @ApiParam({ name: 'id', description: 'Debate UUID' })
+  @ApiOkResponse({ description: 'Patent alerts ordered by novelty score' })
+  @Get(':id/patents')
+  getPatentAlerts(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    return this.debatesService.getPatentAlerts(id);
+  }
 }
 
 @ApiTags('Injections')

@@ -798,6 +798,13 @@ export class DebatesService {
     throw new ServiceUnavailableException('Debate queue is unavailable');
   }
 
+  getPatentAlerts(debateId: string) {
+    return this.prisma.patentAlert.findMany({
+      where: { debateId },
+      orderBy: { noveltyScore: 'desc' },
+    });
+  }
+
   private makeTitle(thesis: string): string {
     return thesis.trim().slice(0, 96);
   }
