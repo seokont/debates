@@ -6,6 +6,7 @@ import {
   DebateAiModel,
   DebateEvent,
   DebateEventType,
+  DebateTier,
   DebateRound,
   DebateStatus,
   Prisma,
@@ -52,6 +53,19 @@ export class DebateMemoryService {
       where: { debateId },
       orderBy: [{ roundNumber: 'asc' }, { startedAt: 'asc' }],
     });
+  }
+
+  async getRecentImprovementScores(
+    debateId: string,
+    count: number,
+  ): Promise<(number | null)[]> {
+    const rounds = await this.prisma.debateRound.findMany({
+      where: { debateId, status: 'COMPLETED' },
+      orderBy: { roundNumber: 'asc' },
+      select: { improvementScore: true },
+    });
+
+    return rounds.slice(-count).map((r) => r.improvementScore);
   }
 
   getEvents(debateId: string): Promise<DebateEvent[]> {
@@ -381,6 +395,37 @@ export class DebateMemoryService {
     }
   }
 
+  private computeTier(debate: Debate, events: DebateEvent[]): DebateTier {
+    const rounds = debate.roundCount;
+    const hasHumanInjection = events.some(
+      (e) =>
+        e.type === DebateEventType.HUMAN &&
+        this.isAcceptedInjection(e.metadata),
+    );
+
+    if (rounds >= 10 && hasHumanInjection) {
+      return DebateTier.DEEP;
+    }
+
+    if (rounds >= 6 && hasHumanInjection) {
+      return DebateTier.VERIFIED;
+    }
+
+    if (rounds >= 6) {
+      return DebateTier.VERIFIED;
+    }
+
+    return DebateTier.SURFACE;
+  }
+
+  private isAcceptedInjection(metadata: unknown): boolean {
+    if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
+      return false;
+    }
+    const meta = metadata as Record<string, unknown>;
+    return meta['action'] === 'HUMAN_INJECTION_ACCEPTED';
+  }
+
   private isDebateEvent(value: unknown): value is DebateEvent {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
       return false;
@@ -403,17 +448,36 @@ export class DebateMemoryService {
     finalSummary: string,
     layer1Summary: string,
     layer2Summary: string,
+    finalization?: {
+      opportunityScore: number;
+      childQuestions: string[];
+      researchGaps: string[];
+      crossDomainHypotheses: string[];
+    },
   ): Promise<void> {
+    const debate = await this.getDebateOrThrow(debateId);
+    const events = await this.getEvents(debateId);
+    const tier = this.computeTier(debate, events);
+
     const [, event] = await this.prisma.$transaction([
       this.prisma.debate.update({
         where: { id: debateId },
         data: {
           status: DebateStatus.COMPLETED,
+          tier,
           finalThesis,
           finalSummary,
           layer1Summary,
           layer2Summary,
           completedAt: new Date(),
+          ...(finalization
+            ? {
+                opportunityScore: finalization.opportunityScore,
+                childQuestions: finalization.childQuestions,
+                researchGaps: finalization.researchGaps,
+                crossDomainHypotheses: finalization.crossDomainHypotheses,
+              }
+            : {}),
         },
       }),
       this.prisma.debateEvent.create({

@@ -10,6 +10,7 @@ import {
 import {
   AiAgentName,
   Debate,
+  DebateAiModel,
   DebateEventType,
   DebateMode,
   DebateStatus,
@@ -30,8 +31,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TelegramService } from '../telegram/telegram.service';
 import { DEBATE_QUEUE, RUN_DEBATE_JOB } from './debates.constants';
 import { CreateDebateDto } from './dto/create-debate.dto';
+import { CreateDebateFromUrlDto } from './dto/create-debate-from-url.dto';
+import { CreateBranchDto } from './dto/create-branch.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreateInjectionDto } from './dto/create-injection.dto';
+import { UrlParserService } from './services/url-parser.service';
 import { DebateJobData } from './types/debate-job-data.type';
 
 @Injectable()
@@ -41,6 +45,7 @@ export class DebatesService {
     private readonly billingService: BillingService,
     private readonly liveEvents: DebateLiveEventsService,
     private readonly telegramService: TelegramService,
+    private readonly urlParser: UrlParserService,
     @InjectQueue(DEBATE_QUEUE)
     private readonly debateQueue: Queue<DebateJobData>,
   ) {}
@@ -68,6 +73,7 @@ export class DebatesService {
           models: dto.models,
           maxRounds: dto.maxRounds ?? 6,
           quietMode: dto.quietMode ?? false,
+          sourceUrl: dto.sourceUrl,
         },
       });
 
@@ -95,6 +101,93 @@ export class DebatesService {
     }
 
     return { debateId: debate.id };
+  }
+
+  async createFromUrl(user: AuthenticatedUser, dto: CreateDebateFromUrlDto) {
+    const thesis = await this.urlParser.extractThesis(dto.url, user.id);
+    return this.create(user, {
+      thesis,
+      mode: dto.mode ?? DebateMode.CONVERGENT,
+      visibility: dto.visibility ?? Visibility.PUBLIC,
+      models: dto.models ?? [DebateAiModel.GPT, DebateAiModel.CLAUDE, DebateAiModel.GEMINI, DebateAiModel.GROK],
+      maxRounds: dto.maxRounds,
+      quietMode: false,
+      sourceUrl: dto.url,
+    });
+  }
+
+  async createBranch(
+    parentId: string,
+    user: AuthenticatedUser,
+    dto: CreateBranchDto,
+  ) {
+    const parent = await this.prisma.debate.findFirst({
+      where: { id: parentId, ...this.readableWhere(user) },
+      select: {
+        id: true,
+        userId: true,
+        childQuestions: true,
+        mode: true,
+        visibility: true,
+        models: true,
+        maxRounds: true,
+      },
+    });
+
+    if (!parent) {
+      throw new NotFoundException('Parent debate not found');
+    }
+
+    const question = parent.childQuestions[dto.questionIndex];
+    if (!question) {
+      throw new NotFoundException(
+        `Child question at index ${dto.questionIndex} does not exist`,
+      );
+    }
+
+    const creditCost = this.getDebateCreditCost(parent.visibility);
+    const debate = await this.prisma.$transaction(async (tx) => {
+      await this.billingService.debit(tx, user.id, creditCost, 'BRANCH_DEBATE');
+
+      const created = await tx.debate.create({
+        data: {
+          userId: user.id,
+          title: this.makeTitle(question),
+          slug: this.makeSlug(question),
+          originalThesis: question,
+          currentThesis: question,
+          mode: parent.mode,
+          visibility: parent.visibility,
+          models: parent.models,
+          maxRounds: parent.maxRounds,
+          parentId: parent.id,
+          branchQuestion: question,
+        },
+      });
+
+      await tx.debateEvent.create({
+        data: {
+          debateId: created.id,
+          type: DebateEventType.HUMAN,
+          content: question,
+          metadata: {
+            action: 'CREATED',
+            parentId: parent.id,
+            branchQuestionIndex: dto.questionIndex,
+          },
+        },
+      });
+
+      return created;
+    });
+
+    try {
+      await this.enqueueDebate(debate, user.id, false);
+    } catch (error) {
+      await this.failDebateAndRefund(debate.id, user.id, creditCost, error);
+    }
+
+    return { debateId: debate.id, parentId: parent.id, question };
   }
 
   findAll(user?: AuthenticatedUser) {
@@ -137,6 +230,9 @@ export class DebatesService {
         events: {
           orderBy: { createdAt: 'asc' },
         },
+        branches: {
+          select: { id: true, title: true, slug: true, status: true, createdAt: true },
+        },
       },
     });
 
@@ -160,6 +256,10 @@ export class DebatesService {
         finalThesis: true,
         layer1Summary: true,
         layer2Summary: true,
+        opportunityScore: true,
+        childQuestions: true,
+        researchGaps: true,
+        crossDomainHypotheses: true,
         completedAt: true,
       },
     });

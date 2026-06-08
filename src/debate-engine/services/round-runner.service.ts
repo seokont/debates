@@ -54,15 +54,17 @@ export class RoundRunnerService {
 
       await this.memory.saveAttackEvents(debateId, round.id, attacks);
 
-      const improvement = this.thesisImprover.improve(
+      const improvement = await this.thesisImprover.improve(
         debate,
         roundNumber,
         attacks,
+        debate.userId,
       );
 
-      const verifications = this.verificationService.verify(
+      const verifications = await this.verificationService.verify(
         attacks,
         improvement,
+        debate.userId,
       );
 
       await this.memory.completeRound(
@@ -73,10 +75,16 @@ export class RoundRunnerService {
         verifications,
       );
 
+      const recentScores = await this.memory.getRecentImprovementScores(
+        debateId,
+        3,
+      );
+
       const stopCondition = this.stopConditionService.evaluate(
         debate,
         improvement,
         verifications,
+        recentScores,
       );
 
       return {

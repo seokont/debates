@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -13,6 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
+import { GoogleCallbackDto } from './dto/google-callback.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthenticatedUser } from './types/authenticated-user.type';
 
@@ -42,6 +44,21 @@ export class AuthController {
   @Post('refresh')
   refresh(@Body() dto: RefreshDto) {
     return this.authService.refresh(dto.refreshToken);
+  }
+
+  @ApiOperation({ summary: 'Get Google OAuth authorization URL' })
+  @ApiQuery({ name: 'redirect_uri', required: true })
+  @ApiOkResponse({ description: 'Google OAuth URL' })
+  @Get('google/url')
+  googleUrl(@Query('redirect_uri') redirectUri: string) {
+    return { url: this.authService.getGoogleAuthUrl(redirectUri) };
+  }
+
+  @ApiOperation({ summary: 'Exchange Google OAuth code for JWT tokens' })
+  @ApiCreatedResponse({ description: 'User authenticated via Google' })
+  @Post('google/callback')
+  googleCallback(@Body() dto: GoogleCallbackDto) {
+    return this.authService.handleGoogleCallback(dto.code, dto.redirectUri);
   }
 
   @ApiBearerAuth()

@@ -11,6 +11,7 @@ model User {
   id              String         @id @default(uuid())
   email           String         @unique
   passwordHash    String?
+  googleId        String?        @unique
   username        String?
   avatarUrl       String?
   role            UserRole       @default(USER)
@@ -26,6 +27,10 @@ model User {
   apiKeys         UserApiKey[]
   creditTransactions CreditTransaction[]
   notificationChannels NotificationChannel[]
+  researchRequests    ResearchRequest[]
+  expertVerifications ExpertVerification[]
+  buildProjects       BuildProject[]
+  taskClaims          TaskClaim[]
 }
 
 model RefreshToken {
@@ -57,25 +62,38 @@ model Debate {
   maxRounds       Int            @default(6)
   quietMode       Boolean        @default(false)
 
-  layer1Summary   String?
-  layer2Summary   String?
-  finalSummary    String?
-  finalThesis     String?
+  layer1Summary         String?
+  layer2Summary         String?
+  finalSummary          String?
+  finalThesis           String?
+  opportunityScore      Int?
+  childQuestions        String[]   @default([])
+  researchGaps          String[]   @default([])
+  crossDomainHypotheses String[]   @default([])
 
   completedAt     DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
+  sourceUrl       String?
+  parentId        String?
+  branchQuestion  String?
+
   user            User           @relation(fields: [userId], references: [id])
+  parent          Debate?        @relation("DebateBranches", fields: [parentId], references: [id])
+  branches        Debate[]       @relation("DebateBranches")
   rounds          DebateRound[]
   events          DebateEvent[]
   injections      HumanInjection[]
   comments        Comment[]
+  researchRequests ResearchRequest[]
+  buildProjects   BuildProject[]
 
   @@index([userId])
   @@index([visibility])
   @@index([status])
   @@index([createdAt])
+  @@index([parentId])
 }
 
 model DebateRound {
@@ -326,4 +344,170 @@ enum DebateAiModel {
   CLAUDE
   GEMINI
   GROK
+}
+
+model ResearchRequest {
+  id          String          @id @default(uuid())
+  debateId    String
+  userId      String
+  question    String
+  context     String?
+  status      ResearchStatus  @default(OPEN)
+  resolvedAt  DateTime?
+  createdAt   DateTime        @default(now())
+
+  debate      Debate          @relation(fields: [debateId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([status])
+}
+
+model ExpertVerification {
+  id          String              @id @default(uuid())
+  userId      String
+  domain      String
+  evidence    String
+  status      VerificationStatus  @default(PENDING)
+  reviewNote  String?
+  reviewedAt  DateTime?
+  reviewedBy  String?
+  createdAt   DateTime            @default(now())
+
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model BuildProject {
+  id                String      @id @default(uuid())
+  debateId          String
+  userId            String
+  slug              String      @unique
+  title             String
+  status            BuildStatus @default(PENDING)
+  stack             Json?
+  deployUrl         String?
+  railwayProjectId  String?
+  equityMap         Json?
+  completedAt       DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  debate      Debate             @relation(fields: [debateId], references: [id])
+  user        User               @relation(fields: [userId], references: [id])
+  events      BuildProjectEvent[]
+  tasks       ExchangeTask[]
+
+  @@index([debateId])
+  @@index([userId])
+  @@index([status])
+}
+
+model BuildProjectEvent {
+  id          String          @id @default(uuid())
+  projectId   String
+  type        BuildEventType
+  agent       String?
+  content     String
+  metadata    Json?
+  createdAt   DateTime        @default(now())
+
+  project     BuildProject    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([type])
+}
+
+model ExchangeTask {
+  id             String      @id @default(uuid())
+  projectId      String?
+  debateId       String?
+  title          String
+  description    String
+  level          TaskLevel
+  rewardCredits  Int?
+  rewardPercent  Float?
+  status         TaskStatus  @default(OPEN)
+  deadline       DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  project        BuildProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  claims         TaskClaim[]
+
+  @@index([projectId])
+  @@index([status])
+  @@index([level])
+}
+
+model TaskClaim {
+  id              String      @id @default(uuid())
+  taskId          String
+  userId          String
+  status          ClaimStatus @default(ACTIVE)
+  completionNote  String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  task            ExchangeTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum ResearchStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BuildStatus {
+  PENDING
+  BUILDING
+  REVIEW
+  DEPLOYED
+  FAILED
+}
+
+enum BuildEventType {
+  ARCHITECTURE
+  CODE
+  REVIEW
+  CONFLICT
+  FIXED
+  TESTS
+  AUDIT_PASSED
+  DEPLOYED
+  SYSTEM
+}
+
+enum TaskLevel {
+  MICRO
+  MINI
+  TASK
+  ROLE
+}
+
+enum TaskStatus {
+  OPEN
+  CLAIMED
+  COMPLETED
+  CANCELLED
+}
+
+enum ClaimStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
 }

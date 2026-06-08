@@ -88,6 +88,14 @@ export class AgentService {
     );
   }
 
+  callProvider(
+    provider: AiProvider,
+    prompt: string,
+    userId?: string,
+  ): Promise<string> {
+    return this.runProviderWithRetry(provider, prompt, userId);
+  }
+
   private async runRole(
     provider: AiProvider,
     role: AiAgentRole,

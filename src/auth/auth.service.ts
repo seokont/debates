@@ -138,6 +138,88 @@ export class AuthService {
     return this.users.updateProfile(userId, data);
   }
 
+  getGoogleAuthUrl(redirectUri: string, state?: string): string {
+    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+    if (!clientId) {
+      throw new Error('GOOGLE_CLIENT_ID is not configured');
+    }
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      access_type: 'offline',
+      ...(state ? { state } : {}),
+    });
+
+    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  }
+
+  async handleGoogleCallback(
+    code: string,
+    redirectUri: string,
+  ): Promise<AuthResponse> {
+    const profile = await this.exchangeGoogleCode(code, redirectUri);
+    const user = await this.users.findOrCreateByGoogle(profile);
+    const tokens = await this.issueTokens(user);
+    return { user, ...tokens };
+  }
+
+  private async exchangeGoogleCode(
+    code: string,
+    redirectUri: string,
+  ): Promise<{ googleId: string; email: string; username?: string; avatarUrl?: string }> {
+    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+    const clientSecret = this.config.get<string>('GOOGLE_CLIENT_SECRET');
+
+    if (!clientId || !clientSecret) {
+      throw new Error('Google OAuth credentials not configured');
+    }
+
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }).toString(),
+    });
+
+    if (!tokenResponse.ok) {
+      const detail = await tokenResponse.text();
+      throw new UnauthorizedException(`Google token exchange failed: ${detail}`);
+    }
+
+    const { access_token } = (await tokenResponse.json()) as { access_token: string };
+
+    const profileResponse = await fetch(
+      'https://www.googleapis.com/oauth2/v3/userinfo',
+      { headers: { Authorization: `Bearer ${access_token}` } },
+    );
+
+    if (!profileResponse.ok) {
+      throw new UnauthorizedException('Failed to fetch Google profile');
+    }
+
+    const info = (await profileResponse.json()) as {
+      sub: string;
+      email: string;
+      name?: string;
+      picture?: string;
+    };
+
+    return {
+      googleId: info.sub,
+      email: info.email,
+      username: info.name,
+      avatarUrl: info.picture,
+    };
+  }
+
   async verifyAccessToken(token: string): Promise<JwtPayload> {
     const payload = await this.jwt.verifyAsync<JwtPayload>(token, {
       secret: this.accessSecret,

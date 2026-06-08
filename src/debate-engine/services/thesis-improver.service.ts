@@ -1,10 +1,120 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Debate } from '@prisma/client';
+import { AgentService } from './agent.service';
 import { DebateAttack, ThesisImprovement } from '../types/ai-agent.type';
 
 @Injectable()
 export class ThesisImproverService {
-  improve(
+  private readonly logger = new Logger(ThesisImproverService.name);
+
+  constructor(private readonly agentService: AgentService) {}
+
+  async improve(
+    debate: Debate,
+    roundNumber: number,
+    attacks: DebateAttack[],
+    userId?: string,
+  ): Promise<ThesisImprovement> {
+    try {
+      return await this.improveWithAi(debate, roundNumber, attacks, userId);
+    } catch (error) {
+      this.logger.warn(
+        `AI thesis improvement failed, using deterministic fallback: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+      return this.deterministicImprove(debate, roundNumber, attacks);
+    }
+  }
+
+  private async improveWithAi(
+    debate: Debate,
+    roundNumber: number,
+    attacks: DebateAttack[],
+    userId?: string,
+  ): Promise<ThesisImprovement> {
+    const attackLines = attacks
+      .map((a) => `[${a.role}]: ${a.content}`)
+      .join('\n');
+
+    const prompt = [
+      'Ты улучшаешь тезис после раунда атак от AI-критиков.',
+      '',
+      `ИСХОДНЫЙ ТЕЗИС: ${debate.originalThesis}`,
+      `ТЕКУЩИЙ ТЕЗИС: ${debate.currentThesis}`,
+      '',
+      `АТАКИ В РАУНДЕ ${roundNumber}:`,
+      attackLines,
+      '',
+      'Улучши тезис. Ответ ОБЯЗАН содержать ровно три блока и улучшенный тезис:',
+      '',
+      '[1] ИЗМЕНИЛОСЬ: что конкретно изменилось (одно предложение)',
+      '[2] ЗАКРЫТО: какая атака закрыта (укажи роль)',
+      '[3] ЕЩЁ СЛАБО: что всё ещё слабо или не решено (честно)',
+      '',
+      'УЛУЧШЕННЫЙ_ТЕЗИС: <новый тезис одним абзацем>',
+      '',
+      'Требования:',
+      '- Тезис должен стать конкретнее, не длиннее',
+      '- Нельзя просто добавить "зависит от контекста"',
+      '- Нельзя уклоняться от конкретных атак',
+    ].join('\n');
+
+    const raw = await this.agentService.callProvider('anthropic', prompt, userId);
+    return this.parseAiResponse(debate.currentThesis, roundNumber, raw);
+  }
+
+  private parseAiResponse(
+    previousThesis: string,
+    roundNumber: number,
+    raw: string,
+  ): ThesisImprovement {
+    const improvedThesis = this.extractSection(raw, 'УЛУЧШЕННЫЙ_ТЕЗИС') ??
+      this.extractSection(raw, 'IMPROVED_THESIS') ??
+      this.extractSection(raw, 'IMPROVED THESIS') ??
+      this.extractLastParagraph(raw);
+
+    const changed = this.extractSection(raw, '[1] ИЗМЕНИЛОСЬ') ??
+      this.extractSection(raw, '[1] CHANGED') ?? '';
+    const closed = this.extractSection(raw, '[2] ЗАКРЫТО') ??
+      this.extractSection(raw, '[2] CLOSED') ?? '';
+    const stillWeak = this.extractSection(raw, '[3] ЕЩЁ СЛАБО') ??
+      this.extractSection(raw, '[3] STILL_WEAK') ??
+      this.extractSection(raw, '[3] STILL WEAK') ?? '';
+
+    const summary = [changed, closed, stillWeak]
+      .filter(Boolean)
+      .join(' | ')
+      .trim() || `Round ${roundNumber} AI improvement`;
+
+    const thesis = improvedThesis?.trim() || previousThesis;
+
+    return {
+      roundNumber,
+      previousThesis,
+      improvedThesis: thesis,
+      summary,
+      changed: thesis !== previousThesis && thesis.length > 0,
+    };
+  }
+
+  private extractSection(text: string, label: string): string | undefined {
+    const escaped = label.replace(/[[\]().*+?^${}|\\]/g, '\\$&');
+    const pattern = new RegExp(
+      `${escaped}[:\\s]+((?:(?!\\[\\d\\]|УЛУЧШЕННЫЙ_ТЕЗИС|IMPROVED)[^\\n]|\\n(?!\\n))+)`,
+      'i',
+    );
+    const match = text.match(pattern);
+    return match?.[1]?.trim() || undefined;
+  }
+
+  private extractLastParagraph(text: string): string | undefined {
+    const paragraphs = text
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+    return paragraphs[paragraphs.length - 1];
+  }
+
+  private deterministicImprove(
     debate: Debate,
     roundNumber: number,
     attacks: DebateAttack[],
@@ -22,7 +132,7 @@ export class ThesisImproverService {
       roundNumber,
       previousThesis,
       improvedThesis,
-      summary: `Added ${safeguards.length} safeguards against the strongest attacks in round ${roundNumber}.`,
+      summary: `Added ${safeguards.length} safeguards against attacks in round ${roundNumber}.`,
       changed: improvedThesis !== previousThesis,
     };
   }
@@ -40,4 +150,3 @@ export class ThesisImproverService {
     }
   }
 }
-

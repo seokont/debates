@@ -28,6 +28,8 @@ import { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CreateInjectionDto } from './dto/create-injection.dto';
 import { CreateDebateDto } from './dto/create-debate.dto';
+import { CreateDebateFromUrlDto } from './dto/create-debate-from-url.dto';
+import { CreateBranchDto } from './dto/create-branch.dto';
 import { DebatesService } from './debates.service';
 
 @ApiTags('Debates')
@@ -161,6 +163,32 @@ export class DebatesController {
     @CurrentUser() user: AuthenticatedUser,
   ) {
     return this.debatesService.restart(id, user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create debate by extracting thesis from a URL' })
+  @ApiCreatedResponse({ description: 'Debate created from URL content' })
+  @UseGuards(JwtAuthGuard)
+  @Post('from-url')
+  createFromUrl(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateDebateFromUrlDto,
+  ) {
+    return this.debatesService.createFromUrl(user, dto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a child debate from a parent debate child question' })
+  @ApiParam({ name: 'id', description: 'Parent debate UUID' })
+  @ApiCreatedResponse({ description: 'Branch debate created and queued' })
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/branch')
+  createBranch(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateBranchDto,
+  ) {
+    return this.debatesService.createBranch(id, user, dto);
   }
 }
 

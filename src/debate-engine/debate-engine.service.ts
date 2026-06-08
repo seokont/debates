@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiAgentName, DebateEventType, DebateStatus } from '@prisma/client';
 import { TelegramService } from '../telegram/telegram.service';
+import { DebateFinalizationService } from './services/debate-finalization.service';
 import { DebateMemoryService } from './services/debate-memory.service';
 import { RoundRunnerService } from './services/round-runner.service';
 import { RoundRunnerResult } from './types/round-runner-result.type';
@@ -13,6 +14,7 @@ export class DebateEngineService {
     private readonly memory: DebateMemoryService,
     private readonly roundRunner: RoundRunnerService,
     private readonly telegramService: TelegramService,
+    private readonly finalization: DebateFinalizationService,
   ) {}
 
   async startDebate(debateId: string): Promise<void> {
@@ -74,9 +76,16 @@ export class DebateEngineService {
     const finalThesis = debate.currentThesis;
     const layer1Summary = `Layer 1 closed ${attackCount} attack events across ${debate.roundCount} rounds.`;
     const layer2Summary = `Layer 2 verified ${verificationCount} attack checks before finalizing the thesis.`;
+
+    const finalization = await this.finalization.generate(
+      debate,
+      events,
+      debate.userId,
+    );
+
     const finalSummary = [
       `Debate completed after ${debate.roundCount} rounds.`,
-      `Final thesis length: ${finalThesis.length} characters.`,
+      `Opportunity Score: ${finalization.opportunityScore}/100.`,
       this.getLastStopReason(events),
     ]
       .filter(Boolean)
@@ -88,6 +97,7 @@ export class DebateEngineService {
       finalSummary,
       layer1Summary,
       layer2Summary,
+      finalization,
     );
     await this.telegramService.notifyDebateCompleted(debateId);
   }

@@ -46,6 +46,52 @@ export class UsersService {
     return this.toPublicUser(user);
   }
 
+  async findOrCreateByGoogle(profile: {
+    googleId: string;
+    email: string;
+    username?: string;
+    avatarUrl?: string;
+  }): Promise<PublicUser> {
+    const existing = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { googleId: profile.googleId },
+          { email: profile.email.toLowerCase() },
+        ],
+      },
+    });
+
+    if (existing) {
+      const needsUpdate =
+        !existing.googleId ||
+        (profile.avatarUrl && existing.avatarUrl !== profile.avatarUrl);
+
+      if (needsUpdate) {
+        const updated = await this.prisma.user.update({
+          where: { id: existing.id },
+          data: {
+            googleId: existing.googleId ?? profile.googleId,
+            ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+          },
+        });
+        return this.toPublicUser(updated);
+      }
+
+      return this.toPublicUser(existing);
+    }
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: profile.email.toLowerCase(),
+        googleId: profile.googleId,
+        username: profile.username,
+        avatarUrl: profile.avatarUrl,
+      },
+    });
+
+    return this.toPublicUser(user);
+  }
+
   toPublicUser(user: User): PublicUser {
     const { passwordHash: _passwordHash, ...publicUser } = user;
     return publicUser;

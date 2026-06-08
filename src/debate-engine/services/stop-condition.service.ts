@@ -6,12 +6,15 @@ import {
   ThesisImprovement,
 } from '../types/ai-agent.type';
 
+const NO_IMPROVEMENT_THRESHOLD = 3;
+
 @Injectable()
 export class StopConditionService {
   evaluate(
     debate: Debate,
     improvement: ThesisImprovement,
     verifications: AttackVerification[],
+    recentScores: (number | null)[] = [],
   ): StopConditionResult {
     if (improvement.roundNumber >= debate.maxRounds) {
       return {
@@ -46,10 +49,28 @@ export class StopConditionService {
       };
     }
 
+    if (this.noImprovementForNRounds(recentScores, NO_IMPROVEMENT_THRESHOLD)) {
+      return {
+        shouldStop: true,
+        reason: `NO_IMPROVEMENT_FOR_${NO_IMPROVEMENT_THRESHOLD}_ROUNDS`,
+      };
+    }
+
     return {
       shouldStop: false,
       reason: 'CONTINUE',
     };
   }
-}
 
+  private noImprovementForNRounds(
+    scores: (number | null)[],
+    n: number,
+  ): boolean {
+    if (scores.length < n) {
+      return false;
+    }
+
+    const lastN = scores.slice(-n);
+    return lastN.every((score) => score === null || score === 0);
+  }
+}

@@ -5,12 +5,18 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { BillingModule } from './billing/billing.module';
+import { BuildRoomModule } from './build-room/build-room.module';
 import { DebatesModule } from './debates/debates.module';
+import { ExchangeModule } from './exchange/exchange.module';
+import { ExpertModule } from './expert/expert.module';
+import { NewsMonitorModule } from './news-monitor/news-monitor.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ResearchModule } from './research/research.module';
 import { SearchModule } from './search/search.module';
 import { SettingsModule } from './settings/settings.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { UsersModule } from './users/users.module';
+import { WhatsAppModule } from './whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -33,6 +39,12 @@ import { UsersModule } from './users/users.module';
     SearchModule,
     SettingsModule,
     TelegramModule,
+    ResearchModule,
+    ExpertModule,
+    WhatsAppModule,
+    NewsMonitorModule,
+    BuildRoomModule,
+    ExchangeModule,
   ],
 })
 export class AppModule {}

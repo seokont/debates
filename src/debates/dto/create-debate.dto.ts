@@ -10,6 +10,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUrl,
   Max,
   MaxLength,
   Min,
@@ -75,4 +76,9 @@ export class CreateDebateDto {
   @IsOptional()
   @IsBoolean()
   quietMode?: boolean = false;
+
+  @ApiPropertyOptional({ description: 'Source URL the thesis was extracted from' })
+  @IsOptional()
+  @IsUrl()
+  sourceUrl?: string;
 }
