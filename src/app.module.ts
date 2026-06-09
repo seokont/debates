@@ -10,12 +10,15 @@ import { BuildRoomModule } from './build-room/build-room.module';
 import { CorporateApiModule } from './corporate-api/corporate-api.module';
 import { CrossDomainModule } from './cross-domain/cross-domain.module';
 import { CrowdfundingModule } from './crowdfunding/crowdfunding.module';
+import { DataLicensingModule } from './data-licensing/data-licensing.module';
 import { DebatesModule } from './debates/debates.module';
+import { EnterpriseModule } from './enterprise/enterprise.module';
 import { ExchangeModule } from './exchange/exchange.module';
 import { ExpertModule } from './expert/expert.module';
 import { ExploreModule } from './explore/explore.module';
 import { InvestorEngineModule } from './investor-engine/investor-engine.module';
 import { LearningLoopModule } from './learning-loop/learning-loop.module';
+import { McpServerModule } from './mcp-server/mcp-server.module';
 import { NewsMonitorModule } from './news-monitor/news-monitor.module';
 import { OpportunityReportModule } from './opportunity-report/opportunity-report.module';
 import { PatentDetectorModule } from './patent-detector/patent-detector.module';
@@ -63,6 +66,9 @@ import { WhatsAppModule } from './whatsapp/whatsapp.module';
     CorporateApiModule,
     CrowdfundingModule,
     AvoPipelineModule,
+    McpServerModule,
+    DataLicensingModule,
+    EnterpriseModule,
   ],
 })
 export class AppModule {}
