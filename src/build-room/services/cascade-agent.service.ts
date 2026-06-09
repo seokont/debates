@@ -1,5 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  scryptSync,
+} from 'crypto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 type Agent = {
   name: string;
@@ -37,38 +44,47 @@ export type FullBuildResult = {
 @Injectable()
 export class CascadeAgentService {
   private readonly logger = new Logger(CascadeAgentService.name);
+  private readonly encKey: Buffer;
 
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly prisma: PrismaService,
+  ) {
+    const secret = this.config.get<string>('ENCRYPTION_SECRET') ?? 'mind-arena-enterprise-fallback';
+    this.encKey = scryptSync(secret, 'mind-arena-salt', 32) as Buffer;
+  }
 
-  async buildMvp(thesis: string, projectTitle: string): Promise<FullBuildResult> {
+  async buildMvp(thesis: string, projectTitle: string, userId?: string): Promise<FullBuildResult> {
     const steps: BuildStep[] = [];
 
+    const customEndpoint = userId ? await this.getCustomEndpoint(userId) : null;
+
     // Phase 1: Product scopes MVP
-    const mvpScope = await this.runAgent(EIGHT_AGENTS[0], thesis, projectTitle, '');
+    const mvpScope = await this.runAgent(EIGHT_AGENTS[0], thesis, projectTitle, '', customEndpoint);
     steps.push({ agent: 'PRODUCT', type: 'ARCHITECTURE', content: mvpScope });
 
     // Phase 2: Tech writes skeleton code
-    const code = await this.runAgent(EIGHT_AGENTS[1], thesis, projectTitle, mvpScope);
+    const code = await this.runAgent(EIGHT_AGENTS[1], thesis, projectTitle, mvpScope, customEndpoint);
     steps.push({ agent: 'TECH', type: 'CODE', content: code });
 
     // Phase 3: Design reviews UX
-    const designReview = await this.runAgent(EIGHT_AGENTS[2], thesis, projectTitle, mvpScope + '\n\n' + code);
+    const designReview = await this.runAgent(EIGHT_AGENTS[2], thesis, projectTitle, mvpScope + '\n\n' + code, customEndpoint);
     steps.push({ agent: 'DESIGN', type: 'REVIEW', content: designReview });
 
     // Phase 4: Growth adds acquisition strategy
-    const growthPlan = await this.runAgent(EIGHT_AGENTS[3], thesis, projectTitle, mvpScope);
+    const growthPlan = await this.runAgent(EIGHT_AGENTS[3], thesis, projectTitle, mvpScope, customEndpoint);
     steps.push({ agent: 'GROWTH', type: 'REVIEW', content: growthPlan });
 
     // Phase 5: Marketing creates positioning
-    const positioning = await this.runAgent(EIGHT_AGENTS[4], thesis, projectTitle, mvpScope + '\n\n' + growthPlan);
+    const positioning = await this.runAgent(EIGHT_AGENTS[4], thesis, projectTitle, mvpScope + '\n\n' + growthPlan, customEndpoint);
     steps.push({ agent: 'MARKETING', type: 'REVIEW', content: positioning });
 
     // Phase 6: Economics validates unit economics
-    const economics = await this.runAgent(EIGHT_AGENTS[5], thesis, projectTitle, mvpScope + '\n\n' + growthPlan);
+    const economics = await this.runAgent(EIGHT_AGENTS[5], thesis, projectTitle, mvpScope + '\n\n' + growthPlan, customEndpoint);
     steps.push({ agent: 'ECONOMICS', type: 'REVIEW', content: economics });
 
     // Phase 7: Psychology challenges demand assumptions
-    const psychology = await this.runAgent(EIGHT_AGENTS[6], thesis, projectTitle, mvpScope + '\n\n' + designReview);
+    const psychology = await this.runAgent(EIGHT_AGENTS[6], thesis, projectTitle, mvpScope + '\n\n' + designReview, customEndpoint);
     steps.push({ agent: 'PSYCHOLOGY', type: 'REVIEW', content: psychology });
 
     // Phase 8: Legal identifies kill risks
@@ -77,6 +93,7 @@ export class CascadeAgentService {
       thesis,
       projectTitle,
       [mvpScope, code, economics, psychology].join('\n---\n'),
+      customEndpoint,
     );
     const passed = this.isAuditPassed(legalReview);
     steps.push({ agent: 'LEGAL', type: passed ? 'AUDIT_PASSED' : 'REVIEW', content: legalReview, metadata: { passed } });
@@ -95,6 +112,7 @@ export class CascadeAgentService {
     thesis: string,
     projectTitle: string,
     context: string,
+    customEndpoint?: { baseUrl: string; apiKey: string; modelId: string } | null,
   ): Promise<string> {
     const prompt = [
       `You are the ${agent.role} agent reviewing: "${projectTitle}"`,
@@ -108,11 +126,81 @@ export class CascadeAgentService {
     ].join('\n');
 
     try {
+      if (customEndpoint) {
+        return await this.callCustomEndpoint(customEndpoint, prompt);
+      }
       return await this.callProvider(agent.provider, prompt);
     } catch (error) {
       this.logger.warn(`Agent ${agent.name} failed: ${error instanceof Error ? error.message : 'unknown'}`);
       return `[${agent.name} unavailable — API key not configured]`;
     }
+  }
+
+  private async callCustomEndpoint(
+    endpoint: { baseUrl: string; apiKey: string; modelId: string },
+    prompt: string,
+  ): Promise<string> {
+    const response = await fetch(`${endpoint.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${endpoint.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: endpoint.modelId,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 800,
+      }),
+      signal: AbortSignal.timeout(60000),
+    });
+
+    if (!response.ok) throw new Error(`Custom endpoint ${response.status}`);
+
+    const body = (await response.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    return body.choices?.[0]?.message?.content?.trim() ?? '';
+  }
+
+  private async getCustomEndpoint(
+    userId: string,
+  ): Promise<{ baseUrl: string; apiKey: string; modelId: string } | null> {
+    const endpoint = await this.prisma.customModelEndpoint.findFirst({
+      where: { userId, isActive: true },
+      orderBy: { createdAt: 'desc' },
+      select: { baseUrl: true, encryptedKey: true, modelId: true },
+    });
+
+    if (!endpoint) return null;
+
+    try {
+      return {
+        baseUrl: endpoint.baseUrl,
+        apiKey: this.decryptKey(endpoint.encryptedKey),
+        modelId: endpoint.modelId,
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  private decryptKey(encoded: string): string {
+    const [ivHex, tagHex, dataHex] = encoded.split(':');
+    const iv = Buffer.from(ivHex, 'hex');
+    const tag = Buffer.from(tagHex, 'hex');
+    const data = Buffer.from(dataHex, 'hex');
+    const decipher = createDecipheriv('aes-256-gcm', this.encKey, iv);
+    decipher.setAuthTag(tag);
+    return decipher.update(data).toString('utf8') + decipher.final('utf8');
+  }
+
+  // Unused but required for consistent key derivation with EnterpriseService
+  private encryptKey(text: string): string {
+    const iv = randomBytes(16);
+    const cipher = createCipheriv('aes-256-gcm', this.encKey, iv);
+    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+    const tag = cipher.getAuthTag();
+    return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`;
   }
 
   private async callProvider(provider: Agent['provider'], prompt: string): Promise<string> {

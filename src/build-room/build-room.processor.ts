@@ -36,7 +36,7 @@ export class BuildRoomProcessor extends WorkerHost {
         content: 'Build started — 8-agent cascade: Product → Tech → Design → Growth → Marketing → Economics → Psychology → Legal',
       });
 
-      const result = await this.cascadeAgent.buildMvp(thesis, project.title);
+      const result = await this.cascadeAgent.buildMvp(thesis, project.title, job.data.userId);
 
       for (const step of result.steps) {
         await this.buildRoomService.addEvent(projectId, {
