@@ -120,4 +120,41 @@ export class AvoPipelineService {
       );
     }
   }
+
+  @OnEvent('learning.insight')
+  async handleLearningInsight(payload: {
+    pattern: string;
+    role: string;
+    effectiveness: number;
+  }): Promise<void> {
+    this.logger.log(
+      `AVO auto-explore from learning insight: role=${payload.role}, effectiveness=${payload.effectiveness}`,
+    );
+
+    const systemUser = await this.prisma.user.findFirst({
+      where: { role: 'ADMIN' },
+      select: { id: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (!systemUser) return;
+
+    try {
+      const session = await this.exploreService.create(
+        { id: systemUser.id } as AuthenticatedUser,
+        {
+          question: `Explore startup ideas using this high-value pattern: ${payload.pattern}`,
+          mode: SessionMode.EXPLORE,
+          exploreType: ExploreType.STARTUPS,
+          budgetLimit: 5,
+        },
+      );
+
+      this.logger.log(`AVO auto-explore: session ${session.sessionId} created from learning insight`);
+    } catch (error) {
+      this.logger.warn(
+        `AVO auto-explore failed: ${error instanceof Error ? error.message : 'unknown'}`,
+      );
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AgentService } from '../debate-engine/services/agent.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -9,6 +10,7 @@ export class LearningLoopService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly agentService: AgentService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async runWeeklyCycle(): Promise<{ patternsExtracted: number }> {
@@ -89,6 +91,19 @@ export class LearningLoopService {
       }
 
       this.logger.log(`Learning loop: extracted ${patterns.length} patterns for ${weekTag}`);
+
+      const topPattern = patterns
+        .filter((p) => (p.effectiveness ?? 0) > 90)
+        .sort((a, b) => (b.effectiveness ?? 0) - (a.effectiveness ?? 0))[0];
+
+      if (topPattern) {
+        this.eventEmitter.emit('learning.insight', {
+          pattern: topPattern.pattern,
+          role: topPattern.role,
+          effectiveness: topPattern.effectiveness,
+        });
+      }
+
       return { patternsExtracted: patterns.length };
     } catch (error) {
       this.logger.error(
