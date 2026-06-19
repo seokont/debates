@@ -150,13 +150,13 @@ export class AgentService {
   private getRole(model: DebateAiModel): AiAgentRole {
     switch (model) {
       case DebateAiModel.GPT:
-        return 'SKEPTIC';
+        return 'STRATEGIST';
       case DebateAiModel.CLAUDE:
         return 'SYSTEMS_THINKER';
       case DebateAiModel.GEMINI:
         return 'PRACTICIAN';
       case DebateAiModel.GROK:
-        return 'OPPONENT';
+        return 'SKEPTIC_INNOVATOR';
     }
   }
 
@@ -478,6 +478,12 @@ export class AgentService {
     const thesis = this.extractCurrentThesis(prompt);
 
     switch (role) {
+      case 'STRATEGIST':
+        return [
+          `Claim: "${thesis}" lacks strategic timing justification.`,
+          'Why it matters: even valid ideas fail if launched at the wrong moment or without the right preconditions.',
+          'Falsifier: explain why exactly now and exactly this, with concrete market or technology triggers.',
+        ].join(' ');
       case 'SKEPTIC':
         return [
           `Claim: "${thesis}" has an under-specified causal chain.`,
@@ -495,6 +501,12 @@ export class AgentService {
           `Claim: "${thesis}" may ignore execution constraints.`,
           'Why it matters: budget, skills, timing, regulation, and adoption friction can dominate theoretical correctness.',
           'Falsifier: define the smallest real-world pilot and the operational threshold it must clear.',
+        ].join(' ');
+      case 'SKEPTIC_INNOVATOR':
+        return [
+          `Claim: what if the opposite of "${thesis}" is actually true?`,
+          'Why it matters: the thesis is weaker if a completely different system or inverted assumption works better.',
+          'Falsifier: construct a credible alternative that inverts the core assumption and compare outcomes.',
         ].join(' ');
       case 'OPPONENT':
         return [

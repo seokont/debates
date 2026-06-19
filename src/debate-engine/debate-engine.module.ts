@@ -5,6 +5,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { SettingsModule } from '../settings/settings.module';
 import { TelegramModule } from '../telegram/telegram.module';
 import { AgentService } from './services/agent.service';
+import { ConsiliumRunnerService } from './services/consilium-runner.service';
 import { DebateFinalizationService } from './services/debate-finalization.service';
 import { DebateMemoryService } from './services/debate-memory.service';
 import { PromptBuilderService } from './services/prompt-builder.service';
@@ -24,6 +25,7 @@ import { DebateEngineService } from './debate-engine.service';
   ],
   providers: [
     AgentService,
+    ConsiliumRunnerService,
     DebateEngineService,
     DebateFinalizationService,
     DebateMemoryService,

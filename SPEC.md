@@ -137,6 +137,44 @@ Stop conditions:
 - `NO_ATTACKS_GENERATED`: no attacks were created.
 - `ALL_ATTACKS_CLOSED`: all attacks are considered closed after the minimum closure round.
 
+## Consilium Protocol (5-Phase)
+
+When `maxRounds >= 5` and all 4 models are present, the engine uses the consilium
+protocol instead of the linear loop. The consilium runs 5 fixed phases, each
+stored as a separate round:
+
+- **Phase 1 — Independent positions:** Each model gives its position without
+  knowing others' opinions. Eliminates groupthink.
+- **Phase 2 — Cross-critique:** Each model attacks the positions of the other
+  three from Phase 1.
+- **Phase 3 — Synthesis:** Claude collects what survived and forms a unified
+  position.
+- **Phase 4 — Devil's advocate:** Grok attacks the synthesis as a final stress
+  test.
+- **Phase 5 — Decision and plan:** All models contribute to the final decision:
+  what to do, what is needed from humans, and success criteria.
+
+Each phase produces a round with `CONSILIUM_PHASE_STARTED` system event in
+metadata. The engine completes the debate after Phase 5.
+
+When fewer than 4 models are selected or `maxRounds < 5`, the engine falls back
+to the linear attack → improve → verify loop.
+
+## Verification Status
+
+Attack verification supports three statuses:
+
+- `closed`: the thesis now fully addresses the attack.
+- `partially`: the thesis partially addresses the attack but does not fully close it.
+- `open`: the attack remains unaddressed.
+
+Both the `status` string and the legacy `closed` boolean are stored in event
+metadata. The `closed` boolean is `true` only when `status === 'closed'`.
+
+`PARTIALLY` status counts as 0.5 in the improvement score calculation.
+All attacks must have `status === 'closed'` (not `'partially'`) for the
+`ALL_ATTACKS_CLOSED` stop condition to trigger.
+
 ## Round Persistence
 
 Each debate round is stored separately in `DebateRound`.
@@ -370,17 +408,17 @@ The provider mapping currently is:
 
 | Debate model enum | Provider | Role | API |
 | --- | --- | --- | --- |
-| `GPT` | OpenAI | `SKEPTIC` | `POST https://api.openai.com/v1/responses` |
+| `GPT` | OpenAI | `STRATEGIST` | `POST https://api.openai.com/v1/responses` |
 | `CLAUDE` | Anthropic | `SYSTEMS_THINKER` | `POST https://api.anthropic.com/v1/messages` |
 | `GEMINI` | Google | `PRACTICIAN` | `POST https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent` |
-| `GROK` | xAI | `OPPONENT` | `POST https://api.x.ai/v1/responses` |
+| `GROK` | xAI | `SKEPTIC_INNOVATOR` | `POST https://api.x.ai/v1/responses` |
 
 Agent roles:
 
-- `SKEPTIC`: finds a weak causal link or unsupported premise.
-- `SYSTEMS_THINKER`: finds delayed second- or third-order system risks.
-- `PRACTICIAN`: checks practical constraints, incentives, adoption, and execution.
-- `OPPONENT`: proposes a credible alternative system.
+- `STRATEGIST`: asks "Why now and why this?" — finds weak strategic justification and timing.
+- `SYSTEMS_THINKER`: asks "What don't we see?" — finds delayed second- or third-order system risks.
+- `PRACTICIAN`: asks "Where's the evidence this works?" — checks practical constraints, incentives, adoption, and execution.
+- `SKEPTIC_INNOVATOR`: asks "What if everything is the opposite?" — proposes a credible alternative system or inverted assumption.
 
 If no models are provided internally, `AgentService.getAgents()` defaults to all
 four debate models: `GPT`, `CLAUDE`, `GEMINI`, and `GROK`.
@@ -461,24 +499,20 @@ Implemented AI work:
 
 ## Current Limitations
 
-- AI currently generates only attacks.
-- `ThesisImproverService` is still rule-based and does not call an AI model.
-- `VerificationService` is still heuristic and checks for role-specific keywords.
 - All provider calls are non-streaming.
 - Provider-specific rate limits, retries, and timeout handling are not yet centralized.
 - There are no dedicated tests for provider response parsing yet.
 - Real provider calls require valid external API keys and network access.
+- Consilium mode (5-phase protocol) is activated automatically when maxRounds >= 5 and all 4 models are used; there is no separate API flag yet.
 
 ## Recommended Next Development Steps
 
-1. Make `ThesisImproverService` AI-based so it rewrites the thesis using the attacks.
-2. Make `VerificationService` AI-based or hybrid, with structured JSON output.
-3. Add unit tests for provider response extractors and fallback behavior.
-4. Add timeout handling around provider calls.
-5. Store provider latency and `usedFallback` in debate events if needed for observability.
-6. Consider separate per-provider max tokens and model config.
-7. Add integration tests for the full debate queue flow.
-8. Update `DOCKER.md` production env section to include AI keys when deploying real AI debates.
+1. Add unit tests for provider response extractors and fallback behavior.
+2. Add timeout handling around provider calls.
+3. Store provider latency and `usedFallback` in debate events if needed for observability.
+4. Consider separate per-provider max tokens and model config.
+5. Add integration tests for the full debate queue flow.
+6. Add an explicit `useConsilium` flag to the create debate DTO for user control.
 
 ## Verification
 

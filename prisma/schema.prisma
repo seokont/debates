@@ -67,6 +67,7 @@ model Debate {
   models          DebateAiModel[] @default([])
   roundCount      Int            @default(0)
   maxRounds       Int            @default(6)
+  viewsCount      Int            @default(0)
   quietMode       Boolean        @default(false)
 
   layer1Summary         String?
@@ -305,6 +306,8 @@ enum AiAgentRole {
   OPPONENT
   IMPROVER
   VERIFIER
+  STRATEGIST
+  SKEPTIC_INNOVATOR
 }
 
 enum AiProvider {

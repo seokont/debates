@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Debate, DebateEvent, DebateEventType } from '@prisma/client';
+import { Debate, DebateEvent, DebateEventType, DebateMode } from '@prisma/client';
 import { AiAgentRole } from '../types/ai-agent.type';
 
 type EventMetadata = Record<string, unknown>;
@@ -17,7 +17,14 @@ type VerificationMemoryItem = {
   roundNumber: number | null;
   role: string;
   closed: boolean;
+  status: 'closed' | 'partially' | 'open';
   reason: string;
+};
+
+export type ActiveInjection = {
+  id: string;
+  type: string;
+  content: string;
 };
 
 @Injectable()
@@ -30,6 +37,7 @@ export class PromptBuilderService {
     debate: Debate,
     events: DebateEvent[],
     agentRole: AiAgentRole,
+    activeInjections: ActiveInjection[] = [],
   ): string {
     const attacks = this.getAttackMemory(events);
     const verifications = this.getLatestVerifications(events);
@@ -44,7 +52,7 @@ export class PromptBuilderService {
       return verification?.closed !== true;
     });
 
-    return [
+    const parts: string[] = [
       'ИСХОДНЫЙ ТЕЗИС:',
       debate.originalThesis,
       '',
@@ -60,15 +68,51 @@ export class PromptBuilderService {
       'ПОСЛЕДНИЕ РАУНДЫ:',
       this.formatLastEvents(events),
       '',
+    ];
+
+    if (activeInjections.length > 0) {
+      parts.push('ВМЕШАТЕЛЬСТВА ЧЕЛОВЕКА (обязательно учти в своём ответе):');
+      for (const injection of activeInjections) {
+        parts.push(`- [${injection.type}]: ${this.truncate(injection.content)}`);
+      }
+      parts.push('');
+    }
+
+    parts.push(
       'ТВОЯ РОЛЬ:',
       this.formatAgentRole(agentRole),
       '',
       'ЗАДАЧА:',
-      'Найди одну новую конкретную дыру.',
-      'Не повторяй закрытые атаки.',
-      'Не делай общую философию.',
-      'Ответ должен быть конкретным.',
-    ].join('\n');
+      ...this.formatTask(debate.mode),
+    );
+
+    return parts.join('\n');
+  }
+
+  private formatTask(mode: DebateMode): string[] {
+    switch (mode) {
+      case DebateMode.DIVERGENT:
+        return [
+          'Ищи неустранимое противоречие в тезисе.',
+          'Не пытайся его закрыть — строй карту расхождений.',
+          'Покажи где позиции непримиримы.',
+          'Будь конкретным.',
+        ];
+      case DebateMode.GEOPOLITICAL:
+        return [
+          'Ты представляешь конкретную логику интересов.',
+          'Покажи что получает и что теряет твоя сторона при реализации тезиса.',
+          'Называй конкретные потери и выгоды. Без абстракций.',
+        ];
+      case DebateMode.CONVERGENT:
+      default:
+        return [
+          'Найди одну новую конкретную дыру.',
+          'Не повторяй закрытые атаки.',
+          'Не делай общую философию.',
+          'Ответ должен быть конкретным.',
+        ];
+    }
   }
 
   private getAttackMemory(events: DebateEvent[]): AttackMemoryItem[] {
@@ -107,12 +151,16 @@ export class PromptBuilderService {
           return;
         }
 
+        const status = this.getString(metadata, 'status') as 'closed' | 'partially' | 'open' | undefined;
+        const closedFallback = this.getBoolean(metadata, 'closed') ?? false;
+
         verifications.set(attackId, {
           attackId,
           roundNumber: this.getNumber(metadata, 'roundNumber'),
           role:
             this.getString(metadata, 'targetRole') ?? event.role ?? 'UNKNOWN',
-          closed: this.getBoolean(metadata, 'closed') ?? false,
+          closed: status ? status === 'closed' : closedFallback,
+          status: status ?? (closedFallback ? 'closed' : 'open'),
           reason: event.content,
         });
       });
@@ -134,9 +182,11 @@ export class PromptBuilderService {
         const verification = verifications.get(attack.attackId);
         const round = attack.roundNumber ?? '?';
         const status = verification
-          ? verification.closed
+          ? verification.status === 'closed'
             ? 'закрыта'
-            : 'открыта'
+            : verification.status === 'partially'
+              ? 'частично закрыта'
+              : 'открыта'
           : 'без проверки';
         const reason = verification?.reason
           ? ` Проверка: ${this.truncate(verification.reason, 180)}`
@@ -229,12 +279,16 @@ export class PromptBuilderService {
 
   private formatAgentRole(role: AiAgentRole): string {
     switch (role) {
+      case 'STRATEGIST':
+        return 'STRATEGIST - задаёт вопрос «Почему именно сейчас и именно это?» Ищет слабость в стратегическом обосновании и выборе момента.';
       case 'SKEPTIC':
         return 'SKEPTIC - ищет слабую причинную связь или неподтвержденную предпосылку.';
       case 'SYSTEMS_THINKER':
-        return 'SYSTEMS_THINKER - ищет отложенные системные риски и обратные связи.';
+        return 'SYSTEMS_THINKER - ищет отложенные системные риски и обратные связи. Задаёт вопрос «Что мы не видим?»';
       case 'PRACTICIAN':
-        return 'PRACTICIAN - проверяет ограничения, стимулы, внедрение и исполнение.';
+        return 'PRACTICIAN - проверяет ограничения, стимулы, внедрение и исполнение. Задаёт вопрос «Где доказательства что это работает?»';
+      case 'SKEPTIC_INNOVATOR':
+        return 'SKEPTIC_INNOVATOR - предлагает альтернативную систему целиком. Задаёт вопрос «А что если всё наоборот?»';
       case 'OPPONENT':
         return 'OPPONENT - ищет более сильную альтернативную систему.';
     }

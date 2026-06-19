@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Debate } from '@prisma/client';
+import { Debate, DebateMode } from '@prisma/client';
 import {
   AttackVerification,
   StopConditionResult,
@@ -7,6 +7,7 @@ import {
 } from '../types/ai-agent.type';
 
 const NO_IMPROVEMENT_THRESHOLD = 3;
+const DIVERGENT_STAGNATION_THRESHOLD = 3;
 
 @Injectable()
 export class StopConditionService {
@@ -17,36 +18,27 @@ export class StopConditionService {
     recentScores: (number | null)[] = [],
   ): StopConditionResult {
     if (improvement.roundNumber >= debate.maxRounds) {
-      return {
-        shouldStop: true,
-        reason: 'MAX_ROUNDS_REACHED',
-      };
+      return { shouldStop: true, reason: 'MAX_ROUNDS_REACHED' };
     }
 
     if (!improvement.changed) {
-      return {
-        shouldStop: true,
-        reason: 'THESIS_DID_NOT_CHANGE',
-      };
+      return { shouldStop: true, reason: 'THESIS_DID_NOT_CHANGE' };
     }
 
     if (verifications.length === 0) {
-      return {
-        shouldStop: true,
-        reason: 'NO_ATTACKS_GENERATED',
-      };
+      return { shouldStop: true, reason: 'NO_ATTACKS_GENERATED' };
     }
 
-    const allAttacksClosed = verifications.every(
-      (verification) => verification.closed,
-    );
+    if (debate.mode === DebateMode.DIVERGENT) {
+      return this.evaluateDivergent(verifications, recentScores);
+    }
+
+    // CONVERGENT and GEOPOLITICAL: standard convergence logic
+    const allAttacksClosed = verifications.every((v) => v.status === 'closed');
     const minimumClosureRound = Math.min(2, debate.maxRounds);
 
     if (allAttacksClosed && improvement.roundNumber >= minimumClosureRound) {
-      return {
-        shouldStop: true,
-        reason: 'ALL_ATTACKS_CLOSED',
-      };
+      return { shouldStop: true, reason: 'ALL_ATTACKS_CLOSED' };
     }
 
     if (this.noImprovementForNRounds(recentScores, NO_IMPROVEMENT_THRESHOLD)) {
@@ -56,10 +48,29 @@ export class StopConditionService {
       };
     }
 
-    return {
-      shouldStop: false,
-      reason: 'CONTINUE',
-    };
+    return { shouldStop: false, reason: 'CONTINUE' };
+  }
+
+  // In DIVERGENT mode, attacks staying open = success (contradictions mapped).
+  // Stop when the contradiction map stabilises: scores consistently low for N rounds.
+  private evaluateDivergent(
+    verifications: AttackVerification[],
+    recentScores: (number | null)[],
+  ): StopConditionResult {
+    const allOpen = verifications.every((v) => v.status !== 'closed');
+
+    if (
+      allOpen &&
+      this.noImprovementForNRounds(recentScores, DIVERGENT_STAGNATION_THRESHOLD)
+    ) {
+      return { shouldStop: true, reason: 'CONTRADICTION_MAP_COMPLETE' };
+    }
+
+    if (this.noImprovementForNRounds(recentScores, NO_IMPROVEMENT_THRESHOLD)) {
+      return { shouldStop: true, reason: 'CONTRADICTION_MAP_COMPLETE' };
+    }
+
+    return { shouldStop: false, reason: 'CONTINUE' };
   }
 
   private noImprovementForNRounds(

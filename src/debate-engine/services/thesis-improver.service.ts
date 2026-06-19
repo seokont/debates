@@ -139,12 +139,16 @@ export class ThesisImproverService {
 
   private toSafeguard(attack: DebateAttack): string {
     switch (attack.role) {
+      case 'STRATEGIST':
+        return 'Justify the strategic timing and explain why this specific approach is the right one for the current moment.';
       case 'SKEPTIC':
         return 'Clarify the causal mechanism, assumptions, and boundary conditions before treating the thesis as proven.';
       case 'SYSTEMS_THINKER':
         return 'Track second and third order feedback loops with early warning metrics and explicit reversal triggers.';
       case 'PRACTICIAN':
         return 'Validate the claim with a small operational pilot, including budget, skills, timing, and adoption constraints.';
+      case 'SKEPTIC_INNOVATOR':
+        return 'Address the inverted assumption or alternative system and explain why the thesis holds despite the opposite scenario.';
       case 'OPPONENT':
         return 'Compare the thesis against at least one rival design on cost, speed, resilience, and failure modes.';
     }

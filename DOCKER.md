@@ -71,6 +71,12 @@ JWT_REFRESH_EXPIRES_IN="7d"
 
 REDIS_PORT=6379
 PORT=3000
+
+# AI Provider Keys
+OPENAI_API_KEY="sk-..."
+ANTHROPIC_API_KEY="sk-ant-..."
+GEMINI_API_KEY="AIza..."
+XAI_API_KEY="xnd_..."
 ```
 
 You can generate secrets with:

@@ -221,9 +221,14 @@ export class AuthService {
   }
 
   async verifyAccessToken(token: string): Promise<JwtPayload> {
-    const payload = await this.jwt.verifyAsync<JwtPayload>(token, {
-      secret: this.accessSecret,
-    });
+    let payload: JwtPayload;
+    try {
+      payload = await this.jwt.verifyAsync<JwtPayload>(token, {
+        secret: this.accessSecret,
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired access token');
+    }
 
     if (payload.type !== 'access') {
       throw new UnauthorizedException('Invalid access token');
@@ -233,9 +238,14 @@ export class AuthService {
   }
 
   private async verifyRefreshToken(token: string): Promise<JwtPayload> {
-    const payload = await this.jwt.verifyAsync<JwtPayload>(token, {
-      secret: this.refreshSecret,
-    });
+    let payload: JwtPayload;
+    try {
+      payload = await this.jwt.verifyAsync<JwtPayload>(token, {
+        secret: this.refreshSecret,
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
 
     if (payload.type !== 'refresh') {
       throw new UnauthorizedException('Invalid refresh token');

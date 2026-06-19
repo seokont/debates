@@ -9,6 +9,8 @@ import {
   DebateTier,
   DebateRound,
   DebateStatus,
+  HumanInjection,
+  InjectionStatus,
   Prisma,
   RoundStatus,
 } from '@prisma/client';
@@ -243,6 +245,7 @@ export class DebateMemoryService {
               provider: verification.provider,
               targetRole: verification.role,
               model: verification.model,
+              status: verification.status,
               closed: verification.closed,
               confidence: verification.confidence,
             },
@@ -307,6 +310,22 @@ export class DebateMemoryService {
     this.liveEvents.emit(event);
   }
 
+  getAcceptedInjections(debateId: string): Promise<HumanInjection[]> {
+    return this.prisma.humanInjection.findMany({
+      where: { debateId, status: InjectionStatus.ACCEPTED },
+      orderBy: { acceptedAt: 'asc' },
+    });
+  }
+
+  async markInjectionsUsed(injectionIds: string[]): Promise<void> {
+    if (injectionIds.length === 0) return;
+
+    await this.prisma.humanInjection.updateMany({
+      where: { id: { in: injectionIds } },
+      data: { status: InjectionStatus.USED_IN_ROUND },
+    });
+  }
+
   createEvent(
     debateId: string,
     event: DebateEventWrite,
@@ -345,8 +364,8 @@ export class DebateMemoryService {
         const verification = verificationByAttackId.get(attack.id);
 
         return closed
-          ? verification?.closed === true
-          : verification?.closed !== true;
+          ? verification?.status === 'closed'
+          : verification?.status !== 'closed';
       })
       .map((attack) => {
         const verification = verificationByAttackId.get(attack.id);
@@ -360,6 +379,7 @@ export class DebateMemoryService {
           content: attack.content,
           ...(verification
             ? {
+                status: verification.status,
                 reason: verification.reason,
                 confidence: verification.confidence,
               }
@@ -375,11 +395,13 @@ export class DebateMemoryService {
       return null;
     }
 
-    const closedCount = verifications.filter(
-      (verification) => verification.closed,
-    ).length;
+    let score = 0;
+    for (const verification of verifications) {
+      if (verification.status === 'closed') score += 1;
+      else if (verification.status === 'partially') score += 0.5;
+    }
 
-    return closedCount / verifications.length;
+    return score / verifications.length;
   }
 
   private toAgentName(model: DebateAiModel): AiAgentName {

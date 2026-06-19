@@ -36,11 +36,14 @@ export class RoundRunnerService {
     );
 
     try {
-      const events = await this.memory.getEvents(debateId);
+      const [events, activeInjections] = await Promise.all([
+        this.memory.getEvents(debateId),
+        this.memory.getAcceptedInjections(debateId),
+      ]);
       const agentResponses = await this.agentService.runAgents(
         debate.models,
         (agent) =>
-          this.promptBuilder.buildAnchorPrompt(debate, events, agent.role),
+          this.promptBuilder.buildAnchorPrompt(debate, events, agent.role, activeInjections),
         debate.userId,
       );
       const attacks: DebateAttack[] = agentResponses.map((response) => ({
@@ -74,6 +77,10 @@ export class RoundRunnerService {
         attacks,
         verifications,
       );
+
+      if (activeInjections.length > 0) {
+        await this.memory.markInjectionsUsed(activeInjections.map((i) => i.id));
+      }
 
       const recentScores = await this.memory.getRecentImprovementScores(
         debateId,

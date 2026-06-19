@@ -7,7 +7,7 @@ export type AiProvider = 'openai' | 'anthropic' | 'google' | 'xai';
 
 export type AiAgentRole = Extract<
   PrismaAiAgentRole,
-  'SKEPTIC' | 'SYSTEMS_THINKER' | 'PRACTICIAN' | 'OPPONENT'
+  'SKEPTIC' | 'SYSTEMS_THINKER' | 'PRACTICIAN' | 'OPPONENT' | 'STRATEGIST' | 'SKEPTIC_INNOVATOR'
 >;
 
 export interface AiAgent {
@@ -43,12 +43,16 @@ export interface ThesisImprovement {
   changed: boolean;
 }
 
+export type VerificationStatus = 'closed' | 'partially' | 'open';
+
 export interface AttackVerification {
   attackId: string;
   roundNumber: number;
   provider: AiProvider;
   role: AiAgentRole;
   model: DebateAiModel;
+  status: VerificationStatus;
+  /** @deprecated use status instead — kept for backward compatibility */
   closed: boolean;
   reason: string;
   confidence: number;

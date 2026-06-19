@@ -14,12 +14,14 @@ import {
   DebateEventType,
   DebateMode,
   DebateStatus,
+  DebateTier,
   HumanInjection,
   InjectionStatus,
   Prisma,
   UserRole,
   Visibility,
 } from '@prisma/client';
+import { CardType, CardVariant } from './types/card.type';
 import { Queue } from 'bullmq';
 import { randomUUID } from 'crypto';
 import { concat, defer, from, Observable } from 'rxjs';
@@ -196,57 +198,35 @@ export class DebatesService {
     return { debateId: debate.id, parentId: parent.id, question };
   }
 
-  findAll(user?: AuthenticatedUser) {
-    return this.prisma.debate.findMany({
+  async findAll(user?: AuthenticatedUser): Promise<CardType[]> {
+    const debates = await this.prisma.debate.findMany({
       where: this.readableWhere(user),
       orderBy: { createdAt: 'desc' },
       take: 50,
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        originalThesis: true,
-        currentThesis: true,
-        mode: true,
-        status: true,
-        visibility: true,
-        tier: true,
-        models: true,
-        roundCount: true,
-        maxRounds: true,
-        quietMode: true,
-        finalThesis: true,
-        completedAt: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      select: this.cardSelect(),
     });
+    return debates.map((d) => this.toCard(d));
   }
 
-  async findOne(id: string, user?: AuthenticatedUser) {
+  async findOne(id: string, user?: AuthenticatedUser): Promise<CardType> {
     const debate = await this.prisma.debate.findFirst({
       where: {
         id,
         ...this.readableWhere(user),
       },
-      include: {
-        rounds: {
-          orderBy: [{ roundNumber: 'asc' }, { startedAt: 'asc' }],
-        },
-        events: {
-          orderBy: { createdAt: 'asc' },
-        },
-        branches: {
-          select: { id: true, title: true, slug: true, status: true, createdAt: true },
-        },
-      },
+      select: this.cardSelect(),
     });
 
     if (!debate) {
       throw new NotFoundException('Debate not found');
     }
 
-    return debate;
+    await this.prisma.debate.update({
+      where: { id },
+      data: { viewsCount: { increment: 1 } },
+    });
+
+    return this.toCard(debate);
   }
 
   async findFinal(id: string, user?: AuthenticatedUser) {
@@ -803,6 +783,98 @@ export class DebatesService {
       where: { debateId },
       orderBy: { noveltyScore: 'desc' },
     });
+  }
+
+  private cardSelect() {
+    return {
+      id: true,
+      title: true,
+      currentThesis: true,
+      mode: true,
+      status: true,
+      tier: true,
+      models: true,
+      viewsCount: true,
+      user: {
+        select: {
+          id: true,
+          avatarUrl: true,
+          username: true,
+          email: true,
+        },
+      },
+    } as const;
+  }
+
+  private toCard(debate: {
+    id: string;
+    title: string | null;
+    currentThesis: string;
+    mode: DebateMode;
+    status: DebateStatus;
+    tier: DebateTier;
+    models: DebateAiModel[];
+    viewsCount: number;
+    user: { id: string; avatarUrl: string | null; username: string | null; email: string };
+  }): CardType {
+    const statusLabelMap: Record<DebateStatus, string> = {
+      [DebateStatus.PENDING]: 'In Queue',
+      [DebateStatus.RUNNING]: 'Live',
+      [DebateStatus.COMPLETED]: this.completedLabel(debate.mode),
+      [DebateStatus.FAILED]: 'Failed',
+      [DebateStatus.CANCELLED]: 'Cancelled',
+    };
+
+    const modeVariantMap: Record<DebateMode, CardVariant> = {
+      [DebateMode.CONVERGENT]: 'convergent',
+      [DebateMode.DIVERGENT]: 'divergent',
+      [DebateMode.GEOPOLITICAL]: 'research',
+    };
+
+    const tierNameMap: Record<DebateTier, string> = {
+      [DebateTier.SURFACE]: 'Tier 1',
+      [DebateTier.VERIFIED]: 'Tier 2',
+      [DebateTier.DEEP]: 'Tier 3',
+    };
+
+    const variant: CardVariant =
+      debate.status === DebateStatus.RUNNING || debate.status === DebateStatus.PENDING
+        ? 'live'
+        : modeVariantMap[debate.mode];
+
+    const modelDisplayName: Record<DebateAiModel, string> = {
+      [DebateAiModel.GPT]: 'GPT',
+      [DebateAiModel.CLAUDE]: 'Claude',
+      [DebateAiModel.GEMINI]: 'Gemini',
+      [DebateAiModel.GROK]: 'Grok',
+    };
+
+    return {
+      id: debate.id,
+      status: { state: statusLabelMap[debate.status], variant },
+      user: {
+        id: debate.user.id,
+        avatar: debate.user.avatarUrl ?? '',
+        name: `@${debate.user.username ?? debate.user.email.split('@')[0]}`,
+      },
+      title: debate.title ?? debate.currentThesis.slice(0, 96),
+      subtitle: debate.currentThesis,
+      tags: debate.models.map((m) => ({ id: m.toLowerCase(), name: modelDisplayName[m] })),
+      views: debate.viewsCount,
+      tier:
+        debate.tier !== DebateTier.SURFACE
+          ? { status: true as const, name: tierNameMap[debate.tier] }
+          : undefined,
+    };
+  }
+
+  private completedLabel(mode: DebateMode): string {
+    const map: Record<DebateMode, string> = {
+      [DebateMode.CONVERGENT]: 'Convergent',
+      [DebateMode.DIVERGENT]: 'Divergent',
+      [DebateMode.GEOPOLITICAL]: 'Research Gap',
+    };
+    return map[mode];
   }
 
   private makeTitle(thesis: string): string {

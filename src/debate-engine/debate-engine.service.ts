@@ -2,10 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AiAgentName, DebateEventType, DebateStatus } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelegramService } from '../telegram/telegram.service';
+import { ConsiliumRunnerService } from './services/consilium-runner.service';
 import { DebateFinalizationService } from './services/debate-finalization.service';
 import { DebateMemoryService } from './services/debate-memory.service';
 import { RoundRunnerService } from './services/round-runner.service';
 import { RoundRunnerResult } from './types/round-runner-result.type';
+
+/**
+ * The minimum round count before consilium mode can be used.
+ * Consilium runs 5 rounds internally, so maxRounds must be >= 5.
+ */
+const MIN_CONSILIUM_ROUNDS = 5;
 
 @Injectable()
 export class DebateEngineService {
@@ -14,6 +21,7 @@ export class DebateEngineService {
   constructor(
     private readonly memory: DebateMemoryService,
     private readonly roundRunner: RoundRunnerService,
+    private readonly consiliumRunner: ConsiliumRunnerService,
     private readonly telegramService: TelegramService,
     private readonly finalization: DebateFinalizationService,
     private readonly eventEmitter: EventEmitter2,
@@ -32,34 +40,86 @@ export class DebateEngineService {
 
       await this.memory.markRunning(debateId);
 
-      while (true) {
-        const current = await this.memory.getDebateOrThrow(debateId);
+      // Use consilium protocol when maxRounds >= 5 and all 4 models are present
+      const useConsilium =
+        debate.maxRounds >= MIN_CONSILIUM_ROUNDS &&
+        debate.models.length >= 4;
 
-        if (current.status !== DebateStatus.RUNNING) {
-          return;
-        }
-
-        const result = await this.runNextRound(debateId);
-
-        if (result.stopCondition.shouldStop) {
-          await this.memory.createEvent(debateId, {
-            type: DebateEventType.SYSTEM,
-            agent: AiAgentName.SYSTEM,
-            content: result.stopCondition.reason,
-            roundId: result.roundId,
-            metadata: {
-              action: 'STOP_CONDITION_MET',
-              roundNumber: result.roundNumber,
-              reason: result.stopCondition.reason,
-            },
-          });
-          await this.completeDebate(debateId);
-          return;
-        }
+      if (useConsilium) {
+        await this.runConsiliumMode(debateId);
+      } else {
+        await this.runLinearMode(debateId);
       }
     } catch (error) {
       await this.failDebate(debateId, this.toError(error));
     }
+  }
+
+  /**
+   * Linear mode — original loop: attack → improve → verify → check stop.
+   * Used when fewer than 4 models or maxRounds < 5.
+   */
+  private async runLinearMode(debateId: string): Promise<void> {
+    while (true) {
+      const current = await this.memory.getDebateOrThrow(debateId);
+
+      if (current.status !== DebateStatus.RUNNING) {
+        return;
+      }
+
+      const result = await this.runNextRound(debateId);
+
+      if (result.stopCondition.shouldStop) {
+        await this.memory.createEvent(debateId, {
+          type: DebateEventType.SYSTEM,
+          agent: AiAgentName.SYSTEM,
+          content: result.stopCondition.reason,
+          roundId: result.roundId,
+          metadata: {
+            action: 'STOP_CONDITION_MET',
+            roundNumber: result.roundNumber,
+            reason: result.stopCondition.reason,
+          },
+        });
+        await this.completeDebate(debateId);
+        return;
+      }
+    }
+  }
+
+  /**
+   * Consilium mode — 5-phase protocol per ТЗ Part 3:
+   * 1. Independent positions (all 4 models, no knowledge of others)
+   * 2. Cross-critique (each attacks the others)
+   * 3. Synthesis (Claude collects what survived)
+   * 4. Devil's advocate (Grok attacks the synthesis)
+   * 5. Decision and plan (all models contribute)
+   */
+  private async runConsiliumMode(debateId: string): Promise<void> {
+    await this.memory.createEvent(debateId, {
+      type: DebateEventType.SYSTEM,
+      agent: AiAgentName.SYSTEM,
+      content: 'Starting consilium protocol (5 phases)',
+      metadata: {
+        action: 'CONSILIUM_STARTED',
+      },
+    });
+
+    const result = await this.consiliumRunner.runConsilium(debateId);
+
+    await this.memory.createEvent(debateId, {
+      type: DebateEventType.SYSTEM,
+      agent: AiAgentName.SYSTEM,
+      content: 'Consilium protocol completed',
+      roundId: result.roundId,
+      metadata: {
+        action: 'STOP_CONDITION_MET',
+        roundNumber: result.roundNumber,
+        reason: 'CONSILIUM_COMPLETE',
+      },
+    });
+
+    await this.completeDebate(debateId);
   }
 
   runNextRound(debateId: string): Promise<RoundRunnerResult> {

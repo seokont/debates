@@ -3,6 +3,7 @@ import {
   AttackVerification,
   DebateAttack,
   ThesisImprovement,
+  VerificationStatus,
 } from '../types/ai-agent.type';
 import { AgentService } from './agent.service';
 
@@ -47,9 +48,12 @@ export class VerificationService {
       'Для каждой атаки ответь строго в формате:',
       '<РОЛЬ>: CLOSED - <причина одним предложением>',
       'или',
+      '<РОЛЬ>: PARTIALLY - <причина одним предложением>',
+      'или',
       '<РОЛЬ>: OPEN - <причина одним предложением>',
       '',
       'CLOSED — если тезис теперь явно учитывает суть атаки.',
+      'PARTIALLY — если тезис частично адресует атаку, но не полностью закрывает проблему.',
       'OPEN — если проблема по-прежнему не решена.',
       '',
       'Только эти строки, никакого другого текста.',
@@ -72,28 +76,33 @@ export class VerificationService {
       );
 
       if (!line) {
-        return this.buildVerification(attack, improvement, false, 'Verification result missing from AI response.', 0.5);
+        return this.buildVerification(attack, improvement, 'open', 'Verification result missing from AI response.', 0.5);
       }
 
       const closedMatch = /:\s*CLOSED\s*[-–—]\s*(.+)/i.exec(line);
+      const partiallyMatch = /:\s*PARTIALLY\s*[-–—]\s*(.+)/i.exec(line);
       const openMatch = /:\s*OPEN\s*[-–—]\s*(.+)/i.exec(line);
 
       if (closedMatch) {
-        return this.buildVerification(attack, improvement, true, closedMatch[1].trim(), 0.82);
+        return this.buildVerification(attack, improvement, 'closed', closedMatch[1].trim(), 0.82);
+      }
+
+      if (partiallyMatch) {
+        return this.buildVerification(attack, improvement, 'partially', partiallyMatch[1].trim(), 0.70);
       }
 
       if (openMatch) {
-        return this.buildVerification(attack, improvement, false, openMatch[1].trim(), 0.80);
+        return this.buildVerification(attack, improvement, 'open', openMatch[1].trim(), 0.80);
       }
 
-      return this.buildVerification(attack, improvement, false, line, 0.5);
+      return this.buildVerification(attack, improvement, 'open', line, 0.5);
     });
   }
 
   private buildVerification(
     attack: DebateAttack,
     improvement: ThesisImprovement,
-    closed: boolean,
+    status: VerificationStatus,
     reason: string,
     confidence: number,
   ): AttackVerification {
@@ -103,7 +112,8 @@ export class VerificationService {
       provider: attack.provider,
       role: attack.role,
       model: attack.model,
-      closed,
+      status,
+      closed: status === 'closed',
       reason,
       confidence,
     };
@@ -117,28 +127,46 @@ export class VerificationService {
 
     return attacks.map((attack) => {
       const signal = this.roleSignal(attack.role);
-      const closed = improvement.changed && signal.every((word) => improved.includes(word));
+      const matchCount = signal.filter((word) => improved.includes(word)).length;
+      const totalSignals = signal.length;
+
+      let status: VerificationStatus;
+      if (improvement.changed && matchCount === totalSignals) {
+        status = 'closed';
+      } else if (improvement.changed && matchCount > 0) {
+        status = 'partially';
+      } else {
+        status = 'open';
+      }
+
+      const statusLabel = status === 'closed'
+        ? 'addresses'
+        : status === 'partially'
+          ? 'partially addresses'
+          : 'does not address';
 
       return this.buildVerification(
         attack,
         improvement,
-        closed,
-        closed
-          ? `The new thesis now addresses the ${attack.role} attack with explicit mitigation.`
-          : `The new thesis still does not address the ${attack.role} attack strongly enough.`,
-        closed ? 0.78 : 0.42,
+        status,
+        `The new thesis ${statusLabel} the ${attack.role} attack.`,
+        status === 'closed' ? 0.78 : status === 'partially' ? 0.55 : 0.42,
       );
     });
   }
 
   private roleSignal(role: DebateAttack['role']): string[] {
     switch (role) {
+      case 'STRATEGIST':
+        return ['timing', 'strategic', 'moment', 'window'];
       case 'SKEPTIC':
         return ['causal', 'assumptions', 'boundary'];
       case 'SYSTEMS_THINKER':
         return ['feedback', 'metrics', 'triggers'];
       case 'PRACTICIAN':
         return ['pilot', 'budget', 'constraints'];
+      case 'SKEPTIC_INNOVATOR':
+        return ['alternative', 'opposite', 'invert'];
       case 'OPPONENT':
         return ['rival', 'cost', 'failure'];
     }
