@@ -24,8 +24,8 @@ import {
 import { CardType, CardVariant } from './types/card.type';
 import { Queue } from 'bullmq';
 import { randomUUID } from 'crypto';
-import { concat, defer, from, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { concat, defer, from, interval, merge, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { AuthenticatedUser } from '../auth/types/authenticated-user.type';
 import { BillingService } from '../billing/billing.service';
 import { DebateLiveEventsService } from '../debate-events/debate-live-events.service';
@@ -568,7 +568,11 @@ export class DebatesService {
       ),
     );
 
-    return concat(history$, this.liveEvents.stream(id));
+    const heartbeat$ = interval(20_000).pipe(
+      map(() => ({ type: 'ping', data: '' }) as MessageEvent),
+    );
+
+    return concat(history$, merge(this.liveEvents.stream(id), heartbeat$));
   }
 
   private async enqueueDebate(
