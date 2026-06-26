@@ -1,4 +1,4 @@
-import { InjectQueue } from '@nestjs/bullmq';
+import { InjectQueue } from "@nestjs/bullmq";
 import {
   ConflictException,
   ForbiddenException,
@@ -6,7 +6,7 @@ import {
   MessageEvent,
   NotFoundException,
   ServiceUnavailableException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   AiAgentName,
   Debate,
@@ -20,26 +20,26 @@ import {
   Prisma,
   UserRole,
   Visibility,
-} from '@prisma/client';
-import { CardType, CardVariant } from './types/card.type';
-import { Queue } from 'bullmq';
-import { randomUUID } from 'crypto';
-import { concat, defer, from, interval, merge, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
-import { AuthenticatedUser } from '../auth/types/authenticated-user.type';
-import { BillingService } from '../billing/billing.service';
-import { DebateLiveEventsService } from '../debate-events/debate-live-events.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { TelegramService } from '../telegram/telegram.service';
-import { DEBATE_QUEUE, RUN_DEBATE_JOB } from './debates.constants';
-import { CreateDebateDto } from './dto/create-debate.dto';
-import { CreateDebateFromUrlDto } from './dto/create-debate-from-url.dto';
-import { CreateBranchDto } from './dto/create-branch.dto';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { CreateInjectionDto } from './dto/create-injection.dto';
-import { ModeDetectionService } from './services/mode-detection.service';
-import { UrlParserService } from './services/url-parser.service';
-import { DebateJobData } from './types/debate-job-data.type';
+} from "@prisma/client";
+import { CardType, CardVariant } from "./types/card.type";
+import { Queue } from "bullmq";
+import { randomUUID } from "crypto";
+import { concat, defer, from, interval, merge, Observable } from "rxjs";
+import { map, mergeMap } from "rxjs/operators";
+import { AuthenticatedUser } from "../auth/types/authenticated-user.type";
+import { BillingService } from "../billing/billing.service";
+import { DebateLiveEventsService } from "../debate-events/debate-live-events.service";
+import { PrismaService } from "../prisma/prisma.service";
+import { TelegramService } from "../telegram/telegram.service";
+import { DEBATE_QUEUE, RUN_DEBATE_JOB } from "./debates.constants";
+import { CreateDebateDto } from "./dto/create-debate.dto";
+import { CreateDebateFromUrlDto } from "./dto/create-debate-from-url.dto";
+import { CreateBranchDto } from "./dto/create-branch.dto";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { CreateInjectionDto } from "./dto/create-injection.dto";
+import { ModeDetectionService } from "./services/mode-detection.service";
+import { UrlParserService } from "./services/url-parser.service";
+import { DebateJobData } from "./types/debate-job-data.type";
 
 @Injectable()
 export class DebatesService {
@@ -62,7 +62,7 @@ export class DebatesService {
         tx,
         user.id,
         creditCost,
-        visibility === Visibility.PRIVATE ? 'PRIVATE_DEBATE' : 'DEBATE',
+        visibility === Visibility.PRIVATE ? "PRIVATE_DEBATE" : "DEBATE",
       );
 
       const created = await tx.debate.create({
@@ -87,7 +87,7 @@ export class DebatesService {
           type: DebateEventType.HUMAN,
           content: dto.thesis,
           metadata: {
-            action: 'CREATED',
+            action: "CREATED",
             models: dto.models,
             maxRounds: dto.maxRounds ?? 6,
             quietMode: dto.quietMode ?? false,
@@ -117,7 +117,12 @@ export class DebatesService {
       thesis,
       mode: dto.mode ?? DebateMode.CONVERGENT,
       visibility: dto.visibility ?? Visibility.PUBLIC,
-      models: dto.models ?? [DebateAiModel.GPT, DebateAiModel.CLAUDE, DebateAiModel.GEMINI, DebateAiModel.GROK],
+      models: dto.models ?? [
+        DebateAiModel.GPT,
+        DebateAiModel.CLAUDE,
+        DebateAiModel.GEMINI,
+        DebateAiModel.GROK,
+      ],
       maxRounds: dto.maxRounds,
       quietMode: false,
       sourceUrl: dto.url,
@@ -143,7 +148,7 @@ export class DebatesService {
     });
 
     if (!parent) {
-      throw new NotFoundException('Parent debate not found');
+      throw new NotFoundException("Parent debate not found");
     }
 
     const question = parent.childQuestions[dto.questionIndex];
@@ -155,7 +160,7 @@ export class DebatesService {
 
     const creditCost = this.getDebateCreditCost(parent.visibility);
     const debate = await this.prisma.$transaction(async (tx) => {
-      await this.billingService.debit(tx, user.id, creditCost, 'BRANCH_DEBATE');
+      await this.billingService.debit(tx, user.id, creditCost, "BRANCH_DEBATE");
 
       const created = await tx.debate.create({
         data: {
@@ -179,7 +184,7 @@ export class DebatesService {
           type: DebateEventType.HUMAN,
           content: question,
           metadata: {
-            action: 'CREATED',
+            action: "CREATED",
             parentId: parent.id,
             branchQuestionIndex: dto.questionIndex,
           },
@@ -201,7 +206,7 @@ export class DebatesService {
   async findAll(user?: AuthenticatedUser): Promise<CardType[]> {
     const debates = await this.prisma.debate.findMany({
       where: this.readableWhere(user),
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: 50,
       select: this.cardSelect(),
     });
@@ -218,7 +223,7 @@ export class DebatesService {
     });
 
     if (!debate) {
-      throw new NotFoundException('Debate not found');
+      throw new NotFoundException("Debate not found");
     }
 
     await this.prisma.debate.update({
@@ -253,7 +258,7 @@ export class DebatesService {
     });
 
     if (!debate) {
-      throw new NotFoundException('Debate not found');
+      throw new NotFoundException("Debate not found");
     }
 
     return debate;
@@ -263,14 +268,14 @@ export class DebatesService {
     await this.assertReadable(debateId, user);
     return this.prisma.exploreInsight.findMany({
       where: { debateId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
   }
 
   async restart(id: string, user: AuthenticatedUser) {
     const debate = await this.prisma.debate.findUnique({ where: { id } });
     if (!debate) {
-      throw new NotFoundException('Debate not found');
+      throw new NotFoundException("Debate not found");
     }
 
     this.assertCanManage(debate, user);
@@ -279,7 +284,7 @@ export class DebatesService {
       debate.status === DebateStatus.PENDING ||
       debate.status === DebateStatus.RUNNING
     ) {
-      throw new ConflictException('Debate is already active');
+      throw new ConflictException("Debate is already active");
     }
 
     const creditCost = this.getDebateCreditCost(debate.visibility);
@@ -289,8 +294,8 @@ export class DebatesService {
         user.id,
         creditCost,
         debate.visibility === Visibility.PRIVATE
-          ? 'PRIVATE_DEBATE_RESTART'
-          : 'DEBATE_RESTART',
+          ? "PRIVATE_DEBATE_RESTART"
+          : "DEBATE_RESTART",
       );
       await tx.debateRound.deleteMany({ where: { debateId: id } });
       await tx.debateEvent.deleteMany({ where: { debateId: id } });
@@ -313,9 +318,9 @@ export class DebatesService {
         data: {
           debateId: id,
           type: DebateEventType.HUMAN,
-          content: 'Debate restarted',
+          content: "Debate restarted",
           metadata: {
-            action: 'RESTARTED',
+            action: "RESTARTED",
             previousStatus: debate.status,
           },
         },
@@ -327,12 +332,7 @@ export class DebatesService {
     try {
       await this.enqueueDebate(restarted, user.id, true);
     } catch (error) {
-      await this.failDebateAndRefund(
-        restarted.id,
-        user.id,
-        creditCost,
-        error,
-      );
+      await this.failDebateAndRefund(restarted.id, user.id, creditCost, error);
     }
 
     return { debateId: restarted.id };
@@ -350,12 +350,7 @@ export class DebatesService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       if (autoAccepted) {
-        await this.billingService.debit(
-          tx,
-          user.id,
-          1,
-          'INSTANT_INJECTION',
-        );
+        await this.billingService.debit(tx, user.id, 1, "INSTANT_INJECTION");
       }
 
       const injection = await tx.humanInjection.create({
@@ -393,7 +388,7 @@ export class DebatesService {
 
     return this.prisma.humanInjection.findMany({
       where: { debateId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       include: {
         user: {
           select: {
@@ -414,7 +409,7 @@ export class DebatesService {
     });
 
     if (!injection) {
-      throw new NotFoundException('Injection not found');
+      throw new NotFoundException("Injection not found");
     }
 
     await this.assertReadable(injection.debateId, user);
@@ -425,13 +420,19 @@ export class DebatesService {
       const result = await this.prisma.$transaction(async (tx) => {
         const updated = await tx.humanInjection.update({
           where: { id },
-          data: { likesCount: newCount, status: InjectionStatus.ACCEPTED, acceptedAt: new Date() },
+          data: {
+            likesCount: newCount,
+            status: InjectionStatus.ACCEPTED,
+            acceptedAt: new Date(),
+          },
         });
         const event = await this.createAcceptedInjectionEvent(tx, updated);
         return { injection: updated, event };
       });
       this.liveEvents.emit(result.event);
-      await this.telegramService.notifyHumanInjectionAccepted(result.injection.id);
+      await this.telegramService.notifyHumanInjectionAccepted(
+        result.injection.id,
+      );
       return result.injection;
     }
 
@@ -447,7 +448,7 @@ export class DebatesService {
     });
 
     if (!existing) {
-      throw new NotFoundException('Injection not found');
+      throw new NotFoundException("Injection not found");
     }
 
     if (
@@ -505,7 +506,7 @@ export class DebatesService {
 
     return this.prisma.comment.findMany({
       where: { debateId },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       include: this.commentInclude(),
     });
   }
@@ -517,7 +518,7 @@ export class DebatesService {
     });
 
     if (!comment) {
-      throw new NotFoundException('Comment not found');
+      throw new NotFoundException("Comment not found");
     }
 
     await this.assertReadable(comment.debateId, user);
@@ -542,7 +543,7 @@ export class DebatesService {
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
+        error.code === "P2002"
       ) {
         return this.prisma.comment.findUnique({
           where: { id },
@@ -561,11 +562,11 @@ export class DebatesService {
     });
 
     if (!comment) {
-      throw new NotFoundException('Comment not found');
+      throw new NotFoundException("Comment not found");
     }
 
     if (user.role !== UserRole.ADMIN && comment.userId !== user.id) {
-      throw new ForbiddenException('You cannot delete this comment');
+      throw new ForbiddenException("You cannot delete this comment");
     }
 
     await this.prisma.comment.delete({ where: { id } });
@@ -585,7 +586,7 @@ export class DebatesService {
     );
 
     const heartbeat$ = interval(20_000).pipe(
-      map(() => ({ type: 'ping', data: '' }) as MessageEvent),
+      map(() => ({ type: "ping", data: "" }) as MessageEvent),
     );
 
     return concat(history$, merge(this.liveEvents.stream(id), heartbeat$));
@@ -607,7 +608,7 @@ export class DebatesService {
         jobId: `${RUN_DEBATE_JOB}:${debate.id}:${Date.now()}`,
         attempts: 3,
         backoff: {
-          type: 'exponential',
+          type: "exponential",
           delay: 1000,
         },
         removeOnComplete: true,
@@ -620,9 +621,9 @@ export class DebatesService {
         debateId: debate.id,
         type: DebateEventType.SYSTEM,
         agent: AiAgentName.SYSTEM,
-        content: 'Debate queued',
+        content: "Debate queued",
         metadata: {
-          action: 'QUEUED',
+          action: "QUEUED",
           jobId: job.id,
           restart,
         },
@@ -640,7 +641,7 @@ export class DebatesService {
         type: DebateEventType.HUMAN,
         content: injection.content,
         metadata: {
-          action: 'HUMAN_INJECTION_ACCEPTED',
+          action: "HUMAN_INJECTION_ACCEPTED",
           injectionId: injection.id,
           injectionType: injection.type,
           status: injection.status,
@@ -662,7 +663,7 @@ export class DebatesService {
         debateId,
         ...(lastSeenAt ? { createdAt: { gt: lastSeenAt } } : {}),
       },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
       take: 100,
     });
   }
@@ -680,7 +681,7 @@ export class DebatesService {
     });
 
     if (!debate) {
-      throw new NotFoundException('Debate not found');
+      throw new NotFoundException("Debate not found");
     }
 
     return debate;
@@ -699,7 +700,7 @@ export class DebatesService {
     });
 
     if (!parent) {
-      throw new NotFoundException('Parent comment not found');
+      throw new NotFoundException("Parent comment not found");
     }
   }
 
@@ -713,7 +714,7 @@ export class DebatesService {
     });
 
     if (!debate) {
-      throw new NotFoundException('Debate not found');
+      throw new NotFoundException("Debate not found");
     }
   }
 
@@ -736,7 +737,7 @@ export class DebatesService {
       return;
     }
 
-    throw new ForbiddenException('You cannot manage this debate');
+    throw new ForbiddenException("You cannot manage this debate");
   }
 
   private commentInclude() {
@@ -763,14 +764,14 @@ export class DebatesService {
     error: unknown,
   ): Promise<never> {
     const reason =
-      error instanceof Error ? error.message : 'Unknown queue error';
+      error instanceof Error ? error.message : "Unknown queue error";
 
     const event = await this.prisma.$transaction(async (tx) => {
       await this.billingService.credit(
         tx,
         userId,
         refundAmount,
-        'QUEUE_UNAVAILABLE_REFUND',
+        "QUEUE_UNAVAILABLE_REFUND",
       );
       await tx.debate.update({
         where: { id: debateId },
@@ -782,10 +783,10 @@ export class DebatesService {
           debateId,
           type: DebateEventType.SYSTEM,
           agent: AiAgentName.SYSTEM,
-          content: 'QUEUE_UNAVAILABLE',
+          content: "QUEUE_UNAVAILABLE",
           metadata: {
-            action: 'FAILED',
-            reason: 'QUEUE_UNAVAILABLE',
+            action: "FAILED",
+            reason: "QUEUE_UNAVAILABLE",
             detail: reason,
           },
         },
@@ -795,13 +796,13 @@ export class DebatesService {
     this.liveEvents.emit(event);
     await this.telegramService.notifyDebateFailed(debateId, reason);
 
-    throw new ServiceUnavailableException('Debate queue is unavailable');
+    throw new ServiceUnavailableException("Debate queue is unavailable");
   }
 
   getPatentAlerts(debateId: string) {
     return this.prisma.patentAlert.findMany({
       where: { debateId },
-      orderBy: { noveltyScore: 'desc' },
+      orderBy: { noveltyScore: "desc" },
     });
   }
 
@@ -835,40 +836,46 @@ export class DebatesService {
     tier: DebateTier;
     models: DebateAiModel[];
     viewsCount: number;
-    user: { id: string; avatarUrl: string | null; username: string | null; email: string };
+    user: {
+      id: string;
+      avatarUrl: string | null;
+      username: string | null;
+      email: string;
+    };
   }): CardType {
     const statusLabelMap: Record<DebateStatus, string> = {
-      [DebateStatus.PENDING]: 'In Queue',
-      [DebateStatus.RUNNING]: 'Live',
+      [DebateStatus.PENDING]: "In Queue",
+      [DebateStatus.RUNNING]: "Live",
       [DebateStatus.COMPLETED]: this.completedLabel(debate.mode),
-      [DebateStatus.FAILED]: 'Failed',
-      [DebateStatus.CANCELLED]: 'Cancelled',
+      [DebateStatus.FAILED]: "Failed",
+      [DebateStatus.CANCELLED]: "Cancelled",
     };
 
     const modeVariantMap: Record<DebateMode, CardVariant> = {
-      [DebateMode.CONVERGENT]: 'convergent',
-      [DebateMode.DIVERGENT]: 'divergent',
-      [DebateMode.GEOPOLITICAL]: 'research',
+      [DebateMode.CONVERGENT]: "convergent",
+      [DebateMode.DIVERGENT]: "divergent",
+      [DebateMode.GEOPOLITICAL]: "research",
     };
 
     const tierNameMap: Record<DebateTier, string> = {
-      [DebateTier.SURFACE]: 'Tier 1',
-      [DebateTier.VERIFIED]: 'Tier 2',
-      [DebateTier.DEEP]: 'Tier 3',
+      [DebateTier.SURFACE]: "Tier 1",
+      [DebateTier.VERIFIED]: "Tier 2",
+      [DebateTier.DEEP]: "Tier 3",
     };
 
     const variant: CardVariant =
-      debate.status === DebateStatus.RUNNING || debate.status === DebateStatus.PENDING
-        ? 'live'
+      debate.status === DebateStatus.RUNNING ||
+      debate.status === DebateStatus.PENDING
+        ? "live"
         : modeVariantMap[debate.mode];
 
-    const modelDisplayName: Record<DebateAiModel, string> = {
-      [DebateAiModel.GPT]: 'GPT',
-      [DebateAiModel.CLAUDE]: 'Claude',
-      [DebateAiModel.GEMINI]: 'Gemini',
-      [DebateAiModel.GROK]: 'Grok',
-      [DebateAiModel.GLM]: 'GLM',
-      [DebateAiModel.KIMI]: 'Kimi',
+    const modelDisplayName: Partial<Record<DebateAiModel, string>> = {
+      [DebateAiModel.GPT]: "GPT",
+      [DebateAiModel.CLAUDE]: "Claude",
+      [DebateAiModel.GEMINI]: "Gemini",
+      [DebateAiModel.GROK]: "Grok",
+      [DebateAiModel.GLM as any]: "GLM",
+      [DebateAiModel.KIMI as any]: "Kimi",
     };
 
     return {
@@ -876,12 +883,15 @@ export class DebatesService {
       status: { state: statusLabelMap[debate.status], variant },
       user: {
         id: debate.user.id,
-        avatar: debate.user.avatarUrl ?? '',
-        name: `@${debate.user.username ?? debate.user.email.split('@')[0]}`,
+        avatar: debate.user.avatarUrl ?? "",
+        name: `@${debate.user.username ?? debate.user.email.split("@")[0]}`,
       },
       title: debate.title ?? debate.currentThesis.slice(0, 96),
       subtitle: debate.currentThesis,
-      tags: debate.models.map((m) => ({ id: m.toLowerCase(), name: modelDisplayName[m] })),
+      tags: debate.models.map((m) => ({
+        id: (m as string).toLowerCase(),
+        name: modelDisplayName[m] ?? m,
+      })),
       views: debate.viewsCount,
       tier:
         debate.tier !== DebateTier.SURFACE
@@ -892,9 +902,9 @@ export class DebatesService {
 
   private completedLabel(mode: DebateMode): string {
     const map: Record<DebateMode, string> = {
-      [DebateMode.CONVERGENT]: 'Convergent',
-      [DebateMode.DIVERGENT]: 'Divergent',
-      [DebateMode.GEOPOLITICAL]: 'Research Gap',
+      [DebateMode.CONVERGENT]: "Convergent",
+      [DebateMode.DIVERGENT]: "Divergent",
+      [DebateMode.GEOPOLITICAL]: "Research Gap",
     };
     return map[mode];
   }
@@ -906,13 +916,13 @@ export class DebatesService {
   private makeSlug(thesis: string): string {
     const base = thesis
       .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[^\w\s-]/g, '')
+      .normalize("NFKD")
+      .replace(/[^\w\s-]/g, "")
       .trim()
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
       .slice(0, 60);
 
-    return `${base || 'debate'}-${randomUUID().slice(0, 8)}`;
+    return `${base || "debate"}-${randomUUID().slice(0, 8)}`;
   }
 }
