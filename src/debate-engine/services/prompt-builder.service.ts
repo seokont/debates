@@ -56,6 +56,8 @@ export class PromptBuilderService {
     const roundHistory = this.buildRoundHistory(sortedRounds);
 
     const parts: string[] = [
+      'Отвечай ТОЛЬКО на русском языке.',
+      '',
       'ИСХОДНЫЙ ТЕЗИС:',
       debate.originalThesis,
       '',
