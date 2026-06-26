@@ -169,16 +169,57 @@ export class ExploreService {
     }));
   }
 
+  /**
+   * Cross-model scoring: each provider scores paths it did NOT generate.
+   * Every path receives up to 3 independent scores; final = average.
+   * This eliminates self-promotion bias per spec Block I2.
+   */
   async scorePaths(
+    paths: Array<{ id: string; hypothesis: string; category: string | null; generatedBy: string }>,
+    question: string,
+    exploreType: ExploreType,
+    userId?: string,
+  ): Promise<Map<string, number>> {
+    const providers = ['anthropic', 'openai', 'google', 'xai'] as const;
+    const accumulated = new Map<string, number[]>();
+    for (const p of paths) accumulated.set(p.id, []);
+
+    // Run all 4 providers concurrently; each scores paths it didn't generate
+    await Promise.all(
+      providers.map(async (scorer) => {
+        const toScore = paths.filter((p) => !p.generatedBy.startsWith(scorer));
+        if (toScore.length === 0) return;
+
+        const scores = await this.scoreWithProvider(scorer, toScore, question, exploreType, userId);
+        for (const [id, score] of scores) {
+          accumulated.get(id)?.push(score);
+        }
+      }),
+    );
+
+    const result = new Map<string, number>();
+    for (const [id, scores] of accumulated) {
+      result.set(
+        id,
+        scores.length > 0
+          ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+          : 50,
+      );
+    }
+    return result;
+  }
+
+  private async scoreWithProvider(
+    provider: 'anthropic' | 'openai' | 'google' | 'xai',
     paths: Array<{ id: string; hypothesis: string; category: string | null }>,
     question: string,
     exploreType: ExploreType,
     userId?: string,
   ): Promise<Map<string, number>> {
-    const scoringCriteria = this.getScoringCriteria(exploreType);
     const scores = new Map<string, number>();
-
+    const scoringCriteria = this.getScoringCriteria(exploreType);
     const batchSize = 10;
+
     for (let i = 0; i < paths.length; i += batchSize) {
       const batch = paths.slice(i, i + batchSize);
       const prompt = [
@@ -186,7 +227,7 @@ export class ExploreService {
         ``,
         `Criteria: ${scoringCriteria}`,
         ``,
-        `For each hypothesis, output: ID: [id] SCORE: [0-100]`,
+        `For each hypothesis output: ID: [id] SCORE: [0-100]`,
         ``,
         ...batch.map((p) => `[${p.id}] ${p.hypothesis}`),
         ``,
@@ -195,9 +236,8 @@ export class ExploreService {
       ].join('\n');
 
       try {
-        const response = await this.agentService.callProvider('anthropic', prompt, userId);
-        const lines = response.split('\n');
-        for (const line of lines) {
+        const response = await this.agentService.callProvider(provider as any, prompt, userId);
+        for (const line of response.split('\n')) {
           const match = line.match(/ID:\s*([a-f0-9-]+)\s+SCORE:\s*(\d+)/i);
           if (match) {
             scores.set(match[1], Math.min(100, parseInt(match[2], 10)));

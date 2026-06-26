@@ -70,7 +70,7 @@ export class ExploreProcessor extends WorkerHost {
           newPaths.map((p) =>
             this.prisma.explorePath.create({
               data: p,
-              select: { id: true, hypothesis: true, category: true },
+              select: { id: true, hypothesis: true, category: true, generatedBy: true },
             }),
           ),
         );

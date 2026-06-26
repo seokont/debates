@@ -98,7 +98,8 @@ export class ConsiliumRunnerService {
     });
 
     try {
-      const events = await this.memory.getEvents(debateId);
+      // Bounded load: consilium phases need at most the last 40 events
+      const events = await this.memory.getRecentDebateEvents(debateId, 40);
       let attacks: DebateAttack[];
 
       switch (phase) {

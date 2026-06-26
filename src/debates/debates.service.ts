@@ -408,7 +408,7 @@ export class DebatesService {
   async likeInjection(id: string, user: AuthenticatedUser) {
     const injection = await this.prisma.humanInjection.findUnique({
       where: { id },
-      select: { id: true, debateId: true },
+      select: { id: true, debateId: true, likesCount: true, status: true },
     });
 
     if (!injection) {
@@ -417,11 +417,25 @@ export class DebatesService {
 
     await this.assertReadable(injection.debateId, user);
 
+    // Per spec: 5 community likes → auto-accept injection
+    const newCount = injection.likesCount + 1;
+    if (newCount >= 5 && injection.status === InjectionStatus.PENDING) {
+      const result = await this.prisma.$transaction(async (tx) => {
+        const updated = await tx.humanInjection.update({
+          where: { id },
+          data: { likesCount: newCount, status: InjectionStatus.ACCEPTED, acceptedAt: new Date() },
+        });
+        const event = await this.createAcceptedInjectionEvent(tx, updated);
+        return { injection: updated, event };
+      });
+      this.liveEvents.emit(result.event);
+      await this.telegramService.notifyHumanInjectionAccepted(result.injection.id);
+      return result.injection;
+    }
+
     return this.prisma.humanInjection.update({
       where: { id },
-      data: {
-        likesCount: { increment: 1 },
-      },
+      data: { likesCount: { increment: 1 } },
     });
   }
 

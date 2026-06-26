@@ -22,6 +22,14 @@ type OpenAiResponseBody = {
   }>;
 };
 
+type ChatCompletionResponseBody = {
+  choices?: Array<{
+    message?: {
+      content?: string;
+    };
+  }>;
+};
+
 type AnthropicResponseBody = {
   content?: Array<{
     text?: string;
@@ -333,10 +341,11 @@ export class AgentService {
       UserAiProvider.XAI,
       'XAI_API_KEY',
     );
-    const model = this.getOptionalConfig('XAI_MODEL', 'grok-4.3');
+    const model = this.getOptionalConfig('XAI_MODEL', 'grok-3');
     const maxOutputTokens = this.getMaxOutputTokens();
 
-    const response = await fetch('https://api.x.ai/v1/responses', {
+    // xAI uses OpenAI-compatible Chat Completions API
+    const response = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -344,8 +353,8 @@ export class AgentService {
       },
       body: JSON.stringify({
         model,
-        input: prompt,
-        max_output_tokens: maxOutputTokens,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: maxOutputTokens,
       }),
     });
 
@@ -353,8 +362,8 @@ export class AgentService {
       throw new Error(`xAI request failed: ${await this.readError(response)}`);
     }
 
-    const body = (await response.json()) as OpenAiResponseBody;
-    const text = this.extractOpenAiText(body);
+    const body = (await response.json()) as ChatCompletionResponseBody;
+    const text = body.choices?.[0]?.message?.content;
 
     if (!text) {
       throw new Error('xAI response did not include text output');

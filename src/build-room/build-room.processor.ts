@@ -4,6 +4,7 @@ import { Job } from 'bullmq';
 import { BuildStatus } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CascadeAgentService } from './services/cascade-agent.service';
+import { DeployService } from './services/deploy.service';
 import { BUILD_QUEUE, BuildRoomService, RUN_BUILD_JOB } from './build-room.service';
 
 type BuildJobData = { projectId: string; userId: string };
@@ -15,6 +16,7 @@ export class BuildRoomProcessor extends WorkerHost {
   constructor(
     private readonly buildRoomService: BuildRoomService,
     private readonly cascadeAgent: CascadeAgentService,
+    private readonly deployService: DeployService,
     private readonly eventEmitter: EventEmitter2,
   ) {
     super();
@@ -47,10 +49,24 @@ export class BuildRoomProcessor extends WorkerHost {
         });
       }
 
-      await this.buildRoomService.updateStatus(
-        projectId,
-        result.passed ? BuildStatus.REVIEW : BuildStatus.FAILED,
-      );
+      if (result.passed) {
+        const deployResult = await this.deployService.deploy({
+          slug: project.slug,
+          title: project.title,
+          thesis,
+          mvpScope: result.mvpScope,
+          stack: result.stack,
+          techCode: result.steps.find((s) => s.type === 'CODE')?.content ?? '',
+        });
+
+        await this.buildRoomService.updateStatus(
+          projectId,
+          deployResult.deployUrl ? BuildStatus.DEPLOYED : BuildStatus.REVIEW,
+          deployResult.deployUrl ? { deployUrl: deployResult.deployUrl } : undefined,
+        );
+      } else {
+        await this.buildRoomService.updateStatus(projectId, BuildStatus.FAILED);
+      }
 
       this.eventEmitter.emit('build.completed', {
         projectId,

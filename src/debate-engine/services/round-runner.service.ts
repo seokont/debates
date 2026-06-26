@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { DebateStatus } from '@prisma/client';
+import { DebateRound, DebateStatus } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { AgentService } from './agent.service';
 import { DebateMemoryService } from './debate-memory.service';
-import { PromptBuilderService } from './prompt-builder.service';
+import { CarryOverAttack, PromptBuilderService } from './prompt-builder.service';
 import { StopConditionService } from './stop-condition.service';
 import { ThesisImproverService } from './thesis-improver.service';
 import { VerificationService } from './verification.service';
-import { DebateAttack } from '../types/ai-agent.type';
+import { AiAgentRole, DebateAttack } from '../types/ai-agent.type';
 import { RoundRunnerResult } from '../types/round-runner-result.type';
 
 @Injectable()
@@ -36,14 +36,26 @@ export class RoundRunnerService {
     );
 
     try {
-      const [events, activeInjections] = await Promise.all([
-        this.memory.getEvents(debateId),
+      const [rounds, recentEvents, activeInjections] = await Promise.all([
+        this.memory.getPreviousRounds(debateId),
+        this.memory.getRecentEvents(debateId, 2),
         this.memory.getAcceptedInjections(debateId),
       ]);
+
+      // Per spec: open attacks from previous round carry over — same model must continue its attack
+      const carryOverByRole = this.buildCarryOverMap(rounds[rounds.length - 1] ?? null);
+
       const agentResponses = await this.agentService.runAgents(
         debate.models,
         (agent) =>
-          this.promptBuilder.buildAnchorPrompt(debate, events, agent.role, activeInjections),
+          this.promptBuilder.buildAnchorPrompt(
+            debate,
+            rounds,
+            recentEvents,
+            agent.role,
+            activeInjections,
+            carryOverByRole.get(agent.role) ?? null,
+          ),
         debate.userId,
       );
       const attacks: DebateAttack[] = agentResponses.map((response) => ({
@@ -106,5 +118,22 @@ export class RoundRunnerService {
       await this.memory.markRoundFailed(debateId, round.id, error);
       throw error;
     }
+  }
+
+  private buildCarryOverMap(
+    lastRound: DebateRound | null,
+  ): Map<AiAgentRole, CarryOverAttack> {
+    const map = new Map<AiAgentRole, CarryOverAttack>();
+    if (!lastRound?.openWeaknesses || !Array.isArray(lastRound.openWeaknesses)) {
+      return map;
+    }
+    for (const item of lastRound.openWeaknesses as Array<Record<string, unknown>>) {
+      const role = typeof item['role'] === 'string' ? (item['role'] as AiAgentRole) : null;
+      const content = typeof item['content'] === 'string' ? item['content'] : null;
+      if (role && content) {
+        map.set(role, { role, content });
+      }
+    }
+    return map;
   }
 }

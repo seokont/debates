@@ -7,6 +7,7 @@ import { BuildRoomController } from './build-room.controller';
 import { BuildRoomProcessor } from './build-room.processor';
 import { BUILD_QUEUE, BuildRoomService } from './build-room.service';
 import { CascadeAgentService } from './services/cascade-agent.service';
+import { DeployService } from './services/deploy.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { CascadeAgentService } from './services/cascade-agent.service';
     BullModule.registerQueue({ name: BUILD_QUEUE }),
   ],
   controllers: [BuildRoomController],
-  providers: [BuildRoomService, BuildRoomProcessor, CascadeAgentService],
+  providers: [BuildRoomService, BuildRoomProcessor, CascadeAgentService, DeployService],
   exports: [BuildRoomService],
 })
 export class BuildRoomModule {}

@@ -33,34 +33,52 @@ export class VerificationService {
     improvement: ThesisImprovement,
     userId?: string,
   ): Promise<AttackVerification[]> {
-    const attackLines = attacks
-      .map((a) => `[${a.role}]: ${a.content}`)
-      .join('\n');
+    // Per spec: "тот кто атаковал, проверяет" — each model verifies its own attack
+    const byProvider = new Map<string, DebateAttack[]>();
+    for (const attack of attacks) {
+      const arr = byProvider.get(attack.provider) ?? [];
+      arr.push(attack);
+      byProvider.set(attack.provider, arr);
+    }
 
-    const prompt = [
-      'Ты проверяешь, закрыты ли атаки на тезис после его улучшения.',
-      '',
-      `УЛУЧШЕННЫЙ ТЕЗИС: ${improvement.improvedThesis}`,
-      '',
-      'АТАКИ ДЛЯ ПРОВЕРКИ:',
-      attackLines,
-      '',
-      'Для каждой атаки ответь строго в формате:',
-      '<РОЛЬ>: CLOSED - <причина одним предложением>',
-      'или',
-      '<РОЛЬ>: PARTIALLY - <причина одним предложением>',
-      'или',
-      '<РОЛЬ>: OPEN - <причина одним предложением>',
-      '',
-      'CLOSED — если тезис теперь явно учитывает суть атаки.',
-      'PARTIALLY — если тезис частично адресует атаку, но не полностью закрывает проблему.',
-      'OPEN — если проблема по-прежнему не решена.',
-      '',
-      'Только эти строки, никакого другого текста.',
-    ].join('\n');
+    const results = await Promise.all(
+      Array.from(byProvider.entries()).map(async ([provider, providerAttacks]) => {
+        const attackLines = providerAttacks
+          .map((a) => `[${a.role}]: ${a.content}`)
+          .join('\n');
 
-    const raw = await this.agentService.callProvider('anthropic', prompt, userId);
-    return this.parseVerificationResponse(attacks, improvement, raw);
+        const prompt = [
+          'Ты проверяешь, закрыта ли твоя атака на тезис после его улучшения.',
+          '',
+          `УЛУЧШЕННЫЙ ТЕЗИС: ${improvement.improvedThesis}`,
+          '',
+          'ТВОИ АТАКИ:',
+          attackLines,
+          '',
+          'Для каждой атаки ответь строго в формате:',
+          '<РОЛЬ>: CLOSED - <причина одним предложением>',
+          'или',
+          '<РОЛЬ>: PARTIALLY - <причина одним предложением>',
+          'или',
+          '<РОЛЬ>: OPEN - <причина одним предложением>',
+          '',
+          'CLOSED — если тезис теперь явно учитывает суть твоей атаки.',
+          'PARTIALLY — если тезис частично адресует атаку, но не полностью.',
+          'OPEN — если проблема по-прежнему не решена.',
+          '',
+          'Только эти строки, никакого другого текста.',
+        ].join('\n');
+
+        try {
+          const raw = await this.agentService.callProvider(provider as any, prompt, userId);
+          return this.parseVerificationResponse(providerAttacks, improvement, raw);
+        } catch {
+          return this.keywordVerify(providerAttacks, improvement);
+        }
+      }),
+    );
+
+    return results.flat();
   }
 
   private parseVerificationResponse(

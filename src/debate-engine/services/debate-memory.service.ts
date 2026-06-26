@@ -77,6 +77,34 @@ export class DebateMemoryService {
     });
   }
 
+  async getRecentDebateEvents(debateId: string, limit: number): Promise<DebateEvent[]> {
+    const events = await this.prisma.debateEvent.findMany({
+      where: { debateId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+    return events.reverse();
+  }
+
+  async getRecentEvents(
+    debateId: string,
+    lastNRounds: number = 2,
+  ): Promise<DebateEvent[]> {
+    const recentRounds = await this.prisma.debateRound.findMany({
+      where: { debateId, status: RoundStatus.COMPLETED },
+      orderBy: { roundNumber: 'desc' },
+      take: lastNRounds,
+      select: { id: true },
+    });
+
+    if (recentRounds.length === 0) return [];
+
+    return this.prisma.debateEvent.findMany({
+      where: { debateId, roundId: { in: recentRounds.map((r) => r.id) } },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
   async markRunning(debateId: string): Promise<void> {
     const debate = await this.getDebateOrThrow(debateId);
 
