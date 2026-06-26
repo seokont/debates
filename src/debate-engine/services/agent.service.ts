@@ -65,6 +65,8 @@ export class AgentService {
             DebateAiModel.CLAUDE,
             DebateAiModel.GEMINI,
             DebateAiModel.GROK,
+            DebateAiModel.GLM,
+            DebateAiModel.KIMI,
           ];
 
     return selectedModels.map((model) => ({
