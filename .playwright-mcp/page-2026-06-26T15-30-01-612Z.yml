@@ -1,0 +1,2079 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Grokipedia" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "Grokipedia" [ref=e6]
+      - link "Search ⌘K" [ref=e10] [cursor=pointer]:
+        - /url: /search
+        - img [ref=e11]
+        - generic [ref=e14]: Search
+        - generic [ref=e15]: ⌘K
+      - generic [ref=e16]:
+        - button "Toggle theme" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]
+        - button "Suggest Edit" [ref=e20] [cursor=pointer]
+        - link "Sign in" [ref=e21] [cursor=pointer]:
+          - /url: https://accounts.x.ai/check-login?redirect=grokipedia-com&return_to=%2Fpage%2FWOHA
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - img [ref=e26]
+        - generic [ref=e29]: Fact-checked by Grok 5 months ago
+      - article [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - heading "WOHA" [level=1] [ref=e34]
+            - generic [ref=e36]:
+              - button "Listen to this article" [ref=e37] [cursor=pointer]:
+                - img [ref=e38]
+              - button "Copy link" [ref=e42] [cursor=pointer]:
+                - img [ref=e43]
+              - button "Edits history" [ref=e45] [cursor=pointer]:
+                - img [ref=e46]
+          - generic [ref=e49]:
+            - text: WOHA is a Singapore-based architecture firm founded in 1994 by Wong Mun Summ and Richard Hassell, focusing on sustainable, high-density
+            - link "urban design" [ref=e50] [cursor=pointer]:
+              - /url: /page/Urban_design
+            - text: tailored to tropical environments through integrated architectural and landscape solutions.
+            - superscript [ref=e51] [cursor=pointer]:
+              - link:
+                - /url: "#ref-1"
+                - superscript
+              - link "[1]" [ref=e52]:
+                - /url: "#ref-1"
+            - text: The practice emphasizes biophilic principles, embedding greenery and natural elements into buildings to enhance environmental performance and occupant well-being in dense city contexts.
+            - superscript [ref=e53] [cursor=pointer]:
+              - link:
+                - /url: "#ref-1"
+                - superscript
+              - link "[1]" [ref=e54]:
+                - /url: "#ref-1"
+          - generic [ref=e55]:
+            - text: WOHA's portfolio includes landmark projects across the
+            - link "Asia-Pacific" [ref=e56] [cursor=pointer]:
+              - /url: /page/Asia–Pacific
+            - text: region, such as the Oasia Hotel Downtown and Kampung Admiralty in
+            - link "Singapore" [ref=e57] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: ", which exemplify vertical greening and mixed-use community integration, as well as international works like Alila Villas Uluwatu in"
+            - link "Bali" [ref=e58] [cursor=pointer]:
+              - /url: /page/Bali
+            - text: .
+            - superscript [ref=e59] [cursor=pointer]:
+              - link:
+                - /url: "#ref-2"
+                - superscript
+              - link "[2]" [ref=e60]:
+                - /url: "#ref-2"
+            - text: These designs prioritize regenerative
+            - link "urbanism" [ref=e61] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: ", adapting modernist strategies to local climates while addressing challenges like heat, humidity, and rapid"
+            - link "urbanization" [ref=e62] [cursor=pointer]:
+              - /url: /page/Urbanization
+            - text: .
+            - superscript [ref=e63] [cursor=pointer]:
+              - link:
+                - /url: "#ref-1"
+                - superscript
+              - link "[1]" [ref=e64]:
+                - /url: "#ref-1"
+          - generic [ref=e65]:
+            - text: The firm has garnered international recognition for its contributions to sustainable architecture, including multiple World Architecture Festival awards, Singapore's President's Design Award for Design of the Year, and the 2024 Council on Tall Buildings and Urban Habitat Best Tall Building Worldwide for Pan Pacific Orchard.
+            - superscript [ref=e66] [cursor=pointer]:
+              - link:
+                - /url: "#ref-3"
+                - superscript
+              - link "[3]" [ref=e67]:
+                - /url: "#ref-3"
+            - superscript [ref=e68] [cursor=pointer]:
+              - link:
+                - /url: "#ref-4"
+                - superscript
+              - link "[4]" [ref=e69]:
+                - /url: "#ref-4"
+          - heading "History Copy link to section Listen to this section" [level=2] [ref=e70]:
+            - text: History
+            - generic [ref=e71]:
+              - button "Copy link to section" [ref=e72] [cursor=pointer]:
+                - img [ref=e73]
+              - button "Listen to this section" [ref=e76] [cursor=pointer]:
+                - img [ref=e77]
+          - heading "Founding and Early Development Copy link to section Listen to this section" [level=3] [ref=e80]:
+            - text: Founding and Early Development
+            - generic [ref=e81]:
+              - button "Copy link to section" [ref=e82] [cursor=pointer]:
+                - img [ref=e83]
+              - button "Listen to this section" [ref=e86] [cursor=pointer]:
+                - img [ref=e87]
+          - generic [ref=e90]:
+            - text: WOHA Architects Pte Ltd was established in 1994 in
+            - link "Singapore" [ref=e91] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: by Wong Mun Summ and Richard Hassell as a
+            - link "partnership" [ref=e92] [cursor=pointer]:
+              - /url: /page/Partnership
+            - text: focused on integrated architectural and
+            - link "urban design" [ref=e93] [cursor=pointer]:
+              - /url: /page/Urban_design
+            - text: solutions.
+            - superscript [ref=e94] [cursor=pointer]:
+              - link:
+                - /url: "#ref-5"
+                - superscript
+              - link "[5]" [ref=e95]:
+                - /url: "#ref-5"
+            - superscript [ref=e96] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e97]:
+                - /url: "#ref-6"
+            - text: The firm's name derives from the initials of its founders, reflecting their collaborative approach rooted in
+            - link "creative industries" [ref=e98] [cursor=pointer]:
+              - /url: /page/Creative_industries
+            - text: models rather than traditional architectural hierarchies.
+            - superscript [ref=e99] [cursor=pointer]:
+              - link:
+                - /url: "#ref-5"
+                - superscript
+              - link "[5]" [ref=e100]:
+                - /url: "#ref-5"
+          - generic [ref=e101]:
+            - text: The principals met at the Singapore office of Kerry Hill Architects, where they worked as designers from 1989, primarily on resort projects in
+            - link "Indonesia" [ref=e102] [cursor=pointer]:
+              - /url: /page/Indonesia
+            - text: ", for about five years before departing to form WOHA."
+            - superscript [ref=e103] [cursor=pointer]:
+              - link:
+                - /url: "#ref-7"
+                - superscript
+              - link "[7]" [ref=e104]:
+                - /url: "#ref-7"
+            - superscript [ref=e105] [cursor=pointer]:
+              - link:
+                - /url: "#ref-8"
+                - superscript
+              - link "[8]" [ref=e106]:
+                - /url: "#ref-8"
+            - text: Wong Mun Summ, born in 1962 and a graduate of the
+            - link "National University of Singapore" [ref=e107] [cursor=pointer]:
+              - /url: /page/National_University_of_Singapore
+            - text: in 1989, brought local expertise, while Australian Richard Hassell, who arrived in
+            - link "Singapore" [ref=e108] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: that same year, contributed international perspectives shaped by his early career experiences.
+            - superscript [ref=e109] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e110]:
+                - /url: "#ref-6"
+            - superscript [ref=e111] [cursor=pointer]:
+              - link:
+                - /url: "#ref-9"
+                - superscript
+              - link "[9]" [ref=e112]:
+                - /url: "#ref-9"
+          - generic [ref=e113]:
+            - text: In its initial phase, WOHA concentrated on smaller-scale commissions, including a series of private residential houses that emphasized contextual responses to Singapore's
+            - link "tropical climate" [ref=e114] [cursor=pointer]:
+              - /url: /page/Tropical_climate
+            - text: .
+            - superscript [ref=e115] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e116]:
+                - /url: "#ref-6"
+            - text: A notable early institutional project was the Church of St. Mary of the Angels in
+            - link "Bukit Batok" [ref=e117] [cursor=pointer]:
+              - /url: /page/Bukit_Batok
+            - text: ", completed with an open, community-oriented design featuring a cross-shaped tower and landscaped plaza, which received acclaim for its architectural innovation and execution."
+            - superscript [ref=e118] [cursor=pointer]:
+              - link:
+                - /url: "#ref-10"
+                - superscript
+              - link "[10]" [ref=e119]:
+                - /url: "#ref-10"
+            - superscript [ref=e120] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e121]:
+                - /url: "#ref-6"
+            - text: These works established the firm's reputation for thoughtful, site-specific designs, earning publicity and design awards that supported gradual expansion.
+            - superscript [ref=e122] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e123]:
+                - /url: "#ref-6"
+            - superscript [ref=e124] [cursor=pointer]:
+              - link:
+                - /url: "#ref-11"
+                - superscript
+              - link "[11]" [ref=e125]:
+                - /url: "#ref-11"
+          - heading "Expansion into International Markets Copy link to section Listen to this section" [level=3] [ref=e126]:
+            - text: Expansion into International Markets
+            - generic [ref=e127]:
+              - button "Copy link to section" [ref=e128] [cursor=pointer]:
+                - img [ref=e129]
+              - button "Listen to this section" [ref=e132] [cursor=pointer]:
+                - img [ref=e133]
+          - generic [ref=e136]:
+            - text: WOHA's international expansion commenced in the mid-2000s, with initial forays into
+            - link "Southeast Asia" [ref=e137] [cursor=pointer]:
+              - /url: /page/Southeast_Asia
+            - text: driven by commissions for high-profile hospitality and residential developments that applied the firm's tropical
+            - link "urbanism" [ref=e138] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: principles to diverse regional contexts. The firm's first major overseas project was Alila Villas Uluwatu in
+            - link "Bali" [ref=e139] [cursor=pointer]:
+              - /url: /page/Bali
+            - text: ","
+            - link "Indonesia" [ref=e140] [cursor=pointer]:
+              - /url: /page/Indonesia
+            - text: ", where design work began in October 2003, construction started in June 2005, and completion occurred in June 2009; this cliffside resort integrated 50 suites and 35 villas with sustainable features like natural ventilation and landscape integration to suit the island's arid savannah terrain."
+            - superscript [ref=e141] [cursor=pointer]:
+              - link:
+                - /url: "#ref-12"
+                - superscript
+              - link "[12]" [ref=e142]:
+                - /url: "#ref-12"
+            - superscript [ref=e143] [cursor=pointer]:
+              - link:
+                - /url: "#ref-13"
+                - superscript
+              - link "[13]" [ref=e144]:
+                - /url: "#ref-13"
+            - text: Concurrently, WOHA secured the commission for The Met in
+            - link "Bangkok" [ref=e145] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: ", Thailand, a 66-story mixed-use tower comprising condominiums, a"
+            - link "hotel" [ref=e146] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: ", and retail spaces, completed in December 2009; the design emphasized perforated facades for natural cross-ventilation, adapting Singaporean high-rise innovations to Bangkok's dense urban core."
+            - superscript [ref=e147] [cursor=pointer]:
+              - link:
+                - /url: "#ref-14"
+                - superscript
+              - link "[14]" [ref=e148]:
+                - /url: "#ref-14"
+            - superscript [ref=e149] [cursor=pointer]:
+              - link:
+                - /url: "#ref-15"
+                - superscript
+              - link "[15]" [ref=e150]:
+                - /url: "#ref-15"
+          - generic [ref=e151]:
+            - text: By the 2010s, WOHA extended its reach to
+            - link "East Asia" [ref=e152] [cursor=pointer]:
+              - /url: /page/East_Asia
+            - text: ", exemplified by Sky Green in"
+            - link "Taichung" [ref=e153] [cursor=pointer]:
+              - /url: /page/Taichung
+            - text: ","
+            - link "Taiwan" [ref=e154] [cursor=pointer]:
+              - /url: /page/Taiwan
+            - text: ", a"
+            - link "mixed-use development" [ref=e155] [cursor=pointer]:
+              - /url: /page/Mixed-use_development
+            - text: of two 26-story residential towers with integrated retail and extensive greenery on every level, completed in November 2019; this project stemmed from a 2012 invitation by the Taichung City Government and Feng Chia University to showcase the firm's "Breathing Architecture"
+            - link "exhibition" [ref=e156] [cursor=pointer]:
+              - /url: /page/Exhibition
+            - text: ", marking WOHA's entry into Taiwan's market."
+            - superscript [ref=e157] [cursor=pointer]:
+              - link:
+                - /url: "#ref-16"
+                - superscript
+              - link "[16]" [ref=e158]:
+                - /url: "#ref-16"
+            - superscript [ref=e159] [cursor=pointer]:
+              - link:
+                - /url: "#ref-17"
+                - superscript
+              - link "[17]" [ref=e160]:
+                - /url: "#ref-17"
+            - superscript [ref=e161] [cursor=pointer]:
+              - link:
+                - /url: "#ref-18"
+                - superscript
+              - link "[18]" [ref=e162]:
+                - /url: "#ref-18"
+            - text: Further diversification included the
+            - link "Singapore" [ref=e163] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: Pavilion for
+            - link "Expo 2020" [ref=e164] [cursor=pointer]:
+              - /url: /page/Expo_2020
+            - text: in
+            - link "Dubai" [ref=e165] [cursor=pointer]:
+              - /url: /page/Dubai
+            - text: ","
+            - link "United Arab Emirates" [ref=e166] [cursor=pointer]:
+              - /url: /page/United_Arab_Emirates
+            - text: ", completed in 2021, which highlighted WOHA's"
+            - link "biophilic design" [ref=e167] [cursor=pointer]:
+              - /url: /page/Biophilic_design
+            - text: through modular, garden-integrated structures.
+            - superscript [ref=e168] [cursor=pointer]:
+              - link:
+                - /url: "#ref-19"
+                - superscript
+              - link "[19]" [ref=e169]:
+                - /url: "#ref-19"
+            - text: In
+            - link "China" [ref=e170] [cursor=pointer]:
+              - /url: /page/China
+            - text: ", projects such as CapitaMall Tianfu in"
+            - link "Chengdu" [ref=e171] [cursor=pointer]:
+              - /url: /page/Chengdu
+            - text: underscore ongoing commitments, with additional works under construction across
+            - link "Australia" [ref=e172] [cursor=pointer]:
+              - /url: /page/Australia
+            - text: ","
+            - link "China" [ref=e173] [cursor=pointer]:
+              - /url: /page/China
+            - text: ", and South Asian countries as of recent updates."
+            - superscript [ref=e174] [cursor=pointer]:
+              - link:
+                - /url: "#ref-2"
+                - superscript
+              - link "[2]" [ref=e175]:
+                - /url: "#ref-2"
+            - superscript [ref=e176] [cursor=pointer]:
+              - link:
+                - /url: "#ref-20"
+                - superscript
+              - link "[20]" [ref=e177]:
+                - /url: "#ref-20"
+          - generic [ref=e178]:
+            - text: This progression reflects WOHA's strategy of leveraging award-winning domestic expertise—such as the 2007 Aga Khan Award for Moulmein Rise—to secure international briefs, prioritizing climate-responsive, high-density solutions over generic global
+            - link "modernism" [ref=e179] [cursor=pointer]:
+              - /url: /page/Modernism
+            - text: .
+            - superscript [ref=e180] [cursor=pointer]:
+              - link:
+                - /url: "#ref-21"
+                - superscript
+              - link "[21]" [ref=e181]:
+                - /url: "#ref-21"
+            - text: While early expansions focused on
+            - link "hospitality" [ref=e182] [cursor=pointer]:
+              - /url: /page/Hospitality
+            - text: and residential typologies in tropical climates akin to Singapore's, later ventures incorporate urban masterplanning and
+            - link "public" [ref=e183] [cursor=pointer]:
+              - /url: /page/Public
+            - text: pavilions, adapting to varied regulatory and environmental demands without compromising core sustainability tenets.
+            - superscript [ref=e184] [cursor=pointer]:
+              - link:
+                - /url: "#ref-22"
+                - superscript
+              - link "[22]" [ref=e185]:
+                - /url: "#ref-22"
+            - text: The firm's portfolio now spans the
+            - link "Asia-Pacific" [ref=e186] [cursor=pointer]:
+              - /url: /page/Asia–Pacific
+            - text: and
+            - link "Middle East" [ref=e187] [cursor=pointer]:
+              - /url: /page/Middle_East
+            - text: ", with under-construction initiatives signaling sustained growth beyond its"
+            - link "Singapore" [ref=e188] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: base.
+            - superscript [ref=e189] [cursor=pointer]:
+              - link:
+                - /url: "#ref-20"
+                - superscript
+              - link "[20]" [ref=e190]:
+                - /url: "#ref-20"
+          - heading "Key Milestones and Adaptations Copy link to section Listen to this section" [level=3] [ref=e191]:
+            - text: Key Milestones and Adaptations
+            - generic [ref=e192]:
+              - button "Copy link to section" [ref=e193] [cursor=pointer]:
+                - img [ref=e194]
+              - button "Listen to this section" [ref=e197] [cursor=pointer]:
+                - img [ref=e198]
+          - generic [ref=e201]:
+            - text: WOHA marked a significant
+            - link "milestone" [ref=e202] [cursor=pointer]:
+              - /url: /page/Milestone
+            - text: in 2007 by receiving the
+            - link "Aga Khan Award for Architecture" [ref=e203] [cursor=pointer]:
+              - /url: /page/Aga_Khan_Award_for_Architecture
+            - text: ", recognizing their innovative approach to integrating architecture with cultural and environmental contexts in early projects."
+            - superscript [ref=e204] [cursor=pointer]:
+              - link:
+                - /url: "#ref-23"
+                - superscript
+              - link "[23]" [ref=e205]:
+                - /url: "#ref-23"
+            - superscript [ref=e206] [cursor=pointer]:
+              - link:
+                - /url: "#ref-24"
+                - superscript
+              - link "[24]" [ref=e207]:
+                - /url: "#ref-24"
+            - text: Between 2008 and 2010, the firm completed 13 major buildings, demonstrating rapid scaling and refinement of high-density tropical designs.
+            - superscript [ref=e208] [cursor=pointer]:
+              - link:
+                - /url: "#ref-25"
+                - superscript
+              - link "[25]" [ref=e209]:
+                - /url: "#ref-25"
+          - generic [ref=e210]:
+            - text: The completion of Oasia Downtown in 2016 represented an adaptation toward biophilic high-rises, with over 40 species of plants covering 1,400 trees and shrubs, achieving a 123.1%
+            - link "green plot ratio" [ref=e211] [cursor=pointer]:
+              - /url: /page/Ratio
+            - text: and passive
+            - link "shading" [ref=e212] [cursor=pointer]:
+              - /url: /page/Shading
+            - text: to minimize air-conditioning use.
+            - superscript [ref=e213] [cursor=pointer]:
+              - link:
+                - /url: "#ref-7"
+                - superscript
+              - link "[7]" [ref=e214]:
+                - /url: "#ref-7"
+            - text: In 2018, Kampung Admiralty earned the World Architecture Festival World Building of the Year, exemplifying mixed-use vertical communities that foster social interaction and
+            - link "sustainability" [ref=e215] [cursor=pointer]:
+              - /url: /page/Sustainability
+            - text: in dense urban settings.
+            - superscript [ref=e216] [cursor=pointer]:
+              - link:
+                - /url: "#ref-23"
+                - superscript
+              - link "[23]" [ref=e217]:
+                - /url: "#ref-23"
+            - superscript [ref=e218] [cursor=pointer]:
+              - link:
+                - /url: "#ref-26"
+                - superscript
+              - link "[26]" [ref=e219]:
+                - /url: "#ref-26"
+          - generic [ref=e220]:
+            - text: WOHA adapted further by expanding internationally, undertaking projects such as Alila Villas Uluwatu in
+            - link "Bali" [ref=e221] [cursor=pointer]:
+              - /url: /page/Bali
+            - text: (completed around 2009), which emphasized low-impact luxury resorts harmonized with cliffs and ocean, and Sky Green in
+            - link "Taichung" [ref=e222] [cursor=pointer]:
+              - /url: /page/Taichung
+            - text: ","
+            - link "Taiwan" [ref=e223] [cursor=pointer]:
+              - /url: /page/Taiwan
+            - text: (2019), focusing on
+            - link "vertical farming" [ref=e224] [cursor=pointer]:
+              - /url: /page/Vertical_farming
+            - text: integration.
+            - superscript [ref=e225] [cursor=pointer]:
+              - link:
+                - /url: "#ref-5"
+                - superscript
+              - link "[5]" [ref=e226]:
+                - /url: "#ref-5"
+            - superscript [ref=e227] [cursor=pointer]:
+              - link:
+                - /url: "#ref-19"
+                - superscript
+              - link "[19]" [ref=e228]:
+                - /url: "#ref-19"
+            - text: This shift addressed diverse climatic and regulatory challenges beyond
+            - link "Singapore" [ref=e229] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: ", prioritizing site-specific ecological enhancements."
+            - superscript [ref=e230] [cursor=pointer]:
+              - link:
+                - /url: "#ref-27"
+                - superscript
+              - link "[27]" [ref=e231]:
+                - /url: "#ref-27"
+          - generic [ref=e232]:
+            - text: Recent milestones include the 2021 Singapore Pavilion at
+            - link "Expo 2020" [ref=e233] [cursor=pointer]:
+              - /url: /page/Expo_2020
+            - text: Dubai, prototyping self-built habitats for biodiversity, and the 2024 Council on Tall Buildings and Urban Habitat award for Best Tall Building Worldwide for Pan Pacific Orchard, a 23-story
+            - link "hotel" [ref=e234] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: advancing hybrid
+            - link "natural" [ref=e235] [cursor=pointer]:
+              - /url: /page/The_Natural
+            - text: ventilation systems.
+            - superscript [ref=e236] [cursor=pointer]:
+              - link:
+                - /url: "#ref-28"
+                - superscript
+              - link "[28]" [ref=e237]:
+                - /url: "#ref-28"
+            - superscript [ref=e238] [cursor=pointer]:
+              - link:
+                - /url: "#ref-4"
+                - superscript
+              - link "[4]" [ref=e239]:
+                - /url: "#ref-4"
+            - text: These developments reflect ongoing adaptations to global
+            - link "urbanization" [ref=e240] [cursor=pointer]:
+              - /url: /page/Urbanization
+            - text: ", emphasizing resilience against sea-level rise and climate impacts through nature-integrated urbanism."
+            - superscript [ref=e241] [cursor=pointer]:
+              - link:
+                - /url: "#ref-29"
+                - superscript
+              - link "[29]" [ref=e242]:
+                - /url: "#ref-29"
+            - superscript [ref=e243] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e244]:
+                - /url: "#ref-30"
+          - heading "Design Philosophy Copy link to section Listen to this section" [level=2] [ref=e245]:
+            - text: Design Philosophy
+            - generic [ref=e246]:
+              - button "Copy link to section" [ref=e247] [cursor=pointer]:
+                - img [ref=e248]
+              - button "Listen to this section" [ref=e251] [cursor=pointer]:
+                - img [ref=e252]
+          - heading "Core Principles of Tropical Urbanism Copy link to section Listen to this section" [level=3] [ref=e255]:
+            - text: Core Principles of Tropical Urbanism
+            - generic [ref=e256]:
+              - button "Copy link to section" [ref=e257] [cursor=pointer]:
+                - img [ref=e258]
+              - button "Listen to this section" [ref=e261] [cursor=pointer]:
+                - img [ref=e262]
+          - generic [ref=e265]:
+            - text: WOHA's tropical urbanism centers on passive climate-responsive strategies adapted to hot, humid equatorial conditions, emphasizing natural ventilation,
+            - link "shading" [ref=e266] [cursor=pointer]:
+              - /url: /page/Shading
+            - text: ", and"
+            - link "airflow" [ref=e267] [cursor=pointer]:
+              - /url: /page/Airflow
+            - text: over reliance on mechanical cooling systems. This approach utilizes porous, perforated building envelopes to promote cross-ventilation and reduce heat gain, as articulated by founders Wong Mun Summ and Richard Hassell in discussions of high-rise prototypes.
+            - superscript [ref=e268] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e269]:
+                - /url: "#ref-30"
+            - superscript [ref=e270] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e271]:
+                - /url: "#ref-31"
+            - text: Specific innovations include "Monsoon Windows," operable panels that enable directed
+            - link "airflow" [ref=e272] [cursor=pointer]:
+              - /url: /page/Airflow
+            - text: during wet seasons while providing solar protection, demonstrated in projects like 1 Moulmein Rise, a 28-storey residential tower completed in 2005.
+            - superscript [ref=e273] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e274]:
+                - /url: "#ref-31"
+          - generic [ref=e275]:
+            - text: Central to these principles is the integration of extensive greening through sky gardens, green walls, and landscaped terraces, which lower ambient temperatures via
+            - link "evapotranspiration" [ref=e276] [cursor=pointer]:
+              - /url: /page/Evapotranspiration
+            - text: and shade, achieving metrics such as 130% Green Plot Ratio in developments like Newton Suites, a 36-storey tower finished in 2011.
+            - superscript [ref=e277] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e278]:
+                - /url: "#ref-31"
+            - text: Hassell and
+            - link "Wong" [ref=e279] [cursor=pointer]:
+              - /url: /page/A._Wong
+            - text: argue that such biophilic elements not only mitigate urban heat islands but also foster
+            - link "biodiversity" [ref=e280] [cursor=pointer]:
+              - /url: /page/Biodiversity
+            - text: and human well-being by blurring boundaries between built and natural realms, a
+            - link "philosophy" [ref=e281] [cursor=pointer]:
+              - /url: /page/Philosophy
+            - text: applied in structures like The Met, a 69-storey
+            - link "Bangkok" [ref=e282] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: tower with stacked sky gardens enabling natural ventilation across floors.
+            - superscript [ref=e283] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e284]:
+                - /url: "#ref-30"
+            - superscript [ref=e285] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e286]:
+                - /url: "#ref-31"
+            - text: This vertical layering supports dense populations while emulating low-rise tropical vernacular forms, prioritizing human-scale comfort and choice in layout.
+            - superscript [ref=e287] [cursor=pointer]:
+              - link:
+                - /url: "#ref-32"
+                - superscript
+              - link "[32]" [ref=e288]:
+                - /url: "#ref-32"
+          - generic [ref=e289]:
+            - text: In urban contexts, WOHA advances "macro-architecture, micro-urbanism," treating buildings as extensions of public realm with interwoven community spaces that encourage social cohesion and environmental stewardship, countering the alienation of conventional high-density housing.
+            - superscript [ref=e290] [cursor=pointer]:
+              - link:
+                - /url: "#ref-33"
+                - superscript
+              - link "[33]" [ref=e291]:
+                - /url: "#ref-33"
+            - text: Public housing retrofits, such as Duxton Plain and Dawson Estate, incorporate sky parks and flexible units to enhance livability, yielding empirical benefits like increased resident interaction and reduced energy demands through passive design.
+            - superscript [ref=e292] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e293]:
+                - /url: "#ref-31"
+            - text: Overall, these principles aim for nature-positive outcomes, where architecture actively contributes to ecological restoration amid rapid tropical urbanization.
+            - superscript [ref=e294] [cursor=pointer]:
+              - link:
+                - /url: "#ref-34"
+                - superscript
+              - link "[34]" [ref=e295]:
+                - /url: "#ref-34"
+          - heading "Integration of Sustainability and Biophilia Copy link to section Listen to this section" [level=3] [ref=e296]:
+            - text: Integration of Sustainability and Biophilia
+            - generic [ref=e297]:
+              - button "Copy link to section" [ref=e298] [cursor=pointer]:
+                - img [ref=e299]
+              - button "Listen to this section" [ref=e302] [cursor=pointer]:
+                - img [ref=e303]
+          - generic [ref=e306]:
+            - text: WOHA integrates
+            - link "sustainability" [ref=e307] [cursor=pointer]:
+              - /url: /page/Sustainability
+            - text: and biophilia through the strategic incorporation of
+            - link "vegetation" [ref=e308] [cursor=pointer]:
+              - /url: /page/Vegetation
+            - text: as an architectural element, leveraging plants for passive environmental control in tropical climates.
+            - link "Landscaping" [ref=e309] [cursor=pointer]:
+              - /url: /page/Landscaping
+            - text: serves as a functional facade that shades buildings from intense solar radiation, converting
+            - link "sunlight" [ref=e310] [cursor=pointer]:
+              - /url: /page/Sunlight
+            - text: into
+            - link "biomass" [ref=e311] [cursor=pointer]:
+              - /url: /page/Biomass
+            - text: via
+            - link "photosynthesis" [ref=e312] [cursor=pointer]:
+              - /url: /page/Photosynthesis
+            - text: and thereby reducing urban heat buildup and energy demands for cooling.
+            - superscript [ref=e313] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e314]:
+                - /url: "#ref-35"
+            - superscript [ref=e315] [cursor=pointer]:
+              - link:
+                - /url: "#ref-36"
+                - superscript
+              - link "[36]" [ref=e316]:
+                - /url: "#ref-36"
+          - generic [ref=e317]:
+            - text: This biophilic strategy extends beyond aesthetics to deliver ecosystem services, including air purification, noise attenuation, thermal regulation, and enhanced
+            - link "biodiversity" [ref=e318] [cursor=pointer]:
+              - /url: /page/Biodiversity
+            - text: by providing habitats for
+            - link "wildlife" [ref=e319] [cursor=pointer]:
+              - /url: /page/Wildlife
+            - text: . In the Oasia Downtown project, a low-maintenance green envelope lowers facade surface temperatures to around 25°C—versus 55°C for typical glass-and-steel constructions—while fostering a
+            - link "microclimate" [ref=e320] [cursor=pointer]:
+              - /url: /page/Microclimate
+            - text: that benefits surrounding urban areas.
+            - superscript [ref=e321] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e322]:
+                - /url: "#ref-35"
+            - superscript [ref=e323] [cursor=pointer]:
+              - link:
+                - /url: "#ref-37"
+                - superscript
+              - link "[37]" [ref=e324]:
+                - /url: "#ref-37"
+          - generic [ref=e325]:
+            - text: Passive design techniques complement these features, such as cross-ventilation, sun-shading via foliage, and
+            - link "rainwater harvesting" [ref=e326] [cursor=pointer]:
+              - /url: /page/Rainwater_harvesting
+            - text: ", which collectively minimize mechanical systems and"
+            - link "resource consumption" [ref=e327] [cursor=pointer]:
+              - /url: /page/Resource_consumption
+            - text: . The Alila Villas Uluwatu in
+            - link "Bali" [ref=e328] [cursor=pointer]:
+              - /url: /page/Bali
+            - text: exemplifies this by using vegetated facades to slash air-conditioning needs in a high-heat environment.
+            - superscript [ref=e329] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e330]:
+                - /url: "#ref-35"
+          - generic [ref=e331]:
+            - text: WOHA quantifies such integrations using metrics like the green plot
+            - link "ratio" [ref=e332] [cursor=pointer]:
+              - /url: /page/Ratio
+            - text: ", which assesses vegetation volume against built"
+            - link "floor area" [ref=e333] [cursor=pointer]:
+              - /url: /page/Floor_area
+            - text: to ensure substantive biophilic impact over superficial greening. Projects like Sky Green in
+            - link "Taichung" [ref=e334] [cursor=pointer]:
+              - /url: /page/Taichung
+            - text: achieve ratios exceeding 300%, with tiered planting on every level promoting resident wellness and natural ventilation.
+            - superscript [ref=e335] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e336]:
+                - /url: "#ref-35"
+            - superscript [ref=e337] [cursor=pointer]:
+              - link:
+                - /url: "#ref-38"
+                - superscript
+              - link "[38]" [ref=e338]:
+                - /url: "#ref-38"
+          - generic [ref=e339]:
+            - text: Co-founder Richard Hassell emphasizes that high-rise greenery yields biophilic benefits for broader city dwellers, not just occupants, by filtering pollutants and supporting faunal diversity, thus advancing urban
+            - link "stewardship" [ref=e340] [cursor=pointer]:
+              - /url: /page/Stewardship
+            - text: of
+            - link "nature" [ref=e341] [cursor=pointer]:
+              - /url: /page/Nature
+            - text: amid densification pressures.
+            - superscript [ref=e342] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e343]:
+                - /url: "#ref-35"
+            - superscript [ref=e344] [cursor=pointer]:
+              - link:
+                - /url: "#ref-39"
+                - superscript
+              - link "[39]" [ref=e345]:
+                - /url: "#ref-39"
+          - generic [ref=e346]:
+            - text: These principles underpin WOHA's vision of "garden city mega cities," where high-density structures prototype resilient,
+            - link "nature" [ref=e347] [cursor=pointer]:
+              - /url: /page/Nature
+            - text: "-infused"
+            - link "urbanism" [ref=e348] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: responsive to climate challenges and
+            - link "biodiversity" [ref=e349] [cursor=pointer]:
+              - /url: /page/Biodiversity
+            - text: decline.
+            - superscript [ref=e350] [cursor=pointer]:
+              - link:
+                - /url: "#ref-36"
+                - superscript
+              - link "[36]" [ref=e351]:
+                - /url: "#ref-36"
+          - heading "Economic and Practical Considerations Copy link to section Listen to this section" [level=3] [ref=e352]:
+            - text: Economic and Practical Considerations
+            - generic [ref=e353]:
+              - button "Copy link to section" [ref=e354] [cursor=pointer]:
+                - img [ref=e355]
+              - button "Listen to this section" [ref=e358] [cursor=pointer]:
+                - img [ref=e359]
+          - generic [ref=e362]:
+            - text: WOHA's integration of passive
+            - link "design" [ref=e363] [cursor=pointer]:
+              - /url: /page/Design
+            - text: principles, such as cross-ventilation, sun-shading, and rainwater recycling, prioritizes energy efficiency in tropical settings, reducing dependence on energy-intensive mechanical systems and yielding operational
+            - link "cost" [ref=e364] [cursor=pointer]:
+              - /url: /page/Cost
+            - text: savings over the building lifecycle.
+            - superscript [ref=e365] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e366]:
+                - /url: "#ref-30"
+            - superscript [ref=e367] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e368]:
+                - /url: "#ref-35"
+            - text: These strategies leverage
+            - link "local" [ref=e369] [cursor=pointer]:
+              - /url: /page/.local
+            - text: climatic conditions for natural cooling and daylighting, minimizing electricity use for
+            - link "air conditioning" [ref=e370] [cursor=pointer]:
+              - /url: /page/Air_conditioning
+            - text: ", which accounts for a significant portion of urban building energy demands in humid equatorial regions."
+            - superscript [ref=e371] [cursor=pointer]:
+              - link:
+                - /url: "#ref-40"
+                - superscript
+              - link "[40]" [ref=e372]:
+                - /url: "#ref-40"
+          - generic [ref=e373]:
+            - text: The firm's "More on Less" philosophy addresses economic viability by maximizing user comfort and spatial quality within resource constraints, particularly in land-scarce markets like
+            - link "Singapore" [ref=e374] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: where high
+            - link "real estate" [ref=e375] [cursor=pointer]:
+              - /url: /page/Real_estate
+            - text: costs incentivize efficient, high-density solutions.
+            - superscript [ref=e376] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e377]:
+                - /url: "#ref-30"
+            - text: This approach gained traction during economic slowdowns, such as the Asian
+            - link "financial crisis" [ref=e378] [cursor=pointer]:
+              - /url: /page/Financial_crisis
+            - text: ", when developers shifted toward designs enhancing perceived value to sustain sales amid reduced budgets."
+            - superscript [ref=e379] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e380]:
+                - /url: "#ref-30"
+            - text: Practical challenges in implementation include upfront investments in green facades and landscaping, offset by long-term gains in maintenance efficiency and occupant productivity, as evidenced in projects achieving certifications like Singapore's Green Mark Platinum for reduced energy profiles.
+            - superscript [ref=e381] [cursor=pointer]:
+              - link:
+                - /url: "#ref-41"
+                - superscript
+              - link "[41]" [ref=e382]:
+                - /url: "#ref-41"
+          - generic [ref=e383]:
+            - text: Regenerative
+            - link "urbanism" [ref=e384] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: concepts, including self-sufficiency in
+            - link "energy" [ref=e385] [cursor=pointer]:
+              - /url: /page/Energy
+            - text: and
+            - link "water" [ref=e386] [cursor=pointer]:
+              - /url: /page/Water
+            - text: through integrated systems, promote economic resilience by diminishing utility dependencies and fostering community amenities that boost property desirability without proportional cost escalations.
+            - superscript [ref=e387] [cursor=pointer]:
+              - link:
+                - /url: "#ref-42"
+                - superscript
+              - link "[42]" [ref=e388]:
+                - /url: "#ref-42"
+            - text: High-density prototypes like those in WOHA's portfolio demonstrate scalability, with bioclimatic envelopes enabling plot ratio efficiencies that align
+            - link "capital costs" [ref=e389] [cursor=pointer]:
+              - /url: /page/Capital_cost
+            - text: with urban intensification needs, rethinking traditional metrics focused solely on
+            - link "floor area" [ref=e390] [cursor=pointer]:
+              - /url: /page/Floor_area
+            - text: yields.
+            - superscript [ref=e391] [cursor=pointer]:
+              - link:
+                - /url: "#ref-43"
+                - superscript
+              - link "[43]" [ref=e392]:
+                - /url: "#ref-43"
+            - superscript [ref=e393] [cursor=pointer]:
+              - link:
+                - /url: "#ref-44"
+                - superscript
+              - link "[44]" [ref=e394]:
+                - /url: "#ref-44"
+          - heading "Notable Projects Copy link to section Listen to this section" [level=2] [ref=e395]:
+            - text: Notable Projects
+            - generic [ref=e396]:
+              - button "Copy link to section" [ref=e397] [cursor=pointer]:
+                - img [ref=e398]
+              - button "Listen to this section" [ref=e401] [cursor=pointer]:
+                - img [ref=e402]
+          - heading "Early Residential and Commercial Works Copy link to section Listen to this section" [level=3] [ref=e405]:
+            - text: Early Residential and Commercial Works
+            - generic [ref=e406]:
+              - button "Copy link to section" [ref=e407] [cursor=pointer]:
+                - img [ref=e408]
+              - button "Listen to this section" [ref=e411] [cursor=pointer]:
+                - img [ref=e412]
+          - generic [ref=e415]:
+            - text: WOHA's initial residential projects in the late
+            - link "1990s" [ref=e416] [cursor=pointer]:
+              - /url: /page/1990s
+            - text: and early
+            - link "2000s" [ref=e417] [cursor=pointer]:
+              - /url: /page/2000s
+            - text: focused on private houses and small-scale cluster developments in
+            - link "Singapore" [ref=e418] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: ", prioritizing natural ventilation, courtyard typologies, and adaptation to the"
+            - link "tropical climate" [ref=e419] [cursor=pointer]:
+              - /url: /page/Tropical_climate
+            - text: through features like open layouts and shaded communal spaces. These works established the firm's approach to increasing density while maintaining livability, often transforming low-density sites into multi-unit configurations without compromising user comfort. A notable example is a 2001 cluster housing project that accommodated 28 compact terrace and
+            - link "semi-detached" [ref=e420] [cursor=pointer]:
+              - /url: /page/Semi-detached
+            - text: houses on a site previously occupied by only two bungalows, organized around a central shared
+            - link "courtyard" [ref=e421] [cursor=pointer]:
+              - /url: /page/Courtyard
+            - text: to foster community interaction and
+            - link "passive cooling" [ref=e422] [cursor=pointer]:
+              - /url: /page/Passive_cooling
+            - text: .
+            - superscript [ref=e423] [cursor=pointer]:
+              - link:
+                - /url: "#ref-45"
+                - superscript
+              - link "[45]" [ref=e424]:
+                - /url: "#ref-45"
+          - generic [ref=e425]:
+            - text: In 2003, WOHA completed No. 1 Moulmein Rise, a 20-storey residential high-rise featuring innovative "monsoon windows" designed to capture
+            - link "prevailing winds" [ref=e426] [cursor=pointer]:
+              - /url: /page/Prevailing_winds
+            - text: for natural cross-ventilation, reducing reliance on mechanical systems and earning the President's Design Award in 2004. This project demonstrated early experimentation with vertical residential forms suited to urban constraints, integrating sky courts and greenery to mitigate heat gain in Singapore's dense environment. Private houses from this period, such as bespoke residences emphasizing indoor-outdoor connectivity, received publicity for their contextual responses to local site conditions and materials, though specific examples remain less documented in public records beyond general firm portfolios.
+            - superscript [ref=e427] [cursor=pointer]:
+              - link:
+                - /url: "#ref-21"
+                - superscript
+              - link "[21]" [ref=e428]:
+                - /url: "#ref-21"
+            - superscript [ref=e429] [cursor=pointer]:
+              - link:
+                - /url: "#ref-6"
+                - superscript
+              - link "[6]" [ref=e430]:
+                - /url: "#ref-6"
+          - generic [ref=e431]:
+            - text: Early commercial endeavors complemented these residential efforts, targeting
+            - link "adaptive reuse" [ref=e432] [cursor=pointer]:
+              - /url: /page/Adaptive_reuse
+            - text: and opportunistic additions to existing structures amid Singapore's evolving building regulations. A 2001 commercial project capitalized on revised gross floor area calculations to develop underutilized space within an established building, exemplifying pragmatic interventions that maximized economic value without full-scale new
+            - link "construction" [ref=e433] [cursor=pointer]:
+              - /url: /page/Construction
+            - text: . These works laid groundwork for WOHA's later mixed-use explorations, blending retail or
+            - link "office" [ref=e434] [cursor=pointer]:
+              - /url: /page/Office
+            - text: functions with heritage elements in central districts, though larger commercial commissions like entertainment complexes emerged toward the mid-2000s.
+            - superscript [ref=e435] [cursor=pointer]:
+              - link:
+                - /url: "#ref-45"
+                - superscript
+              - link "[45]" [ref=e436]:
+                - /url: "#ref-45"
+          - heading "Iconic High-Density Developments Copy link to section Listen to this section" [level=3] [ref=e437]:
+            - text: Iconic High-Density Developments
+            - generic [ref=e438]:
+              - button "Copy link to section" [ref=e439] [cursor=pointer]:
+                - img [ref=e440]
+              - button "Listen to this section" [ref=e443] [cursor=pointer]:
+                - img [ref=e444]
+          - generic [ref=e447]:
+            - text: Oasia Hotel Downtown, completed in 2016, exemplifies WOHA's approach to high-density
+            - link "urbanism" [ref=e448] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: in
+            - link "Singapore" [ref=e449] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: "'s"
+            - link "Central Business District" [ref=e450] [cursor=pointer]:
+              - /url: /page/Central_business_district
+            - text: ", featuring a 27-story structure with integrated sky gardens and a \""
+            - link "club sandwich" [ref=e451] [cursor=pointer]:
+              - /url: /page/Club_sandwich
+            - text: "\" layering of office, hotel, and residential spaces to maximize vertical"
+            - link "land use" [ref=e452] [cursor=pointer]:
+              - /url: /page/Land_use
+            - text: . The design incorporates over 40
+            - link "species" [ref=e453] [cursor=pointer]:
+              - /url: /page/Species
+            - text: of climbers, shrubs, and trees across its facade and terraces, achieving a green plot ratio of 1,300 percent—more than four times the mandated requirement—while facilitating natural ventilation through open atria and breezeways. This prototype for tropical intensification supports
+            - link "biodiversity" [ref=e454] [cursor=pointer]:
+              - /url: /page/Biodiversity
+            - text: in a dense context, with the building's perforated envelope allowing cross-breezes to reduce reliance on mechanical cooling.
+            - superscript [ref=e455] [cursor=pointer]:
+              - link:
+                - /url: "#ref-46"
+                - superscript
+              - link "[46]" [ref=e456]:
+                - /url: "#ref-46"
+            - superscript [ref=e457] [cursor=pointer]:
+              - link:
+                - /url: "#ref-47"
+                - superscript
+              - link "[47]" [ref=e458]:
+                - /url: "#ref-47"
+          - generic [ref=e459]:
+            - text: PARKROYAL Collection Pickering, opened in 2013, transforms a 16-story
+            - link "hotel" [ref=e460] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: site into a "hotel-in-a-garden" with cascading sky gardens and conservatories that double the site's green plot ratio to 1,000 percent, incorporating 15,000 square meters of landscaped greenery. The project employs contoured "petal" terraces inspired by tropical rock formations to shade and ventilate interiors, earning Singapore's Green Mark Platinum certification for its water-efficient systems and
+            - link "passive cooling" [ref=e461] [cursor=pointer]:
+              - /url: /page/Passive_cooling
+            - text: strategies in a high-occupancy urban
+            - link "hotel" [ref=e462] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: setting. By integrating landscaped podiums and elevated pools, it mitigates
+            - link "urban heat island" [ref=e463] [cursor=pointer]:
+              - /url: /page/Urban_heat_island
+            - text: effects amid surrounding high-rises.
+            - superscript [ref=e464] [cursor=pointer]:
+              - link:
+                - /url: "#ref-48"
+                - superscript
+              - link "[48]" [ref=e465]:
+                - /url: "#ref-48"
+            - superscript [ref=e466] [cursor=pointer]:
+              - link:
+                - /url: "#ref-49"
+                - superscript
+              - link "[49]" [ref=e467]:
+                - /url: "#ref-49"
+          - generic [ref=e468]:
+            - text: The Met in
+            - link "Bangkok" [ref=e469] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: ", a 66-story mixed-use tower completed in 2009, advances high-density tropical living through naturally ventilated sky courts and planted facades that perforate the envelope for indoor-outdoor flow, housing 300 residences, a"
+            - link "hotel" [ref=e470] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: ", and retail across 149 meters. Departing from sealed curtain-wall norms, its stacked villa-like units with deep balconies promote cross-ventilation, reducing energy demands in Thailand's humid climate, while communal sky gardens foster social interaction in a dense Sathorn Road location. The design's empirical focus on low-rise tropical precedents scaled vertically demonstrates feasibility for sustainable high-rises without excessive glazing."
+            - superscript [ref=e471] [cursor=pointer]:
+              - link:
+                - /url: "#ref-14"
+                - superscript
+              - link "[14]" [ref=e472]:
+                - /url: "#ref-14"
+            - superscript [ref=e473] [cursor=pointer]:
+              - link:
+                - /url: "#ref-15"
+                - superscript
+              - link "[15]" [ref=e474]:
+                - /url: "#ref-15"
+          - heading "Recent and Ongoing Initiatives Copy link to section Listen to this section" [level=3] [ref=e475]:
+            - text: Recent and Ongoing Initiatives
+            - generic [ref=e476]:
+              - button "Copy link to section" [ref=e477] [cursor=pointer]:
+                - img [ref=e478]
+              - button "Listen to this section" [ref=e481] [cursor=pointer]:
+                - img [ref=e482]
+          - generic [ref=e485]:
+            - text: In 2025, WOHA completed Phase 1 of the
+            - link "Punggol" [ref=e486] [cursor=pointer]:
+              - /url: /page/Punggol
+            - text: Digital District masterplan, which includes the new campus for the
+            - link "Singapore Institute of Technology" [ref=e487] [cursor=pointer]:
+              - /url: /page/Singapore_Institute_of_Technology
+            - text: (SIT) in
+            - link "Punggol" [ref=e488] [cursor=pointer]:
+              - /url: /page/Punggol
+            - text: North,
+            - link "Singapore" [ref=e489] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: . The 91,000-square-meter campus integrates with an existing
+            - link "secondary forest" [ref=e490] [cursor=pointer]:
+              - /url: /page/Secondary_forest
+            - text: ", featuring elevated learning pods, communal spaces, and green corridors that connect academic facilities to natural surroundings, emphasizing applied learning and industry ties. Fully operational since May 2025 with approximately 11,000 students and 1,300 staff, it officially launched on September 16, 2025, as a model for sustainable educational urbanism in dense tropical environments."
+            - superscript [ref=e491] [cursor=pointer]:
+              - link:
+                - /url: "#ref-50"
+                - superscript
+              - link "[50]" [ref=e492]:
+                - /url: "#ref-50"
+            - superscript [ref=e493] [cursor=pointer]:
+              - link:
+                - /url: "#ref-51"
+                - superscript
+              - link "[51]" [ref=e494]:
+                - /url: "#ref-51"
+          - generic [ref=e495]:
+            - text: NS Square, an ongoing multi-purpose venue in
+            - link "Marina Bay, Singapore" [ref=e496] [cursor=pointer]:
+              - /url: /page/Marina_Bay,_Singapore
+            - text: ", is under construction to replace the existing"
+            - link "Float @ Marina Bay" [ref=e497] [cursor=pointer]:
+              - /url: /page/The_Float_@_Marina_Bay
+            - text: platform, with completion targeted for 2027. Designed in collaboration with Populous, the project encompasses a 30,000-capacity circular amphitheater, National Service-themed galleries, community sports facilities including water-based activities like dragon boating, and public promenades along the waterfront. As of October 2025, construction has reached the halfway mark, prioritizing flexible spaces for events,
+            - link "recreation" [ref=e498] [cursor=pointer]:
+              - /url: /page/Recreation
+            - text: ", and daily public use while enhancing urban connectivity to the bay."
+            - superscript [ref=e499] [cursor=pointer]:
+              - link:
+                - /url: "#ref-52"
+                - superscript
+              - link "[52]" [ref=e500]:
+                - /url: "#ref-52"
+            - superscript [ref=e501] [cursor=pointer]:
+              - link:
+                - /url: "#ref-53"
+                - superscript
+              - link "[53]" [ref=e502]:
+                - /url: "#ref-53"
+          - generic [ref=e503]:
+            - text: Forbes Residences in
+            - link "Applecross" [ref=e504] [cursor=pointer]:
+              - /url: /page/Applecross
+            - text: ", Perth,"
+            - link "Australia" [ref=e505] [cursor=pointer]:
+              - /url: /page/Australia
+            - text: ", represents WOHA's expansion into medium-density suburban typology, with construction progressing as of August 2025. The development comprises 34 luxury apartments across four tower-like volumes connected by sky gardens, incorporating vertical neighborhoods of three floors each to blend high-density living with low-rise suburban character through contextual massing and greenery. This initiative adapts WOHA's biophilic principles to Australian contexts, generating amenities like enhanced views and park integration on a 1-hectare site."
+            - superscript [ref=e506] [cursor=pointer]:
+              - link:
+                - /url: "#ref-54"
+                - superscript
+              - link "[54]" [ref=e507]:
+                - /url: "#ref-54"
+            - superscript [ref=e508] [cursor=pointer]:
+              - link:
+                - /url: "#ref-55"
+                - superscript
+              - link "[55]" [ref=e509]:
+                - /url: "#ref-55"
+          - heading "Recognition and Impact Copy link to section Listen to this section" [level=2] [ref=e510]:
+            - text: Recognition and Impact
+            - generic [ref=e511]:
+              - button "Copy link to section" [ref=e512] [cursor=pointer]:
+                - img [ref=e513]
+              - button "Listen to this section" [ref=e516] [cursor=pointer]:
+                - img [ref=e517]
+          - heading "Awards and Professional Accolades Copy link to section Listen to this section" [level=3] [ref=e520]:
+            - text: Awards and Professional Accolades
+            - generic [ref=e521]:
+              - button "Copy link to section" [ref=e522] [cursor=pointer]:
+                - img [ref=e523]
+              - button "Listen to this section" [ref=e526] [cursor=pointer]:
+                - img [ref=e527]
+          - generic [ref=e530]:
+            - text: WOHA has garnered significant recognition for its contributions to tropical
+            - link "urbanism" [ref=e531] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: and sustainable high-density architecture, with awards spanning international and regional bodies. In 2007, the firm's Moulmein Rise Residential Building in
+            - link "Singapore" [ref=e532] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: received the
+            - link "Aga Khan Award for Architecture" [ref=e533] [cursor=pointer]:
+              - /url: /page/Aga_Khan_Award_for_Architecture
+            - text: ", praised for pioneering the integration of vertical greenery systems in high-rise tropical contexts to enhance climatic performance and"
+            - link "biodiversity" [ref=e534] [cursor=pointer]:
+              - /url: /page/Biodiversity
+            - text: .
+            - superscript [ref=e535] [cursor=pointer]:
+              - link:
+                - /url: "#ref-56"
+                - superscript
+              - link "[56]" [ref=e536]:
+                - /url: "#ref-56"
+            - superscript [ref=e537] [cursor=pointer]:
+              - link:
+                - /url: "#ref-57"
+                - superscript
+              - link "[57]" [ref=e538]:
+                - /url: "#ref-57"
+          - generic [ref=e539]:
+            - text: The Royal Institute of British Architects awarded WOHA the 2011 Lubetkin Prize for The Met, a 66-story residential tower in
+            - link "Bangkok" [ref=e540] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: ","
+            - link "Thailand" [ref=e541] [cursor=pointer]:
+              - /url: /page/Thailand
+            - text: ", highlighting its innovative sky gardens and"
+            - link "sustainable design" [ref=e542] [cursor=pointer]:
+              - /url: /page/Sustainable_design
+            - text: that reduced energy use through natural ventilation and shading.
+            - superscript [ref=e543] [cursor=pointer]:
+              - link:
+                - /url: "#ref-58"
+                - superscript
+              - link "[58]" [ref=e544]:
+                - /url: "#ref-58"
+            - superscript [ref=e545] [cursor=pointer]:
+              - link:
+                - /url: "#ref-14"
+                - superscript
+              - link "[14]" [ref=e546]:
+                - /url: "#ref-14"
+          - generic [ref=e547]:
+            - text: In the realm of tall building innovation, WOHA's Oasia
+            - link "Hotel" [ref=e548] [cursor=pointer]:
+              - /url: /page/Hotel
+            - text: Downtown in
+            - link "Singapore" [ref=e549] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: earned the Council on Tall Buildings and Urban Habitat (CTBUH) Best Tall Building Worldwide award in 2018, noted for its verdant facade comprising 40 species of climbers and shrubs that improved thermal regulation in a dense urban setting.
+            - superscript [ref=e550] [cursor=pointer]:
+              - link:
+                - /url: "#ref-59"
+                - superscript
+              - link "[59]" [ref=e551]:
+                - /url: "#ref-59"
+            - text: The firm's Kampung Admiralty project received the President's
+            - link "Design" [ref=e552] [cursor=pointer]:
+              - /url: /page/Design
+            - text: Award Design of the Year from
+            - link "Singapore" [ref=e553] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: "'s Design"
+            - link "Singapore" [ref=e554] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: Council, recognizing its multifaceted integration of
+            - link "housing" [ref=e555] [cursor=pointer]:
+              - /url: /page/Housing
+            - text: ", healthcare, and"
+            - link "community gardening" [ref=e556] [cursor=pointer]:
+              - /url: /page/Community_gardening
+            - text: within a single vertical site.
+            - superscript [ref=e557] [cursor=pointer]:
+              - link:
+                - /url: "#ref-3"
+                - superscript
+              - link "[3]" [ref=e558]:
+                - /url: "#ref-3"
+          - generic [ref=e559]:
+            - text: More recently, Pan Pacific Orchard in
+            - link "Singapore" [ref=e560] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: was named the 2024 CTBUH Best Tall Building Worldwide, alongside three Awards of Excellence for Space Within, Best Tall Building 100-199 meters, and Best Tall Building
+            - link "Asia" [ref=e561] [cursor=pointer]:
+              - /url: /page/Asia
+            - text: ", underscoring WOHA's advancements in hybrid hotel typology with embedded green spaces."
+            - superscript [ref=e562] [cursor=pointer]:
+              - link:
+                - /url: "#ref-4"
+                - superscript
+              - link "[4]" [ref=e563]:
+                - /url: "#ref-4"
+            - text: In 2025, the firm's restoration of 21 Carpenter shophouses into a
+            - link "boutique hotel" [ref=e564] [cursor=pointer]:
+              - /url: /page/Boutique_hotel
+            - text: won a President's
+            - link "Design" [ref=e565] [cursor=pointer]:
+              - /url: /page/Design
+            - link "Award" [ref=e566] [cursor=pointer]:
+              - /url: /page/Award
+            - text: ", commended for preserving heritage while incorporating perforated screens with historical motifs."
+            - superscript [ref=e567] [cursor=pointer]:
+              - link:
+                - /url: "#ref-60"
+                - superscript
+              - link "[60]" [ref=e568]:
+                - /url: "#ref-60"
+            - text: These accolades reflect WOHA's consistent emphasis on empirical
+            - link "sustainability" [ref=e569] [cursor=pointer]:
+              - /url: /page/Sustainability
+            - text: metrics, such as reduced cooling loads via biophilic elements, validated through post-occupancy evaluations in tropical climates.
+            - superscript [ref=e570] [cursor=pointer]:
+              - link:
+                - /url: "#ref-20"
+                - superscript
+              - link "[20]" [ref=e571]:
+                - /url: "#ref-20"
+          - heading "Influence on Global Architecture Copy link to section Listen to this section" [level=3] [ref=e572]:
+            - text: Influence on Global Architecture
+            - generic [ref=e573]:
+              - button "Copy link to section" [ref=e574] [cursor=pointer]:
+                - img [ref=e575]
+              - button "Listen to this section" [ref=e578] [cursor=pointer]:
+                - img [ref=e579]
+          - generic [ref=e582]:
+            - text: WOHA's tropical
+            - link "urbanism" [ref=e583] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: ", characterized by extensive greenery integration and passive environmental strategies in high-density structures, has informed global discussions on"
+            - link "sustainable architecture" [ref=e584] [cursor=pointer]:
+              - /url: /page/Sustainable_architecture
+            - text: for equatorial megacities. Their 2016 exhibition "Garden City Mega City" presented prototypes addressing
+            - link "population growth" [ref=e585] [cursor=pointer]:
+              - /url: /page/Population_growth
+            - text: and tropical preservation, influencing
+            - link "urban design" [ref=e586] [cursor=pointer]:
+              - /url: /page/Urban_design
+            - text: paradigms amid rising global temperatures.
+            - superscript [ref=e587] [cursor=pointer]:
+              - link:
+                - /url: "#ref-61"
+                - superscript
+              - link "[61]" [ref=e588]:
+                - /url: "#ref-61"
+            - text: This approach, which reimagines skyscrapers as vegetated ecosystems, has been applied in projects across more than 20 countries, demonstrating scalability beyond Singapore's constraints.
+            - superscript [ref=e589] [cursor=pointer]:
+              - link:
+                - /url: "#ref-30"
+                - superscript
+              - link "[30]" [ref=e590]:
+                - /url: "#ref-30"
+          - generic [ref=e591]:
+            - text: International commissions, such as Alila Villas Uluwatu in
+            - link "Bali" [ref=e592] [cursor=pointer]:
+              - /url: /page/Bali
+            - text: ","
+            - link "Indonesia" [ref=e593] [cursor=pointer]:
+              - /url: /page/Indonesia
+            - text: (2009), export WOHA's biophilic principles to resort and
+            - link "hospitality" [ref=e594] [cursor=pointer]:
+              - /url: /page/Hospitality
+            - text: sectors, blending
+            - link "architecture" [ref=e595] [cursor=pointer]:
+              - /url: /page/Architecture
+            - text: with regenerative landscapes to mitigate environmental impact in tropical settings.
+            - superscript [ref=e596] [cursor=pointer]:
+              - link:
+                - /url: "#ref-35"
+                - superscript
+              - link "[35]" [ref=e597]:
+                - /url: "#ref-35"
+            - text: Similarly, the Sky Green mixed-use development in
+            - link "Taichung" [ref=e598] [cursor=pointer]:
+              - /url: /page/Taichung
+            - text: ","
+            - link "Taiwan" [ref=e599] [cursor=pointer]:
+              - /url: /page/Taiwan
+            - text: ", adapts high-density garden city models to vibrant urban neighborhoods, prioritizing green amenities and community interconnectivity."
+            - superscript [ref=e600] [cursor=pointer]:
+              - link:
+                - /url: "#ref-62"
+                - superscript
+              - link "[62]" [ref=e601]:
+                - /url: "#ref-62"
+            - text: These ventures in
+            - link "Indonesia" [ref=e602] [cursor=pointer]:
+              - /url: /page/Indonesia
+            - text: ","
+            - link "China" [ref=e603] [cursor=pointer]:
+              - /url: /page/China
+            - text: ","
+            - link "Australia" [ref=e604] [cursor=pointer]:
+              - /url: /page/Australia
+            - text: ","
+            - link "Bangladesh" [ref=e605] [cursor=pointer]:
+              - /url: /page/Bangladesh
+            - text: ", and"
+            - link "Southeast Asia" [ref=e606] [cursor=pointer]:
+              - /url: /page/Southeast_Asia
+            - text: validate the firm's methodologies for diverse climates, fostering adoption of nature-integrated high-rises elsewhere.
+            - superscript [ref=e607] [cursor=pointer]:
+              - link:
+                - /url: "#ref-7"
+                - superscript
+              - link "[7]" [ref=e608]:
+                - /url: "#ref-7"
+          - generic [ref=e609]:
+            - text: WOHA's emphasis on "nature-positive vertical urbanism" has elevated
+            - link "biophilic design" [ref=e610] [cursor=pointer]:
+              - /url: /page/Biophilic_design
+            - text: as a standard for tall buildings, inspiring firms worldwide to prioritize
+            - link "ecosystem" [ref=e611] [cursor=pointer]:
+              - /url: /page/Ecosystem
+            - text: services and human-nature connections in dense contexts.
+            - superscript [ref=e612] [cursor=pointer]:
+              - link:
+                - /url: "#ref-34"
+                - superscript
+              - link "[34]" [ref=e613]:
+                - /url: "#ref-34"
+            - text: "Exhibitions like \"WOHA: Breathing Architecture\" at the"
+            - link "Skyscraper" [ref=e614] [cursor=pointer]:
+              - /url: /page/Skyscraper
+            - text: Museum (2020) and global accolades, including the 2023 President's Design Award for societal transformation, have disseminated these strategies, positioning WOHA as a reference for climate-resilient
+            - link "urbanism" [ref=e615] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: .
+            - superscript [ref=e616] [cursor=pointer]:
+              - link:
+                - /url: "#ref-63"
+                - superscript
+              - link "[63]" [ref=e617]:
+                - /url: "#ref-63"
+            - superscript [ref=e618] [cursor=pointer]:
+              - link:
+                - /url: "#ref-64"
+                - superscript
+              - link "[64]" [ref=e619]:
+                - /url: "#ref-64"
+          - heading "Empirical Performance of Designs Copy link to section Listen to this section" [level=3] [ref=e620]:
+            - text: Empirical Performance of Designs
+            - generic [ref=e621]:
+              - button "Copy link to section" [ref=e622] [cursor=pointer]:
+                - img [ref=e623]
+              - button "Listen to this section" [ref=e626] [cursor=pointer]:
+                - img [ref=e627]
+          - generic [ref=e630]:
+            - text: WOHA's designs have demonstrated measurable improvements in thermal performance through integrated skyrise greenery and natural ventilation strategies. At Oasia Hotel Downtown in
+            - link "Singapore" [ref=e631] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: ", completed in 2016, the verdant façade maintains surface temperatures up to 9°C cooler than adjacent buildings, as measured by iButton data loggers during post-construction evaluations."
+            - superscript [ref=e632] [cursor=pointer]:
+              - link:
+                - /url: "#ref-65"
+                - superscript
+              - link "[65]" [ref=e633]:
+                - /url: "#ref-65"
+            - text: This cooling effect stems from the building's 1,100% Green Plot Ratio, which incorporates extensive sky gardens and a porous
+            - link "envelope" [ref=e634] [cursor=pointer]:
+              - /url: /page/Envelope
+            - text: facilitating airflow, reducing reliance on mechanical cooling in Singapore's
+            - link "tropical climate" [ref=e635] [cursor=pointer]:
+              - /url: /page/Tropical_climate
+            - text: .
+            - superscript [ref=e636] [cursor=pointer]:
+              - link:
+                - /url: "#ref-66"
+                - superscript
+              - link "[66]" [ref=e637]:
+                - /url: "#ref-66"
+          - generic [ref=e638]:
+            - text: Energy efficiency metrics from
+            - link "Parkroyal Collection Pickering" [ref=e639] [cursor=pointer]:
+              - /url: /page/Parkroyal_Collection_Pickering
+            - text: ", opened in 2013, indicate projected annual savings of 3,117,212 kilowatt-hours through features like photovoltaic arrays,"
+            - link "rainwater harvesting" [ref=e640] [cursor=pointer]:
+              - /url: /page/Rainwater_harvesting
+            - text: ", and automated shading systems, contributing to its BCA Green Mark Platinum certification."
+            - superscript [ref=e641] [cursor=pointer]:
+              - link:
+                - /url: "#ref-67"
+                - superscript
+              - link "[67]" [ref=e642]:
+                - /url: "#ref-67"
+            - text: The hotel's sky gardens and green walls enhance
+            - link "passive cooling" [ref=e643] [cursor=pointer]:
+              - /url: /page/Passive_cooling
+            - text: ", aligning with broader simulations showing reduced HVAC loads in high-density tropical structures. Independent studies on similar WOHA-inspired forms confirm that skyrise outdoor spaces ("
+            - link "SOS" [ref=e644] [cursor=pointer]:
+              - /url: /page/SOS
+            - text: ) in mid- and high-rise buildings create microclimates with improved
+            - link "thermal comfort" [ref=e645] [cursor=pointer]:
+              - /url: /page/Thermal_comfort
+            - text: ", lowering outdoor air temperatures by several degrees compared to ungreened urban facades."
+            - superscript [ref=e646] [cursor=pointer]:
+              - link:
+                - /url: "#ref-68"
+                - superscript
+              - link "[68]" [ref=e647]:
+                - /url: "#ref-68"
+          - generic [ref=e648]:
+            - text: Biodiversity outcomes have been quantified via multi-species surveys at WOHA projects, including Oasia Hotel Downtown and
+            - link "Parkroyal Collection Pickering" [ref=e649] [cursor=pointer]:
+              - /url: /page/Parkroyal_Collection_Pickering
+            - text: ", where four seasonal assessments per site recorded diverse"
+            - link "fauna" [ref=e650] [cursor=pointer]:
+              - /url: /page/Fauna
+            - text: ", predominantly"
+            - link "insects" [ref=e651] [cursor=pointer]:
+              - /url: /page/Insect
+            - text: ", alongside birds and reptiles."
+            - superscript [ref=e652] [cursor=pointer]:
+              - link:
+                - /url: "#ref-65"
+                - superscript
+              - link "[65]" [ref=e653]:
+                - /url: "#ref-65"
+            - text: These sites achieve ecosystem services such as enhanced
+            - link "carbon sequestration" [ref=e654] [cursor=pointer]:
+              - /url: /page/Carbon_sequestration
+            - text: and air
+            - link "filtration" [ref=e655] [cursor=pointer]:
+              - /url: /page/Filtration
+            - text: ", benchmarked against pristine habitats using tools like ENVI-met modeling, though insects' dominance highlights the need for specialized monitoring protocols. Oasia's"
+            - link "design" [ref=e656] [cursor=pointer]:
+              - /url: /page/Design
+            - text: replaces a former
+            - link "park" [ref=e657] [cursor=pointer]:
+              - /url: /page/Park
+            - text: with approximately 10 times the original greenery, fostering
+            - link "urban wildlife" [ref=e658] [cursor=pointer]:
+              - /url: /page/Urban_wildlife
+            - text: corridors in a high-density context.
+            - superscript [ref=e659] [cursor=pointer]:
+              - link:
+                - /url: "#ref-69"
+                - superscript
+              - link "[69]" [ref=e660]:
+                - /url: "#ref-69"
+          - generic [ref=e661]:
+            - text: While certifications like Green Mark validate design intent, empirical post-occupancy data remains limited to firm-led evaluations and select academic studies, with calls for expanded independent metrics on long-term occupant satisfaction and operational costs. WOHA's proprietary
+            - link "Soil" [ref=e662] [cursor=pointer]:
+              - /url: /page/Soil
+            - text: Plot Ratio metric—total soil area divided by plot area—provides a novel proxy for biophilic density, applied across projects to correlate
+            - link "greening" [ref=e663] [cursor=pointer]:
+              - /url: /page/Greening
+            - text: with performance gains.
+            - superscript [ref=e664] [cursor=pointer]:
+              - link:
+                - /url: "#ref-65"
+                - superscript
+              - link "[65]" [ref=e665]:
+                - /url: "#ref-65"
+            - text: Overall, these results support causal links between biophilic integration and reduced environmental loads, though scalability to non-tropical contexts requires further validation.
+          - heading "Criticisms and Controversies Copy link to section Listen to this section" [level=2] [ref=e666]:
+            - text: Criticisms and Controversies
+            - generic [ref=e667]:
+              - button "Copy link to section" [ref=e668] [cursor=pointer]:
+                - img [ref=e669]
+              - button "Listen to this section" [ref=e672] [cursor=pointer]:
+                - img [ref=e673]
+          - heading "Challenges to Model Universality Copy link to section Listen to this section" [level=3] [ref=e676]:
+            - text: Challenges to Model Universality
+            - generic [ref=e677]:
+              - button "Copy link to section" [ref=e678] [cursor=pointer]:
+                - img [ref=e679]
+              - button "Listen to this section" [ref=e682] [cursor=pointer]:
+                - img [ref=e683]
+          - generic [ref=e686]:
+            - text: WOHA's architectural approach, which integrates high-density typologies with extensive sky gardens, natural ventilation, and communal amenities to mitigate tropical urban heat, faces challenges in scalability beyond equatorial contexts. The firm's designs presuppose hot-humid climates where passive strategies like porous facades and vegetated buffers reduce air-conditioning loads by up to 30-50% in projects such as Oasia Downtown.
+            - superscript [ref=e687] [cursor=pointer]:
+              - link:
+                - /url: "#ref-31"
+                - superscript
+              - link "[31]" [ref=e688]:
+                - /url: "#ref-31"
+            - text: However, in temperate or arid regions, these elements could exacerbate heating demands or
+            - link "water scarcity" [ref=e689] [cursor=pointer]:
+              - /url: /page/Water_scarcity
+            - text: for
+            - link "irrigation" [ref=e690] [cursor=pointer]:
+              - /url: /page/Irrigation
+            - text: ", as empirical studies on biophilic high-rises indicate diminished thermal benefits outside humid zones."
+            - superscript [ref=e691] [cursor=pointer]:
+              - link:
+                - /url: "#ref-70"
+                - superscript
+              - link "[70]" [ref=e692]:
+                - /url: "#ref-70"
+            - text: WOHA's built portfolio, comprising over 40 major projects, remains concentrated in
+            - link "Southeast Asia" [ref=e693] [cursor=pointer]:
+              - /url: /page/Southeast_Asia
+            - text: and subtropical areas like
+            - link "Bangladesh" [ref=e694] [cursor=pointer]:
+              - /url: /page/Bangladesh
+            - text: and
+            - link "China" [ref=e695] [cursor=pointer]:
+              - /url: /page/China
+            - text: ", with limited adaptations tested in cooler Australian sites, underscoring unproven versatility."
+            - superscript [ref=e696] [cursor=pointer]:
+              - link:
+                - /url: "#ref-1"
+                - superscript
+              - link "[1]" [ref=e697]:
+                - /url: "#ref-1"
+          - generic [ref=e698]:
+            - text: Critics argue that the model's efficacy hinges on Singapore's centralized
+            - link "governance" [ref=e699] [cursor=pointer]:
+              - /url: /page/Governance
+            - text: ", which enforces plot ratio bonuses for green features and mandates integrated public-private developments, enabling communal spaces that foster social cohesion."
+            - superscript [ref=e700] [cursor=pointer]:
+              - link:
+                - /url: "#ref-71"
+                - superscript
+              - link "[71]" [ref=e701]:
+                - /url: "#ref-71"
+            - text: Outside this framework, as seen in The Met,
+            - link "Bangkok" [ref=e702] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: (completed 2009), and Trump Tower,
+            - link "Mumbai" [ref=e703] [cursor=pointer]:
+              - /url: /page/Mumbai
+            - text: "(completed 2016), similar typologies devolve into isolated luxury enclaves: the former's sky terraces are severed from street life by eight-lane roads and ample parking, while the latter's 7-acre private park and 1,200-car garage prioritize elite isolation over urban connectivity, negating intended"
+            - link "sustainability" [ref=e704] [cursor=pointer]:
+              - /url: /page/Sustainability
+            - text: .
+            - superscript [ref=e705] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e706]:
+                - /url: "#ref-72"
+            - text: Residents in fragmented markets often override passive designs with mechanical cooling, rendering greenery superficial branding rather than functional ecology.
+            - superscript [ref=e707] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e708]:
+                - /url: "#ref-72"
+          - generic [ref=e709]:
+            - text: Exporting Singapore's planning paradigm, on which WOHA's successes depend, encounters structural barriers in decentralized systems lacking land nationalization or
+            - link "enforcement" [ref=e710] [cursor=pointer]:
+              - /url: /page/Enforcement
+            - text: mechanisms; emulators like Chinese cities adapt selectively but grapple with
+            - link "enforcement" [ref=e711] [cursor=pointer]:
+              - /url: /page/Enforcement
+            - text: gaps and cultural resistance to
+            - link "density" [ref=e712] [cursor=pointer]:
+              - /url: /page/Density
+            - text: .
+            - superscript [ref=e713] [cursor=pointer]:
+              - link:
+                - /url: "#ref-73"
+                - superscript
+              - link "[73]" [ref=e714]:
+                - /url: "#ref-73"
+            - text: "Construction variances further complicate replication: Singapore's rigorous standards yield refined outcomes, whereas regional practices yield coarser executions that erode aesthetic and performative intent."
+            - superscript [ref=e715] [cursor=pointer]:
+              - link:
+                - /url: "#ref-74"
+                - superscript
+              - link "[74]" [ref=e716]:
+                - /url: "#ref-74"
+            - text: These constraints suggest WOHA's "vertical village" paradigm, while innovative for resource-scarce tropics under authoritarian coordination, resists universalization without equivalent institutional preconditions.
+            - superscript [ref=e717] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e718]:
+                - /url: "#ref-72"
+          - heading "Specific Project Disputes Copy link to section Listen to this section" [level=3] [ref=e719]:
+            - text: Specific Project Disputes
+            - generic [ref=e720]:
+              - button "Copy link to section" [ref=e721] [cursor=pointer]:
+                - img [ref=e722]
+              - button "Listen to this section" [ref=e725] [cursor=pointer]:
+                - img [ref=e726]
+          - generic [ref=e729]:
+            - text: As noted by critic
+            - link "Nikil Saval" [ref=e730] [cursor=pointer]:
+              - /url: /page/Nikil_Saval
+            - text: in a 2016 analysis, WOHA's The Met condominium tower in
+            - link "Bangkok" [ref=e731] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: ", completed in 2009, exemplifies tensions between architectural innovation and site-specific urban challenges. The 66-story structure incorporates natural cross-ventilation and creeper-shaded facades to adapt low-rise tropical housing principles to high-density living, yet its positioning overlooks the eight-lane Sathorn Road, which Saval contends effectively isolates residents and compels reliance on vehicles for short trips, such as reaching a nearby cinema."
+            - superscript [ref=e732] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e733]:
+                - /url: "#ref-72"
+            - superscript [ref=e734] [cursor=pointer]:
+              - link:
+                - /url: "#ref-14"
+                - superscript
+              - link "[14]" [ref=e735]:
+                - /url: "#ref-14"
+          - generic [ref=e736]:
+            - text: Similarly, for Trump Tower Mumbai—WOHA's contribution to the Lodha Park development, a 78-story residential skyscraper completed in 2021—the firm's initial scheme featured a naturally ventilated lobby suited to Mumbai's climate, but this was overridden by the Trump Organization's mandate for air-conditioning.
+            - superscript [ref=e737] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e738]:
+                - /url: "#ref-72"
+            - superscript [ref=e739] [cursor=pointer]:
+              - link:
+                - /url: "#ref-75"
+                - superscript
+              - link "[75]" [ref=e740]:
+                - /url: "#ref-75"
+            - text: Saval highlighted the inclusion of roughly 1,200 parking spaces for about 300 units as exacerbating car dependency in a site originally envisioned under urban planner Charles Correa's 1990s framework for mixed public amenities, shifting toward privatized luxury.
+            - superscript [ref=e741] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e742]:
+                - /url: "#ref-72"
+            - superscript [ref=e743] [cursor=pointer]:
+              - link:
+                - /url: "#ref-76"
+                - superscript
+              - link "[76]" [ref=e744]:
+                - /url: "#ref-76"
+          - generic [ref=e745]:
+            - text: These instances reflect broader debates on balancing client-driven modifications and infrastructural realities against WOHA's prototypical emphasis on ventilation and greenery, though no formal legal challenges or
+            - link "community" [ref=e746] [cursor=pointer]:
+              - /url: /page/Community
+            - text: protests have been documented for either project.
+            - superscript [ref=e747] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e748]:
+                - /url: "#ref-72"
+          - heading "Debates on Cost-Effectiveness and Over-Reliance on Planning Copy link to section Listen to this section" [level=3] [ref=e749]:
+            - text: Debates on Cost-Effectiveness and Over-Reliance on Planning
+            - generic [ref=e750]:
+              - button "Copy link to section" [ref=e751] [cursor=pointer]:
+                - img [ref=e752]
+              - button "Listen to this section" [ref=e755] [cursor=pointer]:
+                - img [ref=e756]
+          - generic [ref=e759]:
+            - text: Critics have argued that WOHA's emphasis on extensive greenery integration and
+            - link "passive ventilation" [ref=e760] [cursor=pointer]:
+              - /url: /page/Passive_ventilation
+            - text: systems in high-density towers incurs substantial upfront construction costs, potentially undermining cost-effectiveness in market-driven contexts without public subsidies. For instance, projects like Oasia Downtown (completed 2016) feature dense vegetative facades requiring specialized planters and structural reinforcements, which, while low-maintenance per WOHA's low-tech approach, demand higher initial investments compared to conventional high-rises.
+            - superscript [ref=e761] [cursor=pointer]:
+              - link:
+                - /url: "#ref-77"
+                - superscript
+              - link "[77]" [ref=e762]:
+                - /url: "#ref-77"
+            - text: In luxury developments such as
+            - link "Trump Tower" [ref=e763] [cursor=pointer]:
+              - /url: /page/Trump_Tower
+            - link "Mumbai" [ref=e764] [cursor=pointer]:
+              - /url: /page/Mumbai
+            - text: (proposed adaptations),
+            - link "sustainability" [ref=e765] [cursor=pointer]:
+              - /url: /page/Sustainability
+            - text: features like natural ventilation were compromised for air-conditioning to meet client demands, highlighting how economic pressures can erode the model's purported long-term savings on energy.
+            - superscript [ref=e766] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e767]:
+                - /url: "#ref-72"
+          - generic [ref=e768]:
+            - text: Debates on over-reliance on planning center on WOHA's model's dependence on Singapore's centralized urban framework, including the Urban Redevelopment Authority's (URA) mandates for
+            - link "density" [ref=e769] [cursor=pointer]:
+              - /url: /page/Density
+            - text: and
+            - link "landscaping" [ref=e770] [cursor=pointer]:
+              - /url: /page/Landscaping
+            - text: ", which facilitate public housing prototypes like SkyVille@Dawson (2015) with integrated sky villages. Outside this system, as in The Met ("
+            - link "Bangkok" [ref=e771] [cursor=pointer]:
+              - /url: /page/Bangkok
+            - text: ", 2009), fragmented"
+            - link "land use" [ref=e772] [cursor=pointer]:
+              - /url: /page/Land_use
+            - text: and traffic isolation render communal terraces less viable, necessitating vehicular access that contradicts the design's walkable intent.
+            - superscript [ref=e773] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e774]:
+                - /url: "#ref-72"
+            - text: Analysts contend this ties WOHA's successes to Singapore's communitarian
+            - link "governance" [ref=e775] [cursor=pointer]:
+              - /url: /page/Governance
+            - text: and coordinated infrastructure, limiting scalability to less regulated environments where private developers prioritize profit over holistic
+            - link "urbanism" [ref=e776] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: .
+            - superscript [ref=e777] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e778]:
+                - /url: "#ref-72"
+          - generic [ref=e779]:
+            - text: Proponents counter that empirical performance in
+            - link "Singapore" [ref=e780] [cursor=pointer]:
+              - /url: /page/Singapore
+            - text: ", such as reduced energy use in HDB blocks via"
+            - link "monsoon" [ref=e781] [cursor=pointer]:
+              - /url: /page/Monsoon
+            - text: windows, demonstrates viability when
+            - link "planning" [ref=e782] [cursor=pointer]:
+              - /url: /page/Planning
+            - text: aligns incentives, but acknowledge adaptations abroad often dilute core principles due to site-specific constraints.
+            - superscript [ref=e783] [cursor=pointer]:
+              - link:
+                - /url: "#ref-72"
+                - superscript
+              - link "[72]" [ref=e784]:
+                - /url: "#ref-72"
+            - text: These debates underscore a tension between innovative tropical
+            - link "urbanism" [ref=e785] [cursor=pointer]:
+              - /url: /page/Urbanism
+            - text: and pragmatic economics, with WOHA's approach excelling under state-orchestrated density but facing hurdles in decentralized markets.
+          - generic [ref=e786]:
+            - heading "References" [level=2] [ref=e788]
+            - list [ref=e789]:
+              - listitem [ref=e790]:
+                - link "WOHA" [ref=e792] [cursor=pointer]:
+                  - /url: https://woha.net/en/
+              - listitem [ref=e793]:
+                - link "Projects - WOHA" [ref=e795] [cursor=pointer]:
+                  - /url: https://woha.net/en/projects/
+              - listitem [ref=e796]:
+                - link "Awards - WOHA" [ref=e798] [cursor=pointer]:
+                  - /url: https://woha.net/en/awards/
+              - listitem [ref=e799]:
+                - link "WOHA Wins Again - CTBUH 2024 Best Tall Building Worldwide" [ref=e801] [cursor=pointer]:
+                  - /url: https://www.world-architects.com/en/architecture-news/headlines/woha-wins-again
+              - listitem [ref=e802]:
+                - link "WOHA Architects, Singapore Office" [ref=e804] [cursor=pointer]:
+                  - /url: https://www.e-architect.com/architects/woha-architecture
+              - listitem [ref=e805]:
+                - link "WOHA - Archello" [ref=e807] [cursor=pointer]:
+                  - /url: https://archello.com/brand/woha
+              - listitem [ref=e808]:
+                - link "Buildings as Machines for Air Movement - World-Architects" [ref=e810] [cursor=pointer]:
+                  - /url: https://www.world-architects.com/en/architecture-news/insight/buildings-as-machines-for-air-movement
+              - listitem [ref=e811]:
+                - link "Meet the Minds – WOHA | Hospitality Design" [ref=e813] [cursor=pointer]:
+                  - /url: https://hospitalitydesign.com/people/interviews/meet-minds-woha/
+              - listitem [ref=e814]:
+                - link "Richard Hassell - Design Hotels" [ref=e816] [cursor=pointer]:
+                  - /url: https://www.designhotels.com/culture/originals/richard-hassell/
+              - listitem [ref=e817]:
+                - link "Church of St. Mary of the Angels - WOHA" [ref=e819] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/church-of-st-mary-of-the-angels/
+              - listitem [ref=e820]:
+                - link "Church of St Mary of the Angels - President's Design Award Singapore" [ref=e822] [cursor=pointer]:
+                  - /url: https://pda.designsingapore.org/award-recipients/2006/church-of-stmary-of-the-angels/
+              - listitem [ref=e823]:
+                - link "Alila Villas Uluwatu - WOHA" [ref=e825] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/alila-villas-uluwatu/
+              - listitem [ref=e826]:
+                - link "Alila Villas Uluwatu, in Bali Indonesia - ARQA" [ref=e828] [cursor=pointer]:
+                  - /url: https://arqa.com/en/_arqanews-archivo-en/alila-villas-uluwate-bali-indonesia.html
+              - listitem [ref=e829]:
+                - link "The Met - WOHA" [ref=e831] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/the-met-bangkok/
+              - listitem [ref=e832]:
+                - link "The Met / WOHA | ArchDaily" [ref=e834] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/40378/the-met-woha
+              - listitem [ref=e835]:
+                - link "Sky Green - WOHA" [ref=e837] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/sky-green-taichung/
+              - listitem [ref=e838]:
+                - link "Sky Green Residential & Retail Tower / WOHA | ArchDaily" [ref=e840] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/930892/sky-green-residential-and-retail-tower-woha
+              - listitem [ref=e841]:
+                - link "[PDF] Opening of Sky Green in Taichung, Taiwan" [ref=e843] [cursor=pointer]:
+                  - /url: https://www.boa.gov.sg/files/WOHA_Sky%2520Green%2520Completion%2520Announcement.pdf
+              - listitem [ref=e844]:
+                - link "WOHA - Singapore, Singapore - Architects - Projects" [ref=e846] [cursor=pointer]:
+                  - /url: https://www.world-architects.com/en/woha-singapore/projects
+              - listitem [ref=e847]:
+                - link "WOHA" [ref=e849] [cursor=pointer]:
+                  - /url: https://woha.net/en/woha/
+              - listitem [ref=e850]:
+                - link "No. 1 Moulmein Rise - WOHA" [ref=e852] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/no-1-moulmein-rise/
+              - listitem [ref=e853]:
+                - link "WOHA - ArchDaily" [ref=e855] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/office/woha
+              - listitem [ref=e856]:
+                - link "WOHA- 15 Iconic Projects - RTF | Rethinking The Future" [ref=e858] [cursor=pointer]:
+                  - /url: https://www.re-thinkingthefuture.com/know-your-architects/a1102-woha-15-iconic-projects/
+              - listitem [ref=e859]:
+                - 'link "MOUTHFUL: a conversation with Richard Hassell (WOHA) - Appetite" [ref=e861] [cursor=pointer]':
+                  - /url: https://research.appetitesg.com/idea/mouthful-a-conversation-with-richard-hassell-woha/
+              - listitem [ref=e862]:
+                - 'link "WOHA: Selected Projects Volume 1" [ref=e864] [cursor=pointer]':
+                  - /url: https://woha.net/en/publication/woha-selected-projects-volume-1/
+              - listitem [ref=e865]:
+                - link "WOHA Architects - The Skyscraper Center" [ref=e867] [cursor=pointer]:
+                  - /url: https://www.skyscrapercenter.com/company/1892
+              - listitem [ref=e868]:
+                - link "How Singapore design firms have risen internationally in recent years" [ref=e870] [cursor=pointer]:
+                  - /url: https://www.thepeakmagazine.com.sg/lifestyle/singapore-design-firms-risen-internationally-recent-years
+              - listitem [ref=e871]:
+                - link "WOHA Designs Singapore 2020 Expo Pavilion - - World-Architects" [ref=e873] [cursor=pointer]:
+                  - /url: https://www.world-architects.com/en/architecture-news/headlines/woha-designs-singapore-2020-expo-pavilion
+              - listitem [ref=e874]:
+                - link "Design 2050 - WOHA" [ref=e876] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/design-2050/
+              - listitem [ref=e877]:
+                - 'link "Interview with WOHA: “The Only Way to Preserve Nature ... - ArchDaily" [ref=e879] [cursor=pointer]':
+                  - /url: https://www.archdaily.com/800182/interview-with-woha-the-only-way-to-preserve-nature-is-to-integrate-it-into-our-built-environment
+              - listitem [ref=e880]:
+                - link "[PDF] A Humanist Approach to Tropical High-rise - ctbuh" [ref=e882] [cursor=pointer]:
+                  - /url: https://global.ctbuh.org/resources/papers/download/414-tall-buildings-in-southeast-asia-a-humanist-approach-to-tropical-high-rise.pdf
+              - listitem [ref=e883]:
+                - link "WOHA on Architizer" [ref=e885] [cursor=pointer]:
+                  - /url: https://architizer.com/firms/woha/
+              - listitem [ref=e886]:
+                - 'link "Wong Mun Summ and Richard Hassell, WOHA: (Re)Imagining the city" [ref=e888] [cursor=pointer]':
+                  - /url: https://www.ecogradia.com/podcast/wong-mun-summ-and-richard-hassell-woha-reimagining-the-city/
+              - listitem [ref=e889]:
+                - link "[PDF] Nature-Positive Vertical Urbanism - ctbuh" [ref=e891] [cursor=pointer]:
+                  - /url: https://global.ctbuh.org/resources/papers/4657-Wong_PanPacificOrchard.pdf
+              - listitem [ref=e892]:
+                - link "WOHA Designs Biophilic Buildings to Nurture the City and its People" [ref=e894] [cursor=pointer]:
+                  - /url: https://whitewall.art/design/wohas-biophilic-buildings-that-nurture-the-city-and-its-people/
+              - listitem [ref=e895]:
+                - link "WOHA New Forms of Sustainable Architecture" [ref=e897] [cursor=pointer]:
+                  - /url: https://woha.net/publication/woha-new-forms-of-sustainable-architecture/
+              - listitem [ref=e898]:
+                - link "Biophilia - CE Center - BNP Media" [ref=e900] [cursor=pointer]:
+                  - /url: https://continuingeducation.bnpmedia.com/courses/architectural-record/biophilia/
+              - listitem [ref=e901]:
+                - link "https://www.cladglobal.com/architecture-design-features?codeid=30964" [ref=e903] [cursor=pointer]:
+                  - /url: https://www.cladglobal.com/architecture-design-features?codeid=30964
+              - listitem [ref=e904]:
+                - link "WOHA Architects – Buildings for high density tropical Garden Cities" [ref=e906] [cursor=pointer]:
+                  - /url: https://goodanthropocenes.net/architecture-for-tropical-garden-cities/
+              - listitem [ref=e907]:
+                - link "WOHA - World Architecture Community" [ref=e909] [cursor=pointer]:
+                  - /url: https://worldarchitecture.org/architecture-projects/henfm/woha-project-pages.html
+              - listitem [ref=e910]:
+                - 'link "[PDF] Oasia Hotel Downtown, Singapore: A Tall Prototype for the Tropics" [ref=e912] [cursor=pointer]':
+                  - /url: https://global.ctbuh.org/resources/papers/download/3790-oasia-hotel-downtown-singapore-a-tall-prototype-for-the-tropics.pdf
+              - listitem [ref=e913]:
+                - 'link "System: Economic - WOHA" [ref=e915] [cursor=pointer]':
+                  - /url: https://woha.net/en/system/economic/
+              - listitem [ref=e916]:
+                - link "[PDF] Garden City, Megacity - ctbuh" [ref=e918] [cursor=pointer]:
+                  - /url: https://global.ctbuh.org/resources/papers/download/3010-garden-city-megacity-rethinking-cities-for-the-age-of-global-warming.pdf
+              - listitem [ref=e919]:
+                - link "WOHA - Michael Bullock" [ref=e921] [cursor=pointer]:
+                  - /url: https://michaelbullock.nyc/volumes/journalism/woha
+              - listitem [ref=e922]:
+                - link "Built - WOHA" [ref=e924] [cursor=pointer]:
+                  - /url: https://woha.net/en/project_status/built/
+              - listitem [ref=e925]:
+                - link "Oasia Hotel Downtown - WOHA" [ref=e927] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/oasia-hotel-downtown/
+              - listitem [ref=e928]:
+                - link "Oasia Hotel Downtown / WOHA | ArchDaily" [ref=e930] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/800878/oasia-hotel-downtown-woha
+              - listitem [ref=e931]:
+                - link "Parkroyal Collection Pickering - WOHA" [ref=e933] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/parkroyal-on-pickering/
+              - listitem [ref=e934]:
+                - link "PARKROYAL on Pickering / WOHA | ArchDaily" [ref=e936] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/363164/parkroyal-on-pickering-woha-2
+              - listitem [ref=e937]:
+                - link "Singapore Institute of Technology - WOHA" [ref=e939] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/singapore-institute-of-technology/
+              - listitem [ref=e940]:
+                - link "SIT completes move to Punggol beside JTC Business Park" [ref=e942] [cursor=pointer]:
+                  - /url: https://www.straitstimes.com/singapore/parenting-education/sit-completes-move-to-punggol-beside-jtc-business-park-campus-designed-to-foster-ties-with-industry
+              - listitem [ref=e943]:
+                - link "NS Square - WOHA" [ref=e945] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/ns-square/
+              - listitem [ref=e946]:
+                - link "Construction work on Singapore's NS Square Stadium approaches ..." [ref=e948] [cursor=pointer]:
+                  - /url: https://www.ausleisure.com.au/news/construction-work-on-singapores-ns-square-stadium-approaches-halfway-stage
+              - listitem [ref=e949]:
+                - link "Forbes Residences - WOHA" [ref=e951] [cursor=pointer]:
+                  - /url: https://woha.net/en/project/forbes-residences/
+              - listitem [ref=e952]:
+                - 'link "Australia ByDesign: ABD 2025 | Forbes Residences" [ref=e954] [cursor=pointer]':
+                  - /url: https://www.bydesign.global/australia-features/forbesresidences
+              - listitem [ref=e955]:
+                - link "Moulmein Rise Residential Building - AKDN" [ref=e957] [cursor=pointer]:
+                  - /url: https://the.akdn/en/how-we-work/our-agencies/aga-khan-trust-culture/akaa/moulmein-rise-residential-building
+              - listitem [ref=e958]:
+                - link "Nine projects receive 2007 Aga Khan Award for Architecture - AKDN" [ref=e960] [cursor=pointer]:
+                  - /url: https://the.akdn/en/resources-media/whats-new/news-release/nine-projects-receive-2007-aga-khan-award-architecture
+              - listitem [ref=e961]:
+                - link "WOHA receives 2011 RIBA Lubetkin Prize | ArchDaily" [ref=e963] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/173855/woha-receives-2011-riba-lubetkin-prize
+              - listitem [ref=e964]:
+                - link "WOHA Architects wins Best Tall Building Worldwide Award - Wewood" [ref=e966] [cursor=pointer]:
+                  - /url: https://www.wewood.eu/news/woha-architects-wins-best-tall-building-worldwide-award
+              - listitem [ref=e967]:
+                - link "President*s Design Award 2025 recognises visionary and ..." [ref=e969] [cursor=pointer]:
+                  - /url: https://www.ura.gov.sg/Corporate/Media-Room/Media-Releases/pr25-42
+              - listitem [ref=e970]:
+                - link "WOHA Rethinks Cities for the Age of Global Warming | ArchDaily" [ref=e972] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/786502/exhibition-garden-city-mega-city-woha-rethinks-cities-for-the-age-of-global-warming
+              - listitem [ref=e973]:
+                - link "Sky Green | WOHA - Archello" [ref=e975] [cursor=pointer]:
+                  - /url: https://archello.com/project/sky-green
+              - listitem [ref=e976]:
+                - 'link "WOHA: Breathing Architecture - The Skyscraper Museum" [ref=e978] [cursor=pointer]':
+                  - /url: https://skyscraper.org/programs/woha-breathing-architecture/
+              - listitem [ref=e979]:
+                - link "Henning Larsen, BIG, WOHA Architects Amongst Recepients of ..." [ref=e981] [cursor=pointer]:
+                  - /url: https://www.archdaily.com/1004078/henning-larsen-big-woha-architects-amongst-recepients-of-president-star-s-design-award-2023-in-singapore
+              - listitem [ref=e982]:
+                - link "[PDF] The Value of Nature Centric Design - WOHA" [ref=e984] [cursor=pointer]:
+                  - /url: https://www.woha.net/prod/wp-content/uploads/2024/07/Designing-for-Biodiversity_WOHA.pdf
+              - listitem [ref=e985]:
+                - link "How nature and buildings come together? Oasia Downtown example" [ref=e987] [cursor=pointer]:
+                  - /url: https://www.rostek.fi/blog/how-nature-and-buildings-come-together-oasia-downtown-example
+              - listitem [ref=e988]:
+                - link "[PDF] A New GeNeRATioN of TRopiCAL HoSpiTALiTy" [ref=e990] [cursor=pointer]:
+                  - /url: https://www.nparks.gov.sg/-/media/cuge/ebook/citygreen/cg7/cg7_11.pdf
+              - listitem [ref=e991]:
+                - link "The influence of building form variables on the environmental ..." [ref=e993] [cursor=pointer]:
+                  - /url: https://www.sciencedirect.com/science/article/abs/pii/S0378778820323239
+              - listitem [ref=e994]:
+                - link "[PDF] The best green stays in Asia's greenest city - Oasia Hotels" [ref=e996] [cursor=pointer]:
+                  - /url: https://www.oasiahotels.com/globalassets/media-library/StayFarEast/Images/Oasia/Press-and-Media/Media-PDF/2021/PDF/010422---Singapores-greenscraper-hotels-The-best-green-stays-in-Asias-greenest-city.pdf
+              - listitem [ref=e997]:
+                - link "Evaluation of thermal comfort and building form attributes in different ..." [ref=e999] [cursor=pointer]:
+                  - /url: https://www.sciencedirect.com/science/article/pii/S0360132321006557
+              - listitem [ref=e1000]:
+                - link "Singapore Situated - The Skyscraper Museum" [ref=e1002] [cursor=pointer]:
+                  - /url: https://old.skyscraper.org/EXHIBITIONS/WOHA/nw.php
+              - listitem [ref=e1003]:
+                - link "Unsociable and Unsustainable | Online Only - N+1" [ref=e1005] [cursor=pointer]:
+                  - /url: https://www.nplusonemag.com/online-only/online-only/unsociable-and-unsustainable/
+              - listitem [ref=e1006]:
+                - 'link "[PDF] Mobile cities, modelling policies: Importing/exporting the Singapore ..." [ref=e1008] [cursor=pointer]':
+                  - /url: https://ink.library.smu.edu.sg/context/soss_research/article/3724/viewcontent/MobileCitiesModelling_av.pdf
+              - listitem [ref=e1009]:
+                - link "A different kind of tropical high-rise" [ref=e1011] [cursor=pointer]:
+                  - /url: http://sgarchperspectives.blogspot.com/2011/07/different-kind-of-tropical-high-rise.html
+              - listitem [ref=e1012]:
+                - link "Donald Trump to add golden Trump Tower to Mumbai skyline" [ref=e1014] [cursor=pointer]:
+                  - /url: https://www.dezeen.com/2014/08/13/trump-tower-mumbai-skyscraper-donald-trump-woha/
+              - listitem [ref=e1015]:
+                - link "Lodha Trump Tower - Premium 3 BHK & 4 BHK Flats in Worli" [ref=e1017] [cursor=pointer]:
+                  - /url: https://www.lodhagroup.com/projects/residential-property-in-worli/lodha-trump-tower
+              - listitem [ref=e1018]:
+                - link "WOHA Architects - “Isn't it difficult and expensive to... - Facebook" [ref=e1020] [cursor=pointer]:
+                  - /url: https://www.facebook.com/woha.architects/posts/isnt-it-difficult-and-expensive-to-maintain-the-greenery-is-a-question-we-are-of/2161872837265206/
+  - button "Table of contents" [ref=e1021] [cursor=pointer]:
+    - img [ref=e1022]
+  - generic [ref=e1025]:
+    - generic [ref=e1026]:
+      - heading "Table of Contents" [level=2] [ref=e1027]
+      - button "Close table of contents" [ref=e1028] [cursor=pointer]:
+        - img [ref=e1029]
+    - navigation [ref=e1031]:
+      - list [ref=e1032]:
+        - listitem [ref=e1033]:
+          - link "History" [ref=e1035] [cursor=pointer]:
+            - /url: "#history"
+        - listitem [ref=e1036]:
+          - link "Founding and Early Development" [ref=e1038] [cursor=pointer]:
+            - /url: "#founding-and-early-development"
+        - listitem [ref=e1039]:
+          - link "Expansion into International Markets" [ref=e1041] [cursor=pointer]:
+            - /url: "#expansion-into-international-markets"
+        - listitem [ref=e1042]:
+          - link "Key Milestones and Adaptations" [ref=e1044] [cursor=pointer]:
+            - /url: "#key-milestones-and-adaptations"
+        - listitem [ref=e1045]:
+          - link "Design Philosophy" [ref=e1047] [cursor=pointer]:
+            - /url: "#design-philosophy"
+        - listitem [ref=e1048]:
+          - link "Core Principles of Tropical Urbanism" [ref=e1050] [cursor=pointer]:
+            - /url: "#core-principles-of-tropical-urbanism"
+        - listitem [ref=e1051]:
+          - link "Integration of Sustainability and Biophilia" [ref=e1053] [cursor=pointer]:
+            - /url: "#integration-of-sustainability-and-biophilia"
+        - listitem [ref=e1054]:
+          - link "Economic and Practical Considerations" [ref=e1056] [cursor=pointer]:
+            - /url: "#economic-and-practical-considerations"
+        - listitem [ref=e1057]:
+          - link "Notable Projects" [ref=e1059] [cursor=pointer]:
+            - /url: "#notable-projects"
+        - listitem [ref=e1060]:
+          - link "Early Residential and Commercial Works" [ref=e1062] [cursor=pointer]:
+            - /url: "#early-residential-and-commercial-works"
+        - listitem [ref=e1063]:
+          - link "Iconic High-Density Developments" [ref=e1065] [cursor=pointer]:
+            - /url: "#iconic-high-density-developments"
+        - listitem [ref=e1066]:
+          - link "Recent and Ongoing Initiatives" [ref=e1068] [cursor=pointer]:
+            - /url: "#recent-and-ongoing-initiatives"
+        - listitem [ref=e1069]:
+          - link "Recognition and Impact" [ref=e1071] [cursor=pointer]:
+            - /url: "#recognition-and-impact"
+        - listitem [ref=e1072]:
+          - link "Awards and Professional Accolades" [ref=e1074] [cursor=pointer]:
+            - /url: "#awards-and-professional-accolades"
+        - listitem [ref=e1075]:
+          - link "Influence on Global Architecture" [ref=e1077] [cursor=pointer]:
+            - /url: "#influence-on-global-architecture"
+        - listitem [ref=e1078]:
+          - link "Empirical Performance of Designs" [ref=e1080] [cursor=pointer]:
+            - /url: "#empirical-performance-of-designs"
+        - listitem [ref=e1081]:
+          - link "Criticisms and Controversies" [ref=e1083] [cursor=pointer]:
+            - /url: "#criticisms-and-controversies"
+        - listitem [ref=e1084]:
+          - link "Challenges to Model Universality" [ref=e1086] [cursor=pointer]:
+            - /url: "#challenges-to-model-universality"
+        - listitem [ref=e1087]:
+          - link "Specific Project Disputes" [ref=e1089] [cursor=pointer]:
+            - /url: "#specific-project-disputes"
+        - listitem [ref=e1090]:
+          - link "Debates on Cost-Effectiveness and Over-Reliance on Planning" [ref=e1092] [cursor=pointer]:
+            - /url: "#debates-on-cost-effectiveness-and-over-reliance-on-planning"
+        - listitem [ref=e1093]:
+          - link "References" [ref=e1095] [cursor=pointer]:
+            - /url: "#references"

@@ -64,12 +64,12 @@ export class CreateDebateDto {
   @IsEnum(DebateAiModel, { each: true })
   models: DebateAiModel[];
 
-  @ApiPropertyOptional({ example: 6, default: 6, minimum: 1, maximum: 24 })
+  @ApiPropertyOptional({ example: 6, default: 6, minimum: 1, maximum: 6 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(24)
+  @Max(6)
   maxRounds?: number = 6;
 
   @ApiPropertyOptional({ example: false, default: false })

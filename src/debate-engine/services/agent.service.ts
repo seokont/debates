@@ -489,39 +489,45 @@ export class AgentService {
     switch (role) {
       case 'STRATEGIST':
         return [
-          `Claim: "${thesis}" lacks strategic timing justification.`,
-          'Why it matters: even valid ideas fail if launched at the wrong moment or without the right preconditions.',
-          'Falsifier: explain why exactly now and exactly this, with concrete market or technology triggers.',
+          `ВКЛАД: Стратегическое окно для "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Timing определяет результат — та же идея в неправильный момент даёт противоположный эффект.',
+          'НОВАЯ ИДЕЯ: Определить три конкретных рыночных условия при которых тезис реализуется максимально эффективно.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: Что именно должно произойти в среде чтобы этот тезис стал неизбежным?',
         ].join(' ');
       case 'SKEPTIC':
         return [
-          `Claim: "${thesis}" has an under-specified causal chain.`,
-          'Why it matters: if the mechanism is vague, the thesis can look plausible while failing at the first missing link.',
-          'Falsifier: show the concrete mechanism, boundary conditions, and one case where the mechanism should not work.',
+          `ВКЛАД: Скрытые допущения в "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Каждый тезис содержит неявные предпосылки — если их сделать явными они открывают новые пространства решений.',
+          'НОВАЯ ИДЕЯ: Перечислить три ключевых допущения и проверить что происходит если каждое из них ложно.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: Какое допущение является самым хрупким и как тезис изменится если его усилить?',
         ].join(' ');
       case 'SYSTEMS_THINKER':
         return [
-          `Claim: "${thesis}" may create a delayed second-order risk.`,
-          'Why it matters: after adoption, incentives can shift and produce the opposite behavior from the intended one.',
-          'Falsifier: map the three-step feedback loop and identify the metric that would warn before the reversal happens.',
+          `ВКЛАД: Второй порядок эффектов от "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Системы реагируют на изменения нелинейно — самые интересные возможности возникают в петлях обратной связи.',
+          'НОВАЯ ИДЕЯ: Построить цепочку: реализация тезиса → реакция участников → новое равновесие → возникающие возможности.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: Какая метрика покажет что система движется к желаемому а не к нежелательному равновесию?',
         ].join(' ');
       case 'PRACTICIAN':
         return [
-          `Claim: "${thesis}" may ignore execution constraints.`,
-          'Why it matters: budget, skills, timing, regulation, and adoption friction can dominate theoretical correctness.',
-          'Falsifier: define the smallest real-world pilot and the operational threshold it must clear.',
+          `ВКЛАД: Минимальный работающий вариант "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Практическая реализация открывает ограничения которые теория не видит — и они часто указывают на лучшее решение.',
+          'НОВАЯ ИДЕЯ: Определить наименьший пилот который даст реальные данные за минимальное время и бюджет.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: Какой операционный порог должен пройти пилот чтобы подтвердить тезис достаточно для следующего шага?',
         ].join(' ');
       case 'SKEPTIC_INNOVATOR':
         return [
-          `Claim: what if the opposite of "${thesis}" is actually true?`,
-          'Why it matters: the thesis is weaker if a completely different system or inverted assumption works better.',
-          'Falsifier: construct a credible alternative that inverts the core assumption and compare outcomes.',
+          `ВКЛАД: Альтернативный взгляд на "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Если инвертировать ключевое допущение — открывается принципиально другое пространство возможностей.',
+          'НОВАЯ ИДЕЯ: Построить альтернативный сценарий где противоположное допущение верно и найти что в нём лучше.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: Что можно взять из альтернативного сценария чтобы сделать исходный тезис сильнее?',
         ].join(' ');
       case 'OPPONENT':
         return [
-          `Claim: an alternative system may solve the same problem better than "${thesis}".`,
-          'Why it matters: the thesis is weaker if a simpler, cheaper, or more incentive-compatible design exists.',
-          'Falsifier: compare the thesis against one rival design on cost, speed, resilience, and failure modes.',
+          `ВКЛАД: Сравнительный анализ для "${thesis}"`,
+          'УНИКАЛЬНЫЙ УГОЛ: Альтернативные подходы к той же проблеме помогают уточнить в чём именно сила исходного тезиса.',
+          'НОВАЯ ИДЕЯ: Сравнить тезис с одним альтернативным решением по трём параметрам: скорость, устойчивость, цена ошибки.',
+          'ВОПРОС ДЛЯ СИНТЕЗА: В каких условиях исходный тезис явно превосходит альтернативу?',
         ].join(' ');
     }
   }
