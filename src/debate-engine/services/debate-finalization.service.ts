@@ -7,6 +7,8 @@ export interface DebateFinalization {
   childQuestions: string[];
   researchGaps: string[];
   crossDomainHypotheses: string[];
+  profitPatterns: string[];
+  fundingBranches: string[];
 }
 
 @Injectable()
@@ -53,18 +55,24 @@ export class DebateFinalizationService {
       'Ответь СТРОГО в следующем формате (без дополнительного текста):',
       '',
       'OPPORTUNITY_SCORE: <число от 0 до 100>',
-      'CHILD_QUESTION_1: <вопрос>',
-      'CHILD_QUESTION_2: <вопрос>',
-      'CHILD_QUESTION_3: <вопрос>',
-      'RESEARCH_GAP_1: <пробел в исследованиях>',
-      'RESEARCH_GAP_2: <пробел в исследованиях>',
-      'CROSS_DOMAIN_1: <кросс-доменная гипотеза>',
-      'CROSS_DOMAIN_2: <кросс-доменная гипотеза>',
+      'CHILD_QUESTION_1: <вопрос вытекающий из финального тезиса>',
+      'CHILD_QUESTION_2: <вопрос вытекающий из финального тезиса>',
+      'CHILD_QUESTION_3: <вопрос вытекающий из финального тезиса>',
+      'RESEARCH_GAP_1: <что не исследовано и блокирует проверку тезиса>',
+      'RESEARCH_GAP_2: <что не исследовано и блокирует проверку тезиса>',
+      'CROSS_DOMAIN_1: <как тезис применим в другой области>',
+      'CROSS_DOMAIN_2: <как тезис применим в другой области>',
+      'PROFIT_PATTERN_1: <название паттерна>: <как тезис реализует этот паттерн>',
+      'PROFIT_PATTERN_2: <название паттерна>: <как тезис реализует этот паттерн>',
+      'PROFIT_PATTERN_3: <название паттерна>: <как тезис реализует этот паттерн>',
+      'FUNDING_BRANCH_1: <предложение ветки для финансирования — что строить и почему это перспективно>',
+      'FUNDING_BRANCH_2: <предложение ветки для финансирования — смежная идея которая выросла из дебата>',
       '',
-      'OPPORTUNITY_SCORE — оцени от 0 до 100 коммерческий и научный потенциал темы.',
-      'CHILD_QUESTION — три вопроса которые возникают из финального тезиса.',
-      'RESEARCH_GAP — что ещё не исследовано и блокирует проверку тезиса.',
-      'CROSS_DOMAIN — как этот тезис может быть применён в другой области.',
+      'OPPORTUNITY_SCORE: 0 = тезис слаб, 50 = спорно, 100 = доказан и перспективен.',
+      'PROFIT_PATTERN — выбирай из: Picks & Shovels, Toll Road, Data Flywheel, Democratization,',
+      '  Compress Time, Aggregator, Behavior Unlock, Bundling/Unbundling.',
+      '  Указывай только те паттерны которые реально применимы к тезису.',
+      'FUNDING_BRANCH — конкретное направление для инвестиции или запуска продукта.',
     ].join('\n');
 
     const raw = await this.agentService.callProvider('anthropic', prompt, userId);
@@ -102,11 +110,24 @@ export class DebateFinalizationService {
       extract('CROSS_DOMAIN_2'),
     ].filter((h): h is string => Boolean(h));
 
+    const profitPatterns = [
+      extract('PROFIT_PATTERN_1'),
+      extract('PROFIT_PATTERN_2'),
+      extract('PROFIT_PATTERN_3'),
+    ].filter((p): p is string => Boolean(p));
+
+    const fundingBranches = [
+      extract('FUNDING_BRANCH_1'),
+      extract('FUNDING_BRANCH_2'),
+    ].filter((b): b is string => Boolean(b));
+
     return {
       opportunityScore,
       childQuestions,
       researchGaps,
       crossDomainHypotheses,
+      profitPatterns,
+      fundingBranches,
     };
   }
 
@@ -124,6 +145,8 @@ export class DebateFinalizationService {
       childQuestions: [],
       researchGaps: [],
       crossDomainHypotheses: [],
+      profitPatterns: [],
+      fundingBranches: [],
     };
   }
 }

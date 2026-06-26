@@ -78,6 +78,8 @@ model Debate {
   childQuestions        String[]   @default([])
   researchGaps          String[]   @default([])
   crossDomainHypotheses String[]   @default([])
+  profitPatterns        String[]   @default([])
+  fundingBranches       String[]   @default([])
 
   completedAt     DateTime?
   createdAt       DateTime       @default(now())

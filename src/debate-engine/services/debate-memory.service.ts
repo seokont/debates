@@ -507,6 +507,8 @@ export class DebateMemoryService {
       childQuestions: string[];
       researchGaps: string[];
       crossDomainHypotheses: string[];
+      profitPatterns: string[];
+      fundingBranches: string[];
     },
   ): Promise<void> {
     const debate = await this.getDebateOrThrow(debateId);
@@ -530,6 +532,8 @@ export class DebateMemoryService {
                 childQuestions: finalization.childQuestions,
                 researchGaps: finalization.researchGaps,
                 crossDomainHypotheses: finalization.crossDomainHypotheses,
+                profitPatterns: finalization.profitPatterns,
+                fundingBranches: finalization.fundingBranches,
               }
             : {}),
         },
@@ -551,6 +555,22 @@ export class DebateMemoryService {
     ]);
 
     this.liveEvents.emit(event);
+
+    // Auto-create ResearchRequest records for each discovered gap
+    if (finalization?.researchGaps?.length) {
+      await Promise.all(
+        finalization.researchGaps.map((gap) =>
+          this.prisma.researchRequest.create({
+            data: {
+              debateId,
+              userId: debate.userId,
+              question: gap,
+              context: `Auto-generated from debate finalization. Thesis: ${debate.currentThesis}`,
+            },
+          }),
+        ),
+      );
+    }
   }
 
   async markFailed(debateId: string, error: Error): Promise<void> {
