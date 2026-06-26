@@ -59,7 +59,7 @@ export class CreateDebateDto {
   })
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(4)
+  @ArrayMaxSize(6)
   @ArrayUnique()
   @IsEnum(DebateAiModel, { each: true })
   models: DebateAiModel[];

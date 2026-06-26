@@ -865,6 +865,8 @@ export class DebatesService {
       [DebateAiModel.CLAUDE]: 'Claude',
       [DebateAiModel.GEMINI]: 'Gemini',
       [DebateAiModel.GROK]: 'Grok',
+      [DebateAiModel.GLM]: 'GLM',
+      [DebateAiModel.KIMI]: 'Kimi',
     };
 
     return {

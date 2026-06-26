@@ -152,6 +152,10 @@ export class AgentService {
         return 'google';
       case DebateAiModel.GROK:
         return 'xai';
+      case DebateAiModel.GLM:
+        return 'zhipu';
+      case DebateAiModel.KIMI:
+        return 'moonshot';
     }
   }
 
@@ -165,6 +169,10 @@ export class AgentService {
         return 'PRACTICIAN';
       case DebateAiModel.GROK:
         return 'SKEPTIC_INNOVATOR';
+      case DebateAiModel.GLM:
+        return 'SKEPTIC';
+      case DebateAiModel.KIMI:
+        return 'OPPONENT';
     }
   }
 
@@ -182,6 +190,10 @@ export class AgentService {
         return this.runGemini(prompt, userId);
       case 'xai':
         return this.runXAi(prompt, userId);
+      case 'zhipu':
+        return this.runGlm(prompt, userId);
+      case 'moonshot':
+        return this.runKimi(prompt, userId);
     }
   }
 
@@ -330,6 +342,78 @@ export class AgentService {
 
     if (!text) {
       throw new Error('Gemini response did not include text output');
+    }
+
+    return text.trim();
+  }
+
+  private async runGlm(prompt: string, userId?: string): Promise<string> {
+    const apiKey = await this.getProviderApiKey(
+      userId,
+      UserAiProvider.ZHIPU,
+      'GLM_API_KEY',
+    );
+    const model = this.getOptionalConfig('GLM_MODEL', 'glm-4-flash');
+    const maxOutputTokens = this.getMaxOutputTokens();
+
+    const response = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: maxOutputTokens,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`GLM request failed: ${await this.readError(response)}`);
+    }
+
+    const body = (await response.json()) as ChatCompletionResponseBody;
+    const text = body.choices?.[0]?.message?.content;
+
+    if (!text) {
+      throw new Error('GLM response did not include text output');
+    }
+
+    return text.trim();
+  }
+
+  private async runKimi(prompt: string, userId?: string): Promise<string> {
+    const apiKey = await this.getProviderApiKey(
+      userId,
+      UserAiProvider.MOONSHOT,
+      'KIMI_API_KEY',
+    );
+    const model = this.getOptionalConfig('KIMI_MODEL', 'moonshot-v1-8k');
+    const maxOutputTokens = this.getMaxOutputTokens();
+
+    const response = await fetch('https://api.moonshot.cn/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: maxOutputTokens,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Kimi request failed: ${await this.readError(response)}`);
+    }
+
+    const body = (await response.json()) as ChatCompletionResponseBody;
+    const text = body.choices?.[0]?.message?.content;
+
+    if (!text) {
+      throw new Error('Kimi response did not include text output');
     }
 
     return text.trim();

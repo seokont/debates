@@ -3,7 +3,7 @@ import {
   DebateAiModel,
 } from '@prisma/client';
 
-export type AiProvider = 'openai' | 'anthropic' | 'google' | 'xai';
+export type AiProvider = 'openai' | 'anthropic' | 'google' | 'xai' | 'zhipu' | 'moonshot';
 
 export type AiAgentRole = Extract<
   PrismaAiAgentRole,

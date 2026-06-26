@@ -442,6 +442,10 @@ export class DebateMemoryService {
         return AiAgentName.GEMINI;
       case DebateAiModel.GROK:
         return AiAgentName.GROK;
+      case DebateAiModel.GLM:
+        return AiAgentName.GLM;
+      case DebateAiModel.KIMI:
+        return AiAgentName.KIMI;
     }
   }
 

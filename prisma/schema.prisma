@@ -296,6 +296,8 @@ enum AiAgentName {
   CLAUDE
   GEMINI
   GROK
+  GLM
+  KIMI
   SYSTEM
 }
 
@@ -315,6 +317,8 @@ enum AiProvider {
   ANTHROPIC
   GOOGLE
   XAI
+  ZHIPU
+  MOONSHOT
 }
 
 enum CreditTransactionType {
@@ -358,6 +362,8 @@ enum DebateAiModel {
   CLAUDE
   GEMINI
   GROK
+  GLM
+  KIMI
 }
 
 model ResearchRequest {
