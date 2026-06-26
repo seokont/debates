@@ -246,6 +246,8 @@ export class DebatesService {
         childQuestions: true,
         researchGaps: true,
         crossDomainHypotheses: true,
+        profitPatterns: true,
+        fundingBranches: true,
         completedAt: true,
       },
     });
