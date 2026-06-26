@@ -8,6 +8,8 @@ import {
 
 const NO_IMPROVEMENT_THRESHOLD = 3;
 const DIVERGENT_STAGNATION_THRESHOLD = 3;
+// Minimum rounds before any early stop is allowed (except MAX_ROUNDS_REACHED)
+const MIN_ROUNDS_BEFORE_STOP = 5;
 
 @Injectable()
 export class StopConditionService {
@@ -19,6 +21,12 @@ export class StopConditionService {
   ): StopConditionResult {
     if (improvement.roundNumber >= debate.maxRounds) {
       return { shouldStop: true, reason: 'MAX_ROUNDS_REACHED' };
+    }
+
+    // Enforce minimum rounds — debates should have substance before stopping early
+    const minRounds = Math.min(MIN_ROUNDS_BEFORE_STOP, debate.maxRounds);
+    if (improvement.roundNumber < minRounds) {
+      return { shouldStop: false, reason: 'CONTINUE' };
     }
 
     if (!improvement.changed) {
@@ -33,11 +41,10 @@ export class StopConditionService {
       return this.evaluateDivergent(verifications, recentScores);
     }
 
-    // CONVERGENT and GEOPOLITICAL: standard convergence logic
+    // CONVERGENT and GEOPOLITICAL: only allow closure after minimum rounds
     const allAttacksClosed = verifications.every((v) => v.status === 'closed');
-    const minimumClosureRound = Math.min(2, debate.maxRounds);
 
-    if (allAttacksClosed && improvement.roundNumber >= minimumClosureRound) {
+    if (allAttacksClosed) {
       return { shouldStop: true, reason: 'ALL_ATTACKS_CLOSED' };
     }
 

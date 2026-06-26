@@ -441,10 +441,10 @@ export class AgentService {
 
   private getMaxOutputTokens(): number {
     const value = Number(
-      this.config.get<string>('DEBATE_AGENT_MAX_OUTPUT_TOKENS') ?? 450,
+      this.config.get<string>('DEBATE_AGENT_MAX_OUTPUT_TOKENS') ?? 1200,
     );
 
-    return Number.isFinite(value) && value > 0 ? value : 450;
+    return Number.isFinite(value) && value > 0 ? value : 1200;
   }
 
   private getRetryAttempts(): number {
